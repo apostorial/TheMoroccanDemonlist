@@ -37,7 +37,7 @@ public class TmdlBackendApplication {
 
             Player adminPlayer = new Player();
             adminPlayer.setUsername("admin");
-            adminPlayer.setPassword(passwordEncoder.encode("admin123"));
+            adminPlayer.setPassword(passwordEncoder.encode("123"));
             adminPlayer.setEmail("admin@email.com");
             adminPlayer.setStaff(true);
             playerRepository.save(adminPlayer);
