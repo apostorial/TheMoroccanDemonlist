@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.controllers;
+package com.apostorial.tmdlbackend.web;
 
 import com.apostorial.tmdlbackend.config.SecurityUtils;
 import lombok.AllArgsConstructor;
