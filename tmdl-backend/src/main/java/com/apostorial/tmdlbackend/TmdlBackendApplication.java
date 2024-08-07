@@ -21,6 +21,8 @@ public class TmdlBackendApplication {
         System.setProperty("spring.data.mongodb.port", dotenv.get("SPRING_DATA_MONGODB_PORT"));
         System.setProperty("spring.data.mongodb.database", dotenv.get("SPRING_DATA_MONGODB_DATABASE"));
         System.setProperty("jwt.expiration", dotenv.get("JWT_EXPIRATION"));
+        System.setProperty("spring.mail.username", dotenv.get("SPRING_MAIL_USERNAME"));
+        System.setProperty("spring.mail.password", dotenv.get("SPRING_MAIL_PASSWORD"));
 
         SpringApplication.run(TmdlBackendApplication.class, args);
     }
