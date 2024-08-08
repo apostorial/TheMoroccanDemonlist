@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.entities;
 
 import com.apostorial.tmdlbackend.enums.Duration;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
@@ -19,4 +20,12 @@ public class ClassicLevel extends Level {
     private int minimumCompletion;
     @DBRef
     private Player firstVictor;
+
+    @JsonProperty("firstVictor")
+    public String getFirstVictorForSerialization() {
+        if (firstVictor == null) {
+            return null;
+        }
+        return firstVictor.getId();
+    }
 }

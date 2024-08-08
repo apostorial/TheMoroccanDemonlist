@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,4 +14,12 @@ public class PlatformerLevel extends Level {
     private int ranking;
     @DBRef
     private Player recordHolder;
+
+    @JsonProperty("recordHolder")
+    public String getRecordHolderForSerialization() {
+        if (recordHolder == null) {
+            return null;
+        }
+        return recordHolder.getId();
+    }
 }

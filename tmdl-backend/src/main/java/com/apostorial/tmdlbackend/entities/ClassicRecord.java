@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
@@ -14,4 +15,9 @@ public class ClassicRecord extends Record {
     private int recordPercentage;
     @DBRef
     private ClassicLevel level;
+
+    @JsonProperty("level")
+    public String getLevelForSerialization() {
+        return level.getId();
+    }
 }

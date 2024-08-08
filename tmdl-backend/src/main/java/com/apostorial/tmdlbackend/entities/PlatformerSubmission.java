@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,9 @@ public class PlatformerSubmission extends Submission {
     @DBRef
     private PlatformerLevel level;
     private Duration recordTime;
+
+    @JsonProperty("level")
+    public String getLevelForSerialization() {
+        return level.getId();
+    }
 }
