@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.controllers.restricted;
 
 import com.apostorial.tmdlbackend.dtos.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.UpdateClassicLevelRequest;
 import com.apostorial.tmdlbackend.entities.ClassicLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.ClassicLevelService;
@@ -17,18 +18,18 @@ public class StaffClassicLevelController {
 
     @PostMapping("/create")
     public ResponseEntity<ClassicLevel> create(@RequestBody CreateClassicLevelRequest request) {
-
-        ClassicLevel level = classicLevelService.create(
-            request.getLevelId(),
-            request.getName(),
-            request.getPublisher(),
-            request.getDifficulty(),
-            request.getLink(),
-            request.getThumbnail(),
-            request.getDuration(),
-            request.getMinimumCompletion()
-        );
+        ClassicLevel level = classicLevelService.create(request);
         return new ResponseEntity<>(level, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update/{levelId}")
+    public ResponseEntity<ClassicLevel> update(@PathVariable String levelId, @RequestBody UpdateClassicLevelRequest request) {
+        try {
+            ClassicLevel level = classicLevelService.update(levelId, request);
+            return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/delete/{levelId}")
