@@ -1,37 +1,36 @@
 package com.apostorial.tmdlbackend.services;
 
+import com.apostorial.tmdlbackend.dtos.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.UpdateClassicLevelRequest;
 import com.apostorial.tmdlbackend.entities.ClassicLevel;
+import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.ClassicLevelRepository;
+import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
 import java.util.List;
 
 @Service @AllArgsConstructor
 public class ClassicLevelServiceImpl implements ClassicLevelService {
     private final ClassicLevelRepository classicLevelRepository;
+    private final PlayerRepository playerRepository;
 
     @Override
-    public ClassicLevel create(String levelId, String name, String publisher, Difficulty difficulty, URL link, URL thumbnail, Duration duration, int minimumCompletion) {
+    public ClassicLevel create(CreateClassicLevelRequest request) {
         ClassicLevel level = new ClassicLevel();
-        level.setLevelId(levelId);
-        level.setName(name);
-        level.setPublisher(publisher);
-        level.setDifficulty(difficulty);
-        level.setLink(link);
-        level.setThumbnail(thumbnail);
-        level.setDuration(duration);
-        level.setMinimumCompletion(minimumCompletion);
+        level.setLevelId(request.getLevelId());
+        level.setName(request.getName());
+        level.setPublisher(request.getPublisher());
+        level.setDifficulty(request.getDifficulty());
+        level.setLink(request.getLink());
+        level.setThumbnail(request.getThumbnail());
+        level.setDuration(request.getDuration());
+        level.setMinimumCompletion(request.getMinimumCompletion());
         return classicLevelRepository.save(level);
-    }
-
-    @Override
-    public List<ClassicLevel> findByDuration(String duration) {
-        return List.of();
     }
 
     @Override
@@ -41,8 +40,38 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     }
 
     @Override
+    public List<ClassicLevel> findByDuration(Duration duration) {
+        return classicLevelRepository.findByDuration(duration);
+    }
+
+    @Override
+    public List<ClassicLevel> findByDifficulty(Difficulty difficulty) {
+        return classicLevelRepository.findByDifficulty(difficulty);
+    }
+
+    @Override
     public List<ClassicLevel> findAll() {
         return classicLevelRepository.findAll();
+    }
+
+    @Override
+    public ClassicLevel update(String levelId, UpdateClassicLevelRequest request) throws EntityNotFoundException{
+        ClassicLevel level = classicLevelRepository.findById(levelId)
+                .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
+        level.setLevelId(request.getLevelId());
+        level.setName(request.getName());
+        level.setPublisher(request.getPublisher());
+        level.setDifficulty(request.getDifficulty());
+        level.setLink(request.getLink());
+        level.setThumbnail(request.getThumbnail());
+        level.setDuration(request.getDuration());
+        level.setMinimumCompletion(request.getMinimumCompletion());
+        if (request.getFirstVictorId() != null) {
+            Player firstVictor = playerRepository.findById(request.getFirstVictorId())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getFirstVictorId() + " not found"));
+            level.setFirstVictor(firstVictor);
+        }
+        return classicLevelRepository.save(level);
     }
 
     @Override
@@ -51,10 +80,5 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
                 .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
 
         classicLevelRepository.delete(classicLevel);
-    }
-
-    @Override
-    public List<ClassicLevel> findByDifficulty(Difficulty difficulty) {
-        return List.of();
     }
 }
