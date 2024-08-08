@@ -1,6 +1,6 @@
 package com.apostorial.tmdlbackend.listeners;
 
-import com.apostorial.tmdlbackend.entities.PlatformerLevel;
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;

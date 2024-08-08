@@ -1,10 +1,10 @@
 package com.apostorial.tmdlbackend.controllers.restricted;
 
-import com.apostorial.tmdlbackend.dtos.CreatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.dtos.UpdatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.entities.PlatformerLevel;
+import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.PlatformerLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.PlatformerLevelService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

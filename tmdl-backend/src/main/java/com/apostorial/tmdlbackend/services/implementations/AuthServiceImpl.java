@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.implementations;
 
 import com.apostorial.tmdlbackend.config.JwtTokenProvider;
 import com.apostorial.tmdlbackend.dtos.LoginRequest;
@@ -7,6 +7,7 @@ import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.VerificationToken;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.VerificationTokenRepository;
+import com.apostorial.tmdlbackend.services.interfaces.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service @AllArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final PlayerRepository playerRepository;

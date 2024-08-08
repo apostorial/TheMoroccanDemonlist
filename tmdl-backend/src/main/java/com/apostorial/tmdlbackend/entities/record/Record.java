@@ -1,5 +1,6 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.record;
 
+import com.apostorial.tmdlbackend.entities.Player;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

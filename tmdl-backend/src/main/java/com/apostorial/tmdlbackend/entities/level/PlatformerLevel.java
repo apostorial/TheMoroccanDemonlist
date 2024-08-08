@@ -1,5 +1,6 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.level;
 
+import com.apostorial.tmdlbackend.entities.Player;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import lombok.Data;

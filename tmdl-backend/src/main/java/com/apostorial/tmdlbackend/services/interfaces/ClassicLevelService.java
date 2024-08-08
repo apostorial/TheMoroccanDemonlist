@@ -1,8 +1,8 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.interfaces;
 
-import com.apostorial.tmdlbackend.dtos.CreateClassicLevelRequest;
-import com.apostorial.tmdlbackend.dtos.UpdateClassicLevelRequest;
-import com.apostorial.tmdlbackend.entities.ClassicLevel;
+import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
+import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 

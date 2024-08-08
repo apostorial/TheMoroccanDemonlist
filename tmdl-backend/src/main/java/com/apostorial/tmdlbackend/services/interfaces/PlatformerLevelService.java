@@ -1,8 +1,8 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.interfaces;
 
-import com.apostorial.tmdlbackend.dtos.CreatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.dtos.UpdatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.entities.PlatformerLevel;
+import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 
 public interface PlatformerLevelService extends LevelService<PlatformerLevel> {

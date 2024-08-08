@@ -1,5 +1,6 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.submission;
 
+import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;

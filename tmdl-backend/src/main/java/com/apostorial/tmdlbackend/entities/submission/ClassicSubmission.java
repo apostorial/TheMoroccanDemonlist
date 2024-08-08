@@ -1,5 +1,6 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.submission;
 
+import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

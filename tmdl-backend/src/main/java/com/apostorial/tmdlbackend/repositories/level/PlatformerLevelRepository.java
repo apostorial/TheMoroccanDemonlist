@@ -1,6 +1,6 @@
-package com.apostorial.tmdlbackend.repositories;
+package com.apostorial.tmdlbackend.repositories.level;
 
-import com.apostorial.tmdlbackend.entities.PlatformerLevel;
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 
 import java.util.List;

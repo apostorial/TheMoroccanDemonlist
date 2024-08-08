@@ -1,10 +1,10 @@
 package com.apostorial.tmdlbackend.controllers.restricted;
 
-import com.apostorial.tmdlbackend.dtos.CreateClassicLevelRequest;
-import com.apostorial.tmdlbackend.dtos.UpdateClassicLevelRequest;
-import com.apostorial.tmdlbackend.entities.ClassicLevel;
+import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
+import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.ClassicLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.ClassicLevelService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

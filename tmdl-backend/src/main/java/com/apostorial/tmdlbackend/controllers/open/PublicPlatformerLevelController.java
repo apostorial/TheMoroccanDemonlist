@@ -1,9 +1,9 @@
 package com.apostorial.tmdlbackend.controllers.open;
 
-import com.apostorial.tmdlbackend.entities.PlatformerLevel;
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.PlatformerLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.PlatformerLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

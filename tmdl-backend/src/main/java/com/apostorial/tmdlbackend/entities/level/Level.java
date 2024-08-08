@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.level;
 
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import lombok.AllArgsConstructor;

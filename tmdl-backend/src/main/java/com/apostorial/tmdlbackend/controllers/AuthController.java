@@ -3,7 +3,7 @@ package com.apostorial.tmdlbackend.controllers;
 import com.apostorial.tmdlbackend.dtos.JwtAuthResponseRequest;
 import com.apostorial.tmdlbackend.dtos.LoginRequest;
 import com.apostorial.tmdlbackend.dtos.RegisterRequest;
-import com.apostorial.tmdlbackend.services.AuthService;
+import com.apostorial.tmdlbackend.services.interfaces.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

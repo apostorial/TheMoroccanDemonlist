@@ -1,14 +1,15 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.implementations;
 
-import com.apostorial.tmdlbackend.dtos.CreateClassicLevelRequest;
-import com.apostorial.tmdlbackend.dtos.UpdateClassicLevelRequest;
-import com.apostorial.tmdlbackend.entities.ClassicLevel;
+import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
+import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.repositories.ClassicLevelRepository;
+import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
+import com.apostorial.tmdlbackend.services.interfaces.ClassicLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

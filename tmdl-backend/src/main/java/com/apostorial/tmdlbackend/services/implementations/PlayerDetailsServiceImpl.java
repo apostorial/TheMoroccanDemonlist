@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.implementations;
 
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;

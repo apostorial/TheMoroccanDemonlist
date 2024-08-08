@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.dtos;
+package com.apostorial.tmdlbackend.dtos.level;
 
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
@@ -9,7 +9,7 @@ import lombok.Data;
 import java.net.URL;
 
 @Data
-public class UpdateClassicLevelRequest {
+public class CreateClassicLevelRequest {
     @NotNull(message = "Level ID is required.")
     private String levelId;
     @NotNull(message = "Name is required.")
@@ -27,5 +27,4 @@ public class UpdateClassicLevelRequest {
     @NotNull(message = "Minimum completion is required.")
     @Positive(message = "Minimum completion must be positive.")
     private int minimumCompletion;
-    private String firstVictorId;
 }

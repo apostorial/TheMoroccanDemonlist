@@ -1,8 +1,8 @@
 package com.apostorial.tmdlbackend.listeners;
 
-import com.apostorial.tmdlbackend.entities.ClassicLevel;
-import com.apostorial.tmdlbackend.entities.ClassicRecord;
-import com.apostorial.tmdlbackend.repositories.ClassicLevelRepository;
+import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
+import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
+import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;

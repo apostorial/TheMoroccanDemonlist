@@ -1,6 +1,6 @@
-package com.apostorial.tmdlbackend.repositories;
+package com.apostorial.tmdlbackend.repositories.level;
 
-import com.apostorial.tmdlbackend.entities.ClassicLevel;
+import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
 

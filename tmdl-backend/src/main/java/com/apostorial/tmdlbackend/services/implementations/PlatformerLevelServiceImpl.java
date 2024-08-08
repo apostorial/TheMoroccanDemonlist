@@ -1,13 +1,14 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.implementations;
 
-import com.apostorial.tmdlbackend.dtos.CreatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.dtos.UpdatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.entities.PlatformerLevel;
+import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.repositories.PlatformerLevelRepository;
+import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
+import com.apostorial.tmdlbackend.services.interfaces.PlatformerLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

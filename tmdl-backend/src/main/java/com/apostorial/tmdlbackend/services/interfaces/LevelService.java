@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.interfaces;
 
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;

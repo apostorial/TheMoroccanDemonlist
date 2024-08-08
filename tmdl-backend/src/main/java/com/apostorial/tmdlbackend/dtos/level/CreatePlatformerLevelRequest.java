@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.dtos;
+package com.apostorial.tmdlbackend.dtos.level;
 
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import jakarta.validation.constraints.NotNull;

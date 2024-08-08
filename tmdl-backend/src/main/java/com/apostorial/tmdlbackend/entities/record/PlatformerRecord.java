@@ -1,20 +1,20 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.record;
 
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Duration;
+
 @Document @Data @NoArgsConstructor @EqualsAndHashCode(callSuper = true)
-public class ClassicRecord extends Record {
-    @Min(1) @Max(100)
-    private int recordPercentage;
+public class PlatformerRecord extends Record {
+    private Duration recordTime;
     @DBRef
-    private ClassicLevel level;
+    private PlatformerLevel level;
 
     @JsonProperty("level")
     public String getLevelForSerialization() {

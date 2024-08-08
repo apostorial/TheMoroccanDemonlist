@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services;
+package com.apostorial.tmdlbackend.services.implementations;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

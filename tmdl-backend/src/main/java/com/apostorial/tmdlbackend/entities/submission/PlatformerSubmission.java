@@ -1,5 +1,6 @@
-package com.apostorial.tmdlbackend.entities;
+package com.apostorial.tmdlbackend.entities.submission;
 
+import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

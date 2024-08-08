@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.repositories;
+package com.apostorial.tmdlbackend.repositories.level;
 
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import org.springframework.data.mongodb.repository.MongoRepository;
