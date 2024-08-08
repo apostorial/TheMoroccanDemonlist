@@ -4,7 +4,7 @@ import com.apostorial.tmdlbackend.entities.Region;
 import lombok.Data;
 
 @Data
-public class RegisterDTO {
+public class RegisterRequest {
     private String username;
     private String email;
     private String password;
