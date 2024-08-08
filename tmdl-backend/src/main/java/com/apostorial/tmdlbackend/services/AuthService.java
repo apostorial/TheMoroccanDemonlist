@@ -1,10 +1,10 @@
 package com.apostorial.tmdlbackend.services;
 
-import com.apostorial.tmdlbackend.dtos.LoginDTO;
-import com.apostorial.tmdlbackend.dtos.RegisterDTO;
+import com.apostorial.tmdlbackend.dtos.LoginRequest;
+import com.apostorial.tmdlbackend.dtos.RegisterRequest;
 
 public interface AuthService {
-    String login(LoginDTO loginDTO);
-    String register(RegisterDTO registerDTO);
+    String login(LoginRequest loginRequest);
+    String register(RegisterRequest registerRequest);
     boolean verifyEmail(String token);
 }

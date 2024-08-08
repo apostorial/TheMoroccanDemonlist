@@ -1,8 +1,8 @@
 package com.apostorial.tmdlbackend.services;
 
 import com.apostorial.tmdlbackend.config.JwtTokenProvider;
-import com.apostorial.tmdlbackend.dtos.LoginDTO;
-import com.apostorial.tmdlbackend.dtos.RegisterDTO;
+import com.apostorial.tmdlbackend.dtos.LoginRequest;
+import com.apostorial.tmdlbackend.dtos.RegisterRequest;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.VerificationToken;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
@@ -29,25 +29,25 @@ public class AuthServiceImpl implements AuthService{
     private final EmailServiceImpl emailService;
 
     @Override
-    public String login(LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+    public String login(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override @Transactional
-    public String register(RegisterDTO registerDTO) {
-        if (playerRepository.existsByUsername(registerDTO.getUsername())) {
+    public String register(RegisterRequest registerRequest) {
+        if (playerRepository.existsByUsername(registerRequest.getUsername())) {
             throw new RuntimeException("Username is already taken!");
         }
-        if (playerRepository.existsByEmail(registerDTO.getEmail())) {
+        if (playerRepository.existsByEmail(registerRequest.getEmail())) {
             throw new RuntimeException("Email is already in use!");
         }
 
         Player player = new Player();
-        player.setUsername(registerDTO.getUsername());
-        player.setEmail(registerDTO.getEmail());
-        player.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        player.setUsername(registerRequest.getUsername());
+        player.setEmail(registerRequest.getEmail());
+        player.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         playerRepository.save(player);
 
         String token = UUID.randomUUID().toString();
@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService{
         tokenRepository.save(verificationToken);
         emailService.sendVerificationEmail(player.getEmail(), token);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(player.getUsername(), registerDTO.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(player.getUsername(), registerRequest.getPassword());
         return jwtTokenProvider.generateToken(authentication);
     }
 
