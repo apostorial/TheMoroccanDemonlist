@@ -1,7 +1,10 @@
 package com.apostorial.tmdlbackend.repositories;
 
 import com.apostorial.tmdlbackend.entities.PlatformerLevel;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.apostorial.tmdlbackend.enums.Difficulty;
 
-public interface PlatformerLevelRepository extends MongoRepository<PlatformerLevel, String> {
+import java.util.List;
+
+public interface PlatformerLevelRepository extends LevelRepository<PlatformerLevel> {
+    List<PlatformerLevel> findByDifficulty(Difficulty difficulty);
 }
