@@ -1,8 +1,9 @@
 package com.apostorial.tmdlbackend.controllers;
 
 import com.apostorial.tmdlbackend.dtos.JwtAuthResponseRequest;
-import com.apostorial.tmdlbackend.dtos.LoginRequest;
-import com.apostorial.tmdlbackend.dtos.RegisterRequest;
+import com.apostorial.tmdlbackend.dtos.player.LoginPlayerRequest;
+import com.apostorial.tmdlbackend.dtos.player.RegisterPlayerRequest;
+import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,14 +15,18 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
-        String token = authService.register(registerRequest);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+    public ResponseEntity<String> register(@RequestBody RegisterPlayerRequest request) {
+       try {
+           String token = authService.register(request);
+           return new ResponseEntity<>(token, HttpStatus.OK);
+       } catch (Exception e) {
+           return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+       }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponseRequest> login(@RequestBody LoginRequest loginRequest) {
-        String token = authService.login(loginRequest);
+    public ResponseEntity<JwtAuthResponseRequest> login(@RequestBody LoginPlayerRequest request) {
+        String token = authService.login(request);
         JwtAuthResponseRequest jwtAuthResponseRequest = new JwtAuthResponseRequest();
         jwtAuthResponseRequest.setAccessToken(token);
         return new ResponseEntity<>(jwtAuthResponseRequest, HttpStatus.OK);
