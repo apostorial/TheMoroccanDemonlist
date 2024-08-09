@@ -3,7 +3,7 @@ package com.apostorial.tmdlbackend.controllers.open;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.interfaces.PlatformerLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.level.PlatformerLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class PublicPlatformerLevelController {
     @GetMapping("/{levelId}")
     public ResponseEntity<PlatformerLevel> findById(@PathVariable String levelId) {
         try {
-            PlatformerLevel platformerLevel = platformerLevelService.findById(levelId);
-            return new ResponseEntity<>(platformerLevel, HttpStatus.OK);
+            PlatformerLevel level = platformerLevelService.findById(levelId);
+            return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

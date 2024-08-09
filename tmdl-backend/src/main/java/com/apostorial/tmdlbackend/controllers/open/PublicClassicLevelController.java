@@ -4,7 +4,7 @@ import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.interfaces.ClassicLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.level.ClassicLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ public class PublicClassicLevelController {
     @GetMapping("/{levelId}")
     public ResponseEntity<ClassicLevel> findById(@PathVariable String levelId) {
         try {
-            ClassicLevel classicLevel = classicLevelService.findById(levelId);
-            return new ResponseEntity<>(classicLevel, HttpStatus.OK);
+            ClassicLevel level = classicLevelService.findById(levelId);
+            return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
