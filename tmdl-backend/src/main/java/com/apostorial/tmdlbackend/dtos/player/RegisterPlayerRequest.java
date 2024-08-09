@@ -1,6 +1,5 @@
 package com.apostorial.tmdlbackend.dtos.player;
 
-import com.apostorial.tmdlbackend.entities.Region;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

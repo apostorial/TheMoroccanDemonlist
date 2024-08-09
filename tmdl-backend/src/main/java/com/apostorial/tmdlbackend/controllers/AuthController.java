@@ -3,7 +3,6 @@ package com.apostorial.tmdlbackend.controllers;
 import com.apostorial.tmdlbackend.dtos.JwtAuthResponseRequest;
 import com.apostorial.tmdlbackend.dtos.player.LoginPlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.RegisterPlayerRequest;
-import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
