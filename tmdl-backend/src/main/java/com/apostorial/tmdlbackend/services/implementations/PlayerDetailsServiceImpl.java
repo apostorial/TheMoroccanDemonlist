@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.services.implementations;
 
 import com.apostorial.tmdlbackend.entities.Player;
+import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,10 +22,8 @@ public class PlayerDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            Player player = playerRepository.findByUsername(username);
-            if (player == null) {
-                throw new UsernameNotFoundException("User not found with username: " + username);
-            }
+            Player player = playerRepository.findByUsername(username)
+                    .orElseThrow(() -> new EntityNotFoundException("Player with username " + username + " not found"));
             Set<GrantedAuthority> authorities = new HashSet<>();
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             if (player.isStaff()) {
