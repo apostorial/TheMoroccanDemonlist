@@ -5,6 +5,7 @@ import com.apostorial.tmdlbackend.dtos.record.UpdatePlatformerRecordRequest;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.entities.record.PlatformerRecord;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
@@ -22,7 +23,10 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
     private final PlayerRepository playerRepository;
 
     @Override
-    public PlatformerRecord create(CreatePlatformerRecordRequest request) throws EntityNotFoundException {
+    public PlatformerRecord create(CreatePlatformerRecordRequest request) throws EntityNotFoundException, DuplicateRecordException {
+        if (platformerRecordRepository.existsByPlayerIdAndLevelId(request.getPlayerId(), request.getLevelId())) {
+            throw new DuplicateRecordException("A record for this player and level already exists");
+        }
         PlatformerRecord record = new PlatformerRecord();
         if (request.getPlayerId() != null) {
             Player player = playerRepository.findById(request.getPlayerId())

@@ -5,6 +5,7 @@ import com.apostorial.tmdlbackend.dtos.record.UpdateClassicRecordRequest;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
@@ -23,7 +24,10 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
     private final PlayerRepository playerRepository;
 
     @Override
-    public ClassicRecord create(CreateClassicRecordRequest request) throws EntityNotFoundException {
+    public ClassicRecord create(CreateClassicRecordRequest request) throws EntityNotFoundException, DuplicateRecordException {
+        if (classicRecordRepository.existsByPlayerIdAndLevelId(request.getPlayerId(), request.getLevelId())) {
+            throw new DuplicateRecordException("A record for this player and level already exists");
+        }
         ClassicRecord record = new ClassicRecord();
         if (request.getPlayerId() != null) {
             Player player = playerRepository.findById(request.getPlayerId())
