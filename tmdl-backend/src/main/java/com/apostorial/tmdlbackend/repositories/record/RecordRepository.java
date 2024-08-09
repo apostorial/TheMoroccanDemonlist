@@ -9,4 +9,5 @@ import java.util.List;
 public interface RecordRepository<T> extends MongoRepository<T, String> {
     List<T> findAllByPlayerId(String playerId);
     List<T> findAllByLevelId(String levelId);
+    boolean existsByPlayerIdAndLevelId(String playerId, String levelId);
 }
