@@ -16,6 +16,8 @@ public class CreatePlatformerLevelRequest {
     private String publisher;
     @NotNull(message = "Difficulty is required.")
     private Difficulty difficulty;
+    @NotNull(message = "Ranking is required.")
+    private int ranking;
     @NotNull(message = "Link is required.")
     private URL link;
     @NotNull(message = "Thumbnail is required.")
