@@ -1,11 +1,14 @@
 package com.apostorial.tmdlbackend.services.implementations;
 
 import com.apostorial.tmdlbackend.config.JwtTokenProvider;
-import com.apostorial.tmdlbackend.dtos.LoginRequest;
-import com.apostorial.tmdlbackend.dtos.RegisterRequest;
+import com.apostorial.tmdlbackend.dtos.player.LoginPlayerRequest;
+import com.apostorial.tmdlbackend.dtos.player.RegisterPlayerRequest;
 import com.apostorial.tmdlbackend.entities.Player;
+import com.apostorial.tmdlbackend.entities.Region;
 import com.apostorial.tmdlbackend.entities.VerificationToken;
+import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
+import com.apostorial.tmdlbackend.repositories.RegionRepository;
 import com.apostorial.tmdlbackend.repositories.VerificationTokenRepository;
 import com.apostorial.tmdlbackend.services.interfaces.AuthService;
 import lombok.AllArgsConstructor;
@@ -28,27 +31,33 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final VerificationTokenRepository tokenRepository;
     private final EmailServiceImpl emailService;
+    private final RegionRepository regionRepository;
 
     @Override
-    public String login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public String login(LoginPlayerRequest loginPlayerRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginPlayerRequest.getUsername(), loginPlayerRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override @Transactional
-    public String register(RegisterRequest registerRequest) {
-        if (playerRepository.existsByUsername(registerRequest.getUsername())) {
+    public String register(RegisterPlayerRequest request) throws EntityNotFoundException {
+        if (playerRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username is already taken!");
         }
-        if (playerRepository.existsByEmail(registerRequest.getEmail())) {
+        if (playerRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email is already in use!");
         }
 
         Player player = new Player();
-        player.setUsername(registerRequest.getUsername());
-        player.setEmail(registerRequest.getEmail());
-        player.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        player.setUsername(request.getUsername());
+        player.setEmail(request.getEmail());
+        player.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (request.getRegionId() != null) {
+            Region region = regionRepository.findById(request.getRegionId())
+                    .orElseThrow(() -> new EntityNotFoundException("Region with id " + request.getRegionId() + " not found"));
+            player.setRegion(region);
+        }
         playerRepository.save(player);
 
         String token = UUID.randomUUID().toString();
@@ -56,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         tokenRepository.save(verificationToken);
         emailService.sendVerificationEmail(player.getEmail(), token);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(player.getUsername(), registerRequest.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(player.getUsername(), request.getPassword());
         return jwtTokenProvider.generateToken(authentication);
     }
 

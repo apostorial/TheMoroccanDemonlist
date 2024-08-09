@@ -1,10 +1,11 @@
 package com.apostorial.tmdlbackend.services.interfaces;
 
-import com.apostorial.tmdlbackend.dtos.LoginRequest;
-import com.apostorial.tmdlbackend.dtos.RegisterRequest;
+import com.apostorial.tmdlbackend.dtos.player.LoginPlayerRequest;
+import com.apostorial.tmdlbackend.dtos.player.RegisterPlayerRequest;
+import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 
 public interface AuthService {
-    String login(LoginRequest loginRequest);
-    String register(RegisterRequest registerRequest);
+    String login(LoginPlayerRequest loginPlayerRequest);
+    String register(RegisterPlayerRequest registerPlayerRequest) throws EntityNotFoundException;
     boolean verifyEmail(String token);
 }
