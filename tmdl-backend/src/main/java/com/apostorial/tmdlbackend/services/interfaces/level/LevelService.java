@@ -1,9 +1,10 @@
-package com.apostorial.tmdlbackend.services.interfaces;
+package com.apostorial.tmdlbackend.services.interfaces.level;
 
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 
 import java.util.List;
+
 public interface LevelService<T> {
     T findById(String levelId) throws EntityNotFoundException;
     List<T> findAll();

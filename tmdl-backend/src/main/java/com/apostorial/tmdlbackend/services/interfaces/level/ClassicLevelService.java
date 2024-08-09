@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services.interfaces;
+package com.apostorial.tmdlbackend.services.interfaces.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;

@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services.implementations;
+package com.apostorial.tmdlbackend.services.implementations.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
@@ -9,7 +9,7 @@ import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
-import com.apostorial.tmdlbackend.services.interfaces.ClassicLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.level.ClassicLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -77,9 +77,9 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
 
     @Override
     public void deleteById(String levelId) throws EntityNotFoundException{
-        ClassicLevel classicLevel = classicLevelRepository.findById(levelId)
+        ClassicLevel level = classicLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
 
-        classicLevelRepository.delete(classicLevel);
+        classicLevelRepository.delete(level);
     }
 }

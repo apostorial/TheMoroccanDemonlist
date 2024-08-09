@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services.interfaces;
+package com.apostorial.tmdlbackend.services.interfaces.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;

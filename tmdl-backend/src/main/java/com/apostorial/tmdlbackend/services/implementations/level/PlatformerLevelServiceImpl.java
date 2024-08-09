@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.services.implementations;
+package com.apostorial.tmdlbackend.services.implementations.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
@@ -8,7 +8,7 @@ import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
-import com.apostorial.tmdlbackend.services.interfaces.PlatformerLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.level.PlatformerLevelService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -67,9 +67,9 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
 
     @Override
     public void deleteById(String levelId) throws EntityNotFoundException {
-        PlatformerLevel platformerLevel = platformerLevelRepository.findById(levelId)
+        PlatformerLevel level = platformerLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer level with id " + levelId + " not found"));
 
-        platformerLevelRepository.delete(platformerLevel);
+        platformerLevelRepository.delete(level);
     }
 }
