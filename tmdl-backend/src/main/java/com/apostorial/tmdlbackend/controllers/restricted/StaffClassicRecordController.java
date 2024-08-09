@@ -3,6 +3,7 @@ package com.apostorial.tmdlbackend.controllers.restricted;
 import com.apostorial.tmdlbackend.dtos.record.CreateClassicRecordRequest;
 import com.apostorial.tmdlbackend.dtos.record.UpdateClassicRecordRequest;
 import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,6 +24,8 @@ public class StaffClassicRecordController {
             return new ResponseEntity<>(record, HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DuplicateRecordException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

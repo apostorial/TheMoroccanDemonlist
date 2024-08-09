@@ -3,6 +3,7 @@ package com.apostorial.tmdlbackend.controllers.restricted;
 import com.apostorial.tmdlbackend.dtos.record.CreatePlatformerRecordRequest;
 import com.apostorial.tmdlbackend.dtos.record.UpdatePlatformerRecordRequest;
 import com.apostorial.tmdlbackend.entities.record.PlatformerRecord;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -23,6 +24,8 @@ public class StaffPlatformerRecordController {
             return new ResponseEntity<>(record, HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DuplicateRecordException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
