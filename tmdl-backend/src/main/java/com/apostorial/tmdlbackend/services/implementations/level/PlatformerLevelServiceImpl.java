@@ -26,6 +26,7 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
+        level.setRanking(request.getRanking());
         level.setLink(request.getLink());
         level.setThumbnail(request.getThumbnail());
         return platformerLevelRepository.save(level);
@@ -55,6 +56,7 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
+        level.setRanking(request.getRanking());
         level.setLink(request.getLink());
         level.setThumbnail(request.getThumbnail());
         if (request.getRecordHolderId() != null) {

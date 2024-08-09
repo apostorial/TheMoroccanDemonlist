@@ -27,6 +27,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
+        level.setRanking(request.getRanking());
         level.setLink(request.getLink());
         level.setThumbnail(request.getThumbnail());
         level.setDuration(request.getDuration());
@@ -63,6 +64,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
+        level.setRanking(request.getRanking());
         level.setLink(request.getLink());
         level.setThumbnail(request.getThumbnail());
         level.setDuration(request.getDuration());
