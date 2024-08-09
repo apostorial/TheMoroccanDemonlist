@@ -1,6 +1,5 @@
 package com.apostorial.tmdlbackend.mappers;
 
-import com.apostorial.tmdlbackend.dtos.player.ProfilePlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.UpdatePlayerRequest;
 import com.apostorial.tmdlbackend.entities.Player;
 import org.springframework.stereotype.Component;
