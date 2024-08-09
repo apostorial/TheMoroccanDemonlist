@@ -1,7 +1,12 @@
 package com.apostorial.tmdlbackend.repositories.record;
 
-import com.apostorial.tmdlbackend.entities.record.Record;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
-public interface RecordRepository extends MongoRepository<Record, String> {
+import java.util.List;
+
+@NoRepositoryBean
+public interface RecordRepository<T> extends MongoRepository<T, String> {
+    List<T> findAllByPlayerId(String playerId);
+    List<T> findAllByLevelId(String levelId);
 }
