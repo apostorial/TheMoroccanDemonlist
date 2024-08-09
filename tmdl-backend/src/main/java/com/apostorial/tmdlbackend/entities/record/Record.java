@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.entities.record;
 
 import com.apostorial.tmdlbackend.entities.Player;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,9 @@ public abstract class Record {
     private URL link;
     @DBRef
     private Player player;
+
+    @JsonProperty("player")
+    public String getPlayerForSerialization() {
+        return player.getId();
+    }
 }
