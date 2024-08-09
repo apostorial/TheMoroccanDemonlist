@@ -4,7 +4,7 @@ import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.interfaces.ClassicLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.level.ClassicLevelService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,12 @@ public class StaffClassicLevelController {
 
     @PostMapping("/create")
     public ResponseEntity<ClassicLevel> create(@RequestBody CreateClassicLevelRequest request) {
-        ClassicLevel level = classicLevelService.create(request);
-        return new ResponseEntity<>(level, HttpStatus.CREATED);
+        try {
+            ClassicLevel level = classicLevelService.create(request);
+            return new ResponseEntity<>(level, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/update/{levelId}")
@@ -29,6 +33,8 @@ public class StaffClassicLevelController {
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -39,6 +45,8 @@ public class StaffClassicLevelController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

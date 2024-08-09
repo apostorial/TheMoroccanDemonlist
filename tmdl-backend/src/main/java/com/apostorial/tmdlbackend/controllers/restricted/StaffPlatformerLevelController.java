@@ -4,7 +4,7 @@ import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
-import com.apostorial.tmdlbackend.services.interfaces.PlatformerLevelService;
+import com.apostorial.tmdlbackend.services.interfaces.level.PlatformerLevelService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,12 @@ public class StaffPlatformerLevelController {
 
     @PostMapping("/create")
     public ResponseEntity<PlatformerLevel> create(@RequestBody CreatePlatformerLevelRequest request) {
-        PlatformerLevel level = platformerLevelService.create(request);
-        return new ResponseEntity<>(level, HttpStatus.CREATED);
+        try {
+            PlatformerLevel level = platformerLevelService.create(request);
+            return new ResponseEntity<>(level, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/update/{levelId}")
@@ -29,6 +33,8 @@ public class StaffPlatformerLevelController {
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -39,6 +45,8 @@ public class StaffPlatformerLevelController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
