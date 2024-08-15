@@ -1,30 +1,37 @@
 package com.apostorial.tmdlbackend.config;
 
+import com.apostorial.tmdlbackend.services.implementations.PlayerDetailsServiceImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
-@Component
+@Component @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final String jwtSecret = generateSecretKey();
     private final long jwtExpiration = Long.parseLong(System.getProperty("jwt.expiration"));
+    private final PlayerDetailsServiceImpl playerDetailsService;
 
-    public String generateToken(Authentication authentication) {
-
-        String username = authentication.getName();
+    public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .subject(username)
+                .subject(email)
+                .claim("authorities", authorities.stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()))
                 .issuedAt(currentDate)
                 .expiration(expireDate)
                 .signWith(key())
@@ -43,7 +50,7 @@ public class JwtTokenProvider {
         return Base64.getEncoder().encodeToString(keyBytes);
     }
 
-    public String getUsername(String token){
+    public String getEmail(String token){
         return Jwts.parser()
                 .verifyWith((SecretKey) key())
                 .build()
