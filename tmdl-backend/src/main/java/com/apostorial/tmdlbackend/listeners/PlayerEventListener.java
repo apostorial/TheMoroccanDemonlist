@@ -13,7 +13,7 @@ import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordServic
 import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.AfterConvertEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class PlayerEventListener extends AbstractMongoEventListener<Player> {
     private final PlatformerRecordService platformerRecordService;
 
     @Override @Transactional
-    public void onAfterConvert(AfterConvertEvent<Player> event) {
+    public void onBeforeConvert(BeforeConvertEvent<Player> event) {
         Player player = event.getSource();
         updateRegionClassicPoints(player);
         updateRegionPlatformerPoints(player);
@@ -67,6 +67,9 @@ public class PlayerEventListener extends AbstractMongoEventListener<Player> {
     }
 
     private void updateRegionClassicPoints(Player player) {
+        if (player.getRegion() == null) {
+            return;
+        }
         float totalClassicPoints = 0;
         Region region = player.getRegion();
         List<Player> players = playerService.findAllByRegionId(region.getId());
@@ -80,6 +83,9 @@ public class PlayerEventListener extends AbstractMongoEventListener<Player> {
     }
 
     private void updateRegionPlatformerPoints(Player player) {
+        if (player.getRegion() == null) {
+            return;
+        }
         float totalPlatformerPoints = 0;
         Region region = player.getRegion();
         List<Player> players = playerService.findAllByRegionId(region.getId());

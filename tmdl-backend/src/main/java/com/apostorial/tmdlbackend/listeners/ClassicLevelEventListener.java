@@ -2,7 +2,7 @@ package com.apostorial.tmdlbackend.listeners;
 
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.AfterConvertEvent;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClassicLevelEventListener extends AbstractMongoEventListener<ClassicLevel> {
 
     @Override @Transactional
-    public void onAfterConvert(AfterConvertEvent<ClassicLevel> event) {
+    public void onBeforeConvert(BeforeConvertEvent<ClassicLevel> event) {
         ClassicLevel classicLevel = event.getSource();
         calculatePoints(classicLevel);
     }
