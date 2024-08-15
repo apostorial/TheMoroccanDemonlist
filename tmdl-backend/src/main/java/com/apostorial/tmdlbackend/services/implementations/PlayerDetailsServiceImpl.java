@@ -20,10 +20,10 @@ public class PlayerDetailsServiceImpl implements UserDetailsService {
     private final PlayerRepository playerRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
-            Player player = playerRepository.findByUsername(username)
-                    .orElseThrow(() -> new EntityNotFoundException("Player with username " + username + " not found"));
+            Player player = playerRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("Player with email " + email + " not found"));
             Set<GrantedAuthority> authorities = new HashSet<>();
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             if (player.isStaff()) {
@@ -31,12 +31,12 @@ public class PlayerDetailsServiceImpl implements UserDetailsService {
             }
 
             return new User(
-                    player.getUsername(),
-                    player.getPassword(),
+                    player.getEmail(),
+                    "",
                     authorities
             );
         } catch (Exception e) {
-            throw new UsernameNotFoundException("Error occurred while fetching user: " + username, e);
+            throw new UsernameNotFoundException("Error occurred while fetching user: " + email, e);
         }
     }
 }
