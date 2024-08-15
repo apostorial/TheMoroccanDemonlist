@@ -1,12 +1,10 @@
 package com.apostorial.tmdlbackend.config;
 
-import com.apostorial.tmdlbackend.services.implementations.PlayerDetailsServiceImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private final String jwtSecret = generateSecretKey();
     private final long jwtExpiration = Long.parseLong(System.getProperty("jwt.expiration"));
-    private final PlayerDetailsServiceImpl playerDetailsService;
 
     public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
         Date currentDate = new Date();
