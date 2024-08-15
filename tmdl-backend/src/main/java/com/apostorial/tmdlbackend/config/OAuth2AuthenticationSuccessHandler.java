@@ -6,6 +6,7 @@ import com.apostorial.tmdlbackend.services.implementations.PlayerDetailsServiceI
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component @RequiredArgsConstructor
+@Component @RequiredArgsConstructor @Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenProvider tokenProvider;
     private final PlayerRepository playerRepository;
@@ -34,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         UserDetails userDetails = playerDetailsService.loadUserByUsername(email);
         String token = tokenProvider.generateToken(email, userDetails.getAuthorities());
-
+        log.error(token);
         String redirectUrl = "/oauth2/redirect?token=" + token;
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
