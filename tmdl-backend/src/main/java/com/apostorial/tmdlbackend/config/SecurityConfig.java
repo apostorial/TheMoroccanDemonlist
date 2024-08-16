@@ -30,13 +30,12 @@ public class SecurityConfig {
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true))
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/login/**", "/oauth2/**", "/api/public/**").permitAll();
-                    authorize.requestMatchers("/v3/api-docs/**",
+                    authorize.requestMatchers(
+                            "/v3/api-docs/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html",
                             "/webjars/**",
                             "/swagger-resources/**").permitAll();
-                    authorize.requestMatchers("/api/staff/**").hasRole("STAFF");
                     authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     authorize.anyRequest().authenticated();
                 })
@@ -46,9 +45,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setStatus(HttpServletResponse.SC_OK);
-                        })
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
