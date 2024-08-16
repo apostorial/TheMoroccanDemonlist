@@ -3,7 +3,6 @@ package com.apostorial.tmdlbackend.config;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Component @RequiredArgsConstructor
+@Component
 public class JwtTokenProvider {
     private final String jwtSecret = generateSecretKey();
     private final long jwtExpiration = Long.parseLong(System.getProperty("jwt.expiration"));
