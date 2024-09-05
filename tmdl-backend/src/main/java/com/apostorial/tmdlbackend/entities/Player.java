@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.LocalDateTime;
 
 @Document @Data @NoArgsConstructor @AllArgsConstructor
@@ -18,8 +19,7 @@ public class Player {
     private String email;
     @NotNull @Indexed(unique = true)
     private String username;
-    @NotNull
-    private String password;
+    private String profilePicture;
     private boolean isStaff = false;
     private boolean isActive = true;
     private LocalDateTime dateJoined = LocalDateTime.now();
