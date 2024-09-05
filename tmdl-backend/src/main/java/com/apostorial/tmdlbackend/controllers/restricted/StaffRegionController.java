@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@RestController @AllArgsConstructor @PreAuthorize("hasRole('ROLE_STAFF')") @RequestMapping("/api/staff/regions") @SecurityRequirement(name = "bearer-jwt")
+@RestController @AllArgsConstructor @PreAuthorize("hasRole('STAFF')") @RequestMapping("/api/staff/regions") @SecurityRequirement(name = "bearer-jwt")
 public class StaffRegionController {
     private final RegionService regionService;
 
