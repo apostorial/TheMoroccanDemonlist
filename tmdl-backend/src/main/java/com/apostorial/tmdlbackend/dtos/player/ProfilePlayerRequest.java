@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class ProfilePlayerRequest {
     private String username;
+    private String profilePicture;
     private LocalDateTime dateJoined;
     private Region region;
     private float classicPoints;

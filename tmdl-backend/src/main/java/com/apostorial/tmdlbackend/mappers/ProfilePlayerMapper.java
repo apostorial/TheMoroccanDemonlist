@@ -9,6 +9,7 @@ public class ProfilePlayerMapper {
     public ProfilePlayerRequest toDTO(Player player) {
         ProfilePlayerRequest dto = new ProfilePlayerRequest();
         dto.setUsername(player.getUsername());
+        dto.setProfilePicture(player.getProfilePicture());
         dto.setDateJoined(player.getDateJoined());
         dto.setRegion(player.getRegion());
         dto.setClassicPoints(player.getClassicPoints());
