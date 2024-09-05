@@ -30,13 +30,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .orElseGet(() -> {
                     Player newPlayer = new Player();
                     newPlayer.setEmail(email);
+                    newPlayer.setProfilePicture("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbgk0yfCOe55931lf6q0osfhGRU-fnH8Im1g&s");
                     return playerRepository.save(newPlayer);
                 });
 
         UserDetails userDetails = playerDetailsService.loadUserByUsername(email);
         String token = tokenProvider.generateToken(email, userDetails.getAuthorities());
         log.error(token);
-        String redirectUrl = "/oauth2/redirect?token=" + token;
-        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+
+        String url = determineTargetUrl(request, response, authentication);
+        String targetUrl = url + "?token=" + token;
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    }
+
+    @Override
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        return "http://localhost:5173/";
     }
 }
