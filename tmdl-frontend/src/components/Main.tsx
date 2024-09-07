@@ -28,11 +28,11 @@ function Main() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-00 text-gray-100">
+    <div className="flex h-screen overflow-hidden bg-gray-900 text-gray-100">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex flex-col flex-1">
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <main className="flex-1 overflow-y-auto bg-gray-800">
+        <main className="flex-1 overflow-y-auto bg-gray-900">
             <div className="flex h-screen bg-gray-900 text-white p-4">
               <div className="flex-1 pr-4">
                 <Routes>
