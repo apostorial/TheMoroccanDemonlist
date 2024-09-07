@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../axios-config';
 import LevelCard from './LevelCard';
-import InfoCard from './InfoCard';
+import Info from './Info';
 
 interface Level {
   ranking: number;
@@ -11,19 +11,24 @@ interface Level {
   thumbnail: string;
 }
 
-function Content() {
+interface ListProps {
+  level_type: string;
+  list_type: string;
+}
+
+function List({ level_type, list_type }: ListProps) {
   const [levels, setLevels] = useState<Level[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLevels();
-  }, []);
+  }, [level_type, list_type]);
 
   const fetchLevels = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get<Level[]>('http://localhost:8080/api/public/classic-levels');
+      const response = await axios.get<Level[]>(`/api/public/${level_type}-levels/list/${list_type}`);
       setLevels(response.data);
       setError(null);
     } catch (error) {
@@ -46,24 +51,15 @@ function Content() {
             name={level.name}
             publisher={level.publisher}
             levelId={level.levelId}
-            thumbnail={level.thumbnail}  // Add this line
+            thumbnail={level.thumbnail}
           />
         ))}
-      </div>
+    </div>
       <div className="w-1/4">
-        <InfoCard 
-          title="List editors"
-          content="Contact any of these people if you need assistance regarding the list."
-          items={["Apostorial"]}
-        />
-        <InfoCard 
-          title="Guidelines"
-          content="Before any submission please consider checking the guidelines for the list. Any submission that does not follow the guidelines will be rejected."
-          buttonText="Read the guidelines"
-        />
+        <Info />
       </div>
     </div>
   );
 }
 
-export default Content;
+export default List;
