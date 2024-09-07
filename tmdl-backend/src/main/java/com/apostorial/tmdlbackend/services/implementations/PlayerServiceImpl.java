@@ -40,6 +40,11 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public List<Player> findAllStaff() {
+        return playerRepository.findByIsStaffTrue();
+    }
+
+    @Override
     public List<Player> findAllByRegionId(String regionId) {
         return playerRepository.findAllByRegionId(regionId);
     }

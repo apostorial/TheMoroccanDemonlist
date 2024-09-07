@@ -66,4 +66,17 @@ public class PublicPlayerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/staff")
+    public ResponseEntity<List<Player>> findAllStaff() {
+        try {
+            List<Player> players = playerService.findAllStaff();
+            if (players.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(players, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

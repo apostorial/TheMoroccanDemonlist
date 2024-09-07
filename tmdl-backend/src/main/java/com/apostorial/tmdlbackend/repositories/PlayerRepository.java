@@ -12,4 +12,5 @@ public interface PlayerRepository extends MongoRepository<Player, String> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     List<Player> findAllByRegionId(String regionId);
+    List<Player> findByIsStaffTrue();
 }

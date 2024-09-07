@@ -12,6 +12,7 @@ public interface PlayerService {
     Player findById(String playerId) throws EntityNotFoundException;
     Player findByUsername(String username) throws EntityNotFoundException;
     List<Player> findAll();
+    List<Player> findAllStaff();
     List<Player> findAllByRegionId(String regionId);
     ProfilePlayerRequest getAuthenticatedPlayer() throws EntityNotFoundException, UnauthorizedException;
     UpdatePlayerRequest updateAuthenticatedPlayer(UpdatePlayerRequest request) throws EntityNotFoundException, UnauthorizedException;
