@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.controllers.open;
 
+import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/public/classic-levels")
 public class PublicClassicLevelController {
@@ -55,6 +57,34 @@ public class PublicClassicLevelController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/firstVictor/{playerId}")
+    public ResponseEntity<List<ClassicLevel>> findByFirstVictor(@PathVariable String playerId) {
+        try {
+            List<ClassicLevel> levels = classicLevelService.findByFirstVictor(playerId);
+            if (levels.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(levels, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/hardestLevel/{playerId}")
+    public ResponseEntity<Optional<ClassicLevel>> findHardestLevel(@PathVariable String playerId) {
+        try {
+            Optional<ClassicLevel> level = classicLevelService.findHardestLevel(playerId);
+            return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/count/{playerId}")
+    public ResponseEntity<LevelCountRequest> getLevelCount(@PathVariable String playerId) {
+        return new ResponseEntity<>(classicLevelService.getLevelCount(playerId), HttpStatus.OK);
     }
 
     @GetMapping({"/list", "/list/{type}"})

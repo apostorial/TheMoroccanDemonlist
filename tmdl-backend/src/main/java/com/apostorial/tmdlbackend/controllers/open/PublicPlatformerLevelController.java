@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.controllers.open;
 
+import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/public/platformer-levels")
 public class PublicPlatformerLevelController {
@@ -41,6 +43,34 @@ public class PublicPlatformerLevelController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/recordHolder/{playerId}")
+    public ResponseEntity<List<PlatformerLevel>> findByRecordHolder(@PathVariable String playerId) {
+        try {
+            List<PlatformerLevel> levels = platformerLevelService.findByRecordHolder(playerId);
+            if (levels.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(levels, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/hardestLevel/{playerId}")
+    public ResponseEntity<Optional<PlatformerLevel>> findHardestLevel(@PathVariable String playerId) {
+        try {
+            Optional<PlatformerLevel> level = platformerLevelService.findHardestLevel(playerId);
+            return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/count/{playerId}")
+    public ResponseEntity<LevelCountRequest> getLevelCount(@PathVariable String playerId) {
+        return new ResponseEntity<>(platformerLevelService.getLevelCount(playerId), HttpStatus.OK);
     }
 
     @GetMapping({"/list", "/list/{type}"})
