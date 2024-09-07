@@ -1,4 +1,4 @@
-package com.apostorial.tmdlbackend.listeners;
+package com.apostorial.tmdlbackend.utilities;
 
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.Region;
@@ -8,37 +8,25 @@ import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
 import com.apostorial.tmdlbackend.entities.record.PlatformerRecord;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.RegionRepository;
+import com.apostorial.tmdlbackend.repositories.record.ClassicRecordRepository;
+import com.apostorial.tmdlbackend.repositories.record.PlatformerRecordRepository;
 import com.apostorial.tmdlbackend.services.interfaces.PlayerService;
-import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordService;
-import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordService;
-import lombok.AllArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
-import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component @AllArgsConstructor
-public class PlayerEventListener extends AbstractMongoEventListener<Player> {
+@Component @RequiredArgsConstructor
+public class PlayerUtils {
     private final PlayerService playerService;
     private final RegionRepository regionRepository;
     private final PlayerRepository playerRepository;
-    private final ClassicRecordService classicRecordService;
-    private final PlatformerRecordService platformerRecordService;
+    private final ClassicRecordRepository classicRecordRepository;
+    private final PlatformerRecordRepository platformerRecordRepository;
 
-    @Override @Transactional
-    public void onBeforeConvert(BeforeConvertEvent<Player> event) {
-        Player player = event.getSource();
-        updateRegionClassicPoints(player);
-        updateRegionPlatformerPoints(player);
-        updatePlayerClassicPoints(player);
-        updatePlayerPlatformerPoints(player);
-    }
-
-    private void updatePlayerClassicPoints(Player player) {
+    public void updatePlayerClassicPoints(Player player) {
         float totalClassicPoints = 0;
-        List<ClassicRecord> records = classicRecordService.findAllByPlayerId(player.getId());
+        List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(player.getId());
         for (ClassicRecord record : records) {
             ClassicLevel level = record.getLevel();
             if (record.getRecordPercentage() == 100) {
@@ -53,9 +41,9 @@ public class PlayerEventListener extends AbstractMongoEventListener<Player> {
         }
     }
 
-    private void updatePlayerPlatformerPoints(Player player) {
+    public void updatePlayerPlatformerPoints(Player player) {
         float totalPlatformerPoints = 0;
-        List<PlatformerRecord> records = platformerRecordService.findAllByPlayerId(player.getId());
+        List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(player.getId());
         for (PlatformerRecord record : records) {
             PlatformerLevel level = record.getLevel();
             totalPlatformerPoints += level.getPoints();
@@ -66,7 +54,7 @@ public class PlayerEventListener extends AbstractMongoEventListener<Player> {
         }
     }
 
-    private void updateRegionClassicPoints(Player player) {
+    public void updateRegionClassicPoints(Player player) {
         if (player.getRegion() == null) {
             return;
         }
@@ -82,7 +70,7 @@ public class PlayerEventListener extends AbstractMongoEventListener<Player> {
         }
     }
 
-    private void updateRegionPlatformerPoints(Player player) {
+    public void updateRegionPlatformerPoints(Player player) {
         if (player.getRegion() == null) {
             return;
         }
