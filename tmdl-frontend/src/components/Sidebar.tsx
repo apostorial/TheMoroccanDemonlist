@@ -40,12 +40,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                     </Button>
                   </li>
                   <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
+                    <Button variant="ghost"
+                    className="w-full justify-start text-left text-sm"
+                    onClick={() => {navigate("/classic/extended");}}
+                    >
                       Extended list
                     </Button>
                   </li>
                   <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
+                    <Button variant="ghost"
+                    className="w-full justify-start text-left text-sm"
+                    onClick={() => {navigate("/classic/legacy");}}
+                    >
                       Legacy list
                     </Button>
                   </li>
@@ -69,18 +75,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isPlatformerDemonlistOpen ? 'max-h-48' : 'max-h-0'}`}>
                 <ul className="ml-4 mt-2 space-y-2">
                   <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
-                      Main list
+                    <Button variant="ghost"
+                      className="w-full justify-start text-left text-sm"
+                      onClick={() => {navigate("/platformer/main");}}
+                      >
+                        Main list
                     </Button>
                   </li>
                   <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
-                      Extended list
+                    <Button variant="ghost"
+                      className="w-full justify-start text-left text-sm"
+                      onClick={() => {navigate("/platformer/extended");}}
+                      >
+                        Extended list
                     </Button>
                   </li>
                   <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
-                      Legacy list
+                    <Button variant="ghost"
+                      className="w-full justify-start text-left text-sm"
+                      onClick={() => {navigate("/platformer/legacy");}}
+                      >
+                        Legacy list
                     </Button>
                   </li>
                   <li>
@@ -92,8 +107,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               </div>
             </li>
             <li>
-              <Button variant="ghost" className="w-full justify-start text-left">
-                Guidelines
+              <Button variant="ghost"
+                className="w-full justify-start text-left text-sm"
+                onClick={() => {navigate("/guidelines");}}
+                >
+                  Guidelines
               </Button>
             </li>
           </ul>
