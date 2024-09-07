@@ -12,7 +12,6 @@ import java.net.URL;
 public abstract class Level {
     @Id
     private String id;
-    private String levelId;
     private String name;
     private String publisher;
     private Difficulty difficulty;
