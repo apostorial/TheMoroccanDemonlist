@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
-import Content from './Content';
+import List from './List';
 import Login from './Login';
+import LevelDetails from './LevelDetails';
+import Guidelines from './Guidelines';
+import { Toaster } from "@/components/ui/sonner"
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -19,6 +22,10 @@ function Main() {
     }
   }, [location, navigate]);
 
+  if (location.pathname === '/login') {
+    return <Login />;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-900 text-gray-100">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
@@ -26,12 +33,31 @@ function Main() {
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="flex-1 overflow-y-auto bg-gray-800">
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Content />} />
-            {/* Add more routes as needed */}
+            <Route path="/" element={<List level_type="classic" list_type="main" />} />
+            <Route path="/classic/extended" element={<List level_type="classic" list_type="extended" />} />
+            <Route path="/classic/legacy" element={<List level_type="classic" list_type="legacy" />} />
+
+            <Route path="/platformer/main" element={<List level_type="platformer" list_type="main" />} />
+            <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
+            <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
+
+            <Route path="/level/:levelId" element={<LevelDetails />} />
+            <Route path="/guidelines" element={<Guidelines />} />
           </Routes>
         </main>
       </div>
+      <Toaster
+        className="bg-gray-800 text-gray-100"
+        toastOptions={{
+          classNames: {
+            toast: "bg-gray-800 text-gray-100 border-gray-800",
+            title: "text-gray-100",
+            description: "text-gray-300",
+            actionButton: "bg-gray-800 text-gray-100",
+            cancelButton: "bg-gray-800 text-gray-100",
+          },
+        }}
+      />
     </div>
   );
 }
