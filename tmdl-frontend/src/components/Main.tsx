@@ -7,6 +7,7 @@ import Login from './Login';
 import LevelDetails from './LevelDetails';
 import Guidelines from './Guidelines';
 import { Toaster } from "@/components/ui/sonner"
+import Info from './Info';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,23 +28,32 @@ function Main() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-900 text-gray-100">
+    <div className="flex h-screen overflow-hidden bg-gray-00 text-gray-100">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex flex-col flex-1">
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="flex-1 overflow-y-auto bg-gray-800">
-          <Routes>
-            <Route path="/" element={<List level_type="classic" list_type="main" />} />
-            <Route path="/classic/extended" element={<List level_type="classic" list_type="extended" />} />
-            <Route path="/classic/legacy" element={<List level_type="classic" list_type="legacy" />} />
+            <div className="flex h-screen bg-gray-900 text-white p-4">
+              <div className="flex-1 pr-4">
+                <Routes>
+                  <Route path="/" element={<List level_type="classic" list_type="main" />} />
+                  <Route path="/classic/extended" element={<List level_type="classic" list_type="extended" />} />
+                  <Route path="/classic/legacy" element={<List level_type="classic" list_type="legacy" />} />
 
-            <Route path="/platformer/main" element={<List level_type="platformer" list_type="main" />} />
-            <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
-            <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
+                  <Route path="/platformer/main" element={<List level_type="platformer" list_type="main" />} />
+                  <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
+                  <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
 
-            <Route path="/level/:levelId" element={<LevelDetails />} />
-            <Route path="/guidelines" element={<Guidelines />} />
-          </Routes>
+                  <Route path="/level/:levelId" element={<LevelDetails />} />
+                  <Route path="/guidelines" element={<Guidelines />} />
+                </Routes>
+              </div>
+              {location.pathname !== '/guidelines' && (
+              <div className="w-1/4">
+                <Info />
+              </div>
+            )}
+            </div>
         </main>
       </div>
       <Toaster

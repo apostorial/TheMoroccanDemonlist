@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import Info from './Info';
 
 interface LevelDetails {
   id: string;
@@ -94,8 +93,6 @@ function LevelDetails() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white p-4">
-        <div className="flex-1 pr-4">
       <Card className="bg-gray-800 rounded-lg p-4 mb-4 border-none">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-gray-100">#{level.ranking} - {level.name}</CardTitle>
@@ -154,11 +151,6 @@ function LevelDetails() {
           </Table>
         </CardContent>
       </Card>
-      </div>
-      <div className="w-1/4">
-        <Info />
-      </div>
-      </div>
   );
 };
 

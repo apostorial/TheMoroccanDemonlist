@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from '../axios-config';
 import LevelCard from './LevelCard';
-import Info from './Info';
 
 interface Level {
   ranking: number;
@@ -40,25 +39,20 @@ function List({ level_type, list_type }: ListProps) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white p-4">
-      <div className="flex-1 pr-4">
-        {isLoading && <p>Loading levels...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {!isLoading && !error && levels.map((level) => (
-          <LevelCard
-            key={level.levelId}
-            ranking={level.ranking}
-            name={level.name}
-            publisher={level.publisher}
-            levelId={level.levelId}
-            thumbnail={level.thumbnail}
-          />
-        ))}
-    </div>
-      <div className="w-1/4">
-        <Info />
-      </div>
-    </div>
+    <>
+      {isLoading && <p>Loading levels...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {!isLoading && !error && levels.map((level) => (
+        <LevelCard
+          key={level.levelId}
+          ranking={level.ranking}
+          name={level.name}
+          publisher={level.publisher}
+          levelId={level.levelId}
+          thumbnail={level.thumbnail}
+        />
+      ))}
+    </>
   );
 }
 
