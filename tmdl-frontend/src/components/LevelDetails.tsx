@@ -13,7 +13,6 @@ interface LevelDetails {
   duration: string;
   minPoints: number;
   minimumCompletion: number;
-  levelId: string;
   name: string;
   publisher: string;
   difficulty: string;
@@ -34,7 +33,7 @@ interface Player {
 }
 
 function LevelDetails() {
-  const { levelId } = useParams<{ levelId: string }>();
+  const { id } = useParams<{ id: string }>();
   const [level, setLevel] = useState<LevelDetails | null>(null);
   const [records, setRecords] = useState<Record[]>([]);
   const [players, setPlayers] = useState<{ [key: string]: Player }>({});
@@ -45,10 +44,10 @@ function LevelDetails() {
     const fetchLevelDetails = async () => {
       try {
         setLoading(true);
-        const levelResponse = await axios.get<LevelDetails>(`/api/public/classic-levels/${levelId}`);
+        const levelResponse = await axios.get<LevelDetails>(`/api/public/classic-levels/${id}`);
         setLevel(levelResponse.data);
         
-        const recordsResponse = await axios.get<Record[]>(`/api/public/classic-records/level/${levelResponse.data.id}`);
+        const recordsResponse = await axios.get<Record[]>(`/api/public/classic-records/level/${id}`);
         const fetchedRecords = Array.isArray(recordsResponse.data) ? recordsResponse.data : [];
         setRecords(fetchedRecords);
 
@@ -70,7 +69,7 @@ function LevelDetails() {
     };
 
     fetchLevelDetails();
-  }, [levelId]);
+  }, [id]);
 
   if (loading) return <div className="text-foreground">Loading...</div>;
   if (error) return <div className="text-destructive">Error: {error}</div>;
@@ -110,7 +109,7 @@ function LevelDetails() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               {/* <p className="text-gray-300"><span className="font-bold text-gray-100">Publisher:</span> {level.publisher}</p> */}
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Level ID:</span> {level.levelId}</p>
+              <p className="text-gray-300"><span className="font-bold text-gray-100">Level ID:</span> {level.id}</p>
               {/* <p className="text-gray-300"><span className="font-bold text-gray-100">Ranking:</span> {level.ranking}</p> */}
               <p className="text-gray-300"><span className="font-bold text-gray-100">Duration:</span> {formatDuration(level.duration)}</p>
               <p className="text-gray-300"><span className="font-bold text-gray-100">Difficulty:</span> {formatDifficulty(level.difficulty)}</p>

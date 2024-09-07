@@ -44,7 +44,7 @@ function Main() {
                   <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
                   <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
 
-                  <Route path="/level/:levelId" element={<LevelDetails />} />
+                  <Route path="/level/:id" element={<LevelDetails />} />
                   <Route path="/guidelines" element={<Guidelines />} />
                 </Routes>
               </div>

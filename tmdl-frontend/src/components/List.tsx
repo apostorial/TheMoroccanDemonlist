@@ -6,7 +6,7 @@ interface Level {
   ranking: number;
   name: string;
   publisher: string;
-  levelId: string;
+  id: string;
   thumbnail: string;
 }
 
@@ -44,11 +44,11 @@ function List({ level_type, list_type }: ListProps) {
       {error && <p className="text-red-500">{error}</p>}
       {!isLoading && !error && levels.map((level) => (
         <LevelCard
-          key={level.levelId}
+          key={level.id}
           ranking={level.ranking}
           name={level.name}
           publisher={level.publisher}
-          levelId={level.levelId}
+          id={level.id}
           thumbnail={level.thumbnail}
         />
       ))}

@@ -7,22 +7,22 @@ interface LevelCardProps {
   ranking: number;
   name: string;
   publisher: string;
-  levelId: string;
+  id: string;
   thumbnail: string;
 }
 
-const LevelCard: React.FC<LevelCardProps> = ({ ranking, name, publisher, levelId, thumbnail }) => {
+const LevelCard: React.FC<LevelCardProps> = ({ ranking, name, publisher, id, thumbnail }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/level/${levelId}`);
+    navigate(`/level/${id}`);
   };
 
   const handleCopyLevelId = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(levelId);
+    navigator.clipboard.writeText(id);
     toast.success('Level ID copied to clipboard!', {
-      description: `Level ID: ${levelId}`,
+      description: `Level ID: ${id}`,
     });
   };
 
