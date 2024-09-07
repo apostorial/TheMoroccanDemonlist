@@ -21,7 +21,7 @@ public class PublicPlatformerLevelController {
     @GetMapping("/{levelId}")
     public ResponseEntity<PlatformerLevel> findById(@PathVariable String levelId) {
         try {
-            PlatformerLevel level = platformerLevelService.findById(levelId);
+            PlatformerLevel level = platformerLevelService.findByLevelId(levelId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -43,10 +43,10 @@ public class PublicPlatformerLevelController {
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<List<PlatformerLevel>> findAll() {
+    @GetMapping({"/list", "/list/{type}"})
+    public ResponseEntity<List<PlatformerLevel>> findAll(@PathVariable(required = false) String type) {
         try {
-            List<PlatformerLevel> levels = platformerLevelService.findAll();
+            List<PlatformerLevel> levels = platformerLevelService.findAll(type);
             if (levels.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

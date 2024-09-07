@@ -20,9 +20,9 @@ public class PublicClassicLevelController {
     private final ClassicLevelService classicLevelService;
 
     @GetMapping("/{levelId}")
-    public ResponseEntity<ClassicLevel> findById(@PathVariable String levelId) {
+    public ResponseEntity<ClassicLevel> findByLevelId(@PathVariable String levelId) {
         try {
-            ClassicLevel level = classicLevelService.findById(levelId);
+            ClassicLevel level = classicLevelService.findByLevelId(levelId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -57,10 +57,10 @@ public class PublicClassicLevelController {
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<List<ClassicLevel>> findAll() {
+    @GetMapping({"/list", "/list/{type}"})
+    public ResponseEntity<List<ClassicLevel>> findAll(@PathVariable(required = false) String type) {
         try {
-            List<ClassicLevel> levels = classicLevelService.findAll();
+            List<ClassicLevel> levels = classicLevelService.findAll(type);
             if (levels.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
