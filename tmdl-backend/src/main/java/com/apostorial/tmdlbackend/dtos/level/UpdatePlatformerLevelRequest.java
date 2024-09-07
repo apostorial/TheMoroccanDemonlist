@@ -8,8 +8,8 @@ import java.net.URL;
 
 @Data
 public class UpdatePlatformerLevelRequest {
-    @NotNull(message = "Level ID is required.")
-    private String levelId;
+    @NotNull(message = "ID is required.")
+    private String id;
     @NotNull(message = "Name is required.")
     private String name;
     @NotNull(message = "Publisher is required.")

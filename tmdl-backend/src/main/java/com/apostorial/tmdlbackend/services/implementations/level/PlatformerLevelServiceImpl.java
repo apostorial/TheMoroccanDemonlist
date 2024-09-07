@@ -29,7 +29,7 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     @Override
     public PlatformerLevel create(CreatePlatformerLevelRequest request) {
         PlatformerLevel level = new PlatformerLevel();
-        level.setLevelId(request.getLevelId());
+        level.setId(request.getId());
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
@@ -41,8 +41,8 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     }
 
     @Override
-    public PlatformerLevel findByLevelId(String levelId) throws EntityNotFoundException {
-        return platformerLevelRepository.findByLevelId(levelId)
+    public PlatformerLevel findById(String levelId) throws EntityNotFoundException {
+        return platformerLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer level with id " + levelId + " not found"));
     }
 
@@ -110,7 +110,7 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     public PlatformerLevel update(String levelId, UpdatePlatformerLevelRequest request) throws EntityNotFoundException{
         PlatformerLevel level = platformerLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer level with id " + levelId + " not found"));
-        level.setLevelId(request.getLevelId());
+        level.setId(request.getId());
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());

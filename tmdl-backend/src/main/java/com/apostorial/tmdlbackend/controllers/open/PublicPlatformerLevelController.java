@@ -23,7 +23,7 @@ public class PublicPlatformerLevelController {
     @GetMapping("/{levelId}")
     public ResponseEntity<PlatformerLevel> findById(@PathVariable String levelId) {
         try {
-            PlatformerLevel level = platformerLevelService.findByLevelId(levelId);
+            PlatformerLevel level = platformerLevelService.findById(levelId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

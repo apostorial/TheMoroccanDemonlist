@@ -22,9 +22,9 @@ public class PublicClassicLevelController {
     private final ClassicLevelService classicLevelService;
 
     @GetMapping("/{levelId}")
-    public ResponseEntity<ClassicLevel> findByLevelId(@PathVariable String levelId) {
+    public ResponseEntity<ClassicLevel> findById(@PathVariable String levelId) {
         try {
-            ClassicLevel level = classicLevelService.findByLevelId(levelId);
+            ClassicLevel level = classicLevelService.findById(levelId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -2,7 +2,6 @@ package com.apostorial.tmdlbackend.services.interfaces.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 

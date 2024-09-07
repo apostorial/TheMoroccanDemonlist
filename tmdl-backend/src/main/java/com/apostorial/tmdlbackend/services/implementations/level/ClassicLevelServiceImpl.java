@@ -30,7 +30,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     @Override
     public ClassicLevel create(CreateClassicLevelRequest request) {
         ClassicLevel level = new ClassicLevel();
-        level.setLevelId(request.getLevelId());
+        level.setId(request.getId());
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
@@ -44,8 +44,8 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     }
 
     @Override
-    public ClassicLevel findByLevelId(String levelId) throws EntityNotFoundException {
-        return classicLevelRepository.findByLevelId(levelId)
+    public ClassicLevel findById(String levelId) throws EntityNotFoundException {
+        return classicLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
     }
 
@@ -118,7 +118,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     public ClassicLevel update(String levelId, UpdateClassicLevelRequest request) throws EntityNotFoundException{
         ClassicLevel level = classicLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
-        level.setLevelId(request.getLevelId());
+        level.setId(request.getId());
         level.setName(request.getName());
         level.setPublisher(request.getPublisher());
         level.setDifficulty(request.getDifficulty());
