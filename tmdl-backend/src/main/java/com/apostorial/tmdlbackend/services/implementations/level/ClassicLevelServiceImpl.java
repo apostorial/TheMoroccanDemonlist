@@ -1,29 +1,31 @@
 package com.apostorial.tmdlbackend.services.implementations.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.Player;
+import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
+import com.apostorial.tmdlbackend.repositories.record.ClassicRecordRepository;
 import com.apostorial.tmdlbackend.services.interfaces.level.ClassicLevelService;
 import com.apostorial.tmdlbackend.utilities.LevelUtils;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class ClassicLevelServiceImpl implements ClassicLevelService {
     private final ClassicLevelRepository classicLevelRepository;
     private final PlayerRepository playerRepository;
     private final LevelUtils levelUtils;
+    private final ClassicRecordRepository classicRecordRepository;
 
     @Override
     public ClassicLevel create(CreateClassicLevelRequest request) {
@@ -76,6 +78,40 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
                     : levels.subList(151, levels.size());
             default -> levels;
         };
+    }
+
+    @Override
+    public List<ClassicLevel> findByFirstVictor(String playerId) {
+        return classicLevelRepository.findByFirstVictor(playerId);
+    }
+
+    @Override
+    public Optional<ClassicLevel> findHardestLevel(String playerId) {
+        List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
+        return records.stream()
+                .map(ClassicRecord::getLevel)
+                .min(Comparator.comparingInt(ClassicLevel::getRanking));
+    }
+
+    @Override
+    public LevelCountRequest getLevelCount(String playerId) {
+        List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
+
+        List<ClassicLevel> levels = records.stream()
+                .map(ClassicRecord::getLevel)
+                .filter(Objects::nonNull)
+                .toList();
+
+        long main = levels.stream()
+                .filter(level -> level.getRanking() <= 75)
+                .count();
+        long extended = levels.stream()
+                .filter(level -> level.getRanking() > 75 && level.getRanking() <= 150)
+                .count();
+        long legacy = levels.stream()
+                .filter(level -> level.getRanking() > 150)
+                .count();
+        return new LevelCountRequest(main, extended, legacy);
     }
 
     @Override
