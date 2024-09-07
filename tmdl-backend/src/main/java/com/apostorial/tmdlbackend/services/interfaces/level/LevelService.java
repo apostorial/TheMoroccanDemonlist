@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.services.interfaces.level;
 
+import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 
@@ -10,4 +11,5 @@ public interface LevelService<T> {
     List<T> findAll(String type);
     void deleteById(String levelId) throws EntityNotFoundException;
     List<T> findByDifficulty(Difficulty difficulty);
+    LevelCountRequest getLevelCount(String playerId);
 }
