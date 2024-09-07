@@ -5,7 +5,7 @@ import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import java.util.List;
 
 public interface RecordService<T> {
-    T findById(String levelId) throws EntityNotFoundException;
+    T findById(String recordId) throws EntityNotFoundException;
     List<T> findAll();
     List<T> findAllByPlayerId(String playerId);
     List<T> findAllByLevelId(String levelId);
