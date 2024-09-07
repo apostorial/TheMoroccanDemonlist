@@ -11,6 +11,8 @@ import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import com.apostorial.tmdlbackend.repositories.record.ClassicRecordRepository;
 import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordService;
+import com.apostorial.tmdlbackend.utilities.PlayerUtils;
+import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
     private final ClassicRecordRepository classicRecordRepository;
     private final ClassicLevelRepository classicLevelRepository;
     private final PlayerRepository playerRepository;
+    private final RecordUtils recordUtils;
+    private final PlayerUtils playerUtils;
 
     @Override
     public ClassicRecord create(CreateClassicRecordRequest request) throws EntityNotFoundException, DuplicateRecordException {
@@ -41,7 +45,11 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
         }
         record.setLink(request.getLink());
         record.setRecordPercentage(request.getRecordPercentage());
-        return classicRecordRepository.save(record);
+        ClassicRecord savedRecord = classicRecordRepository.save(record);
+        recordUtils.setFirstVictor(savedRecord);
+        recordUtils.updatePlayerClassicPoints(savedRecord);
+        playerUtils.updateRegionClassicPoints(savedRecord.getPlayer());
+        return savedRecord;
     }
 
     @Override
@@ -81,7 +89,11 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
         }
         record.setLink(request.getLink());
         record.setRecordPercentage(request.getRecordPercentage());
-        return classicRecordRepository.save(record);
+        ClassicRecord savedRecord = classicRecordRepository.save(record);
+        recordUtils.setFirstVictor(savedRecord);
+        recordUtils.updatePlayerClassicPoints(savedRecord);
+        playerUtils.updateRegionClassicPoints(savedRecord.getPlayer());
+        return savedRecord;
     }
 
     @Override

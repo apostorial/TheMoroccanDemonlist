@@ -11,6 +11,8 @@ import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import com.apostorial.tmdlbackend.repositories.record.PlatformerRecordRepository;
 import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordService;
+import com.apostorial.tmdlbackend.utilities.PlayerUtils;
+import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,8 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
     private final PlatformerRecordRepository platformerRecordRepository;
     private final PlatformerLevelRepository platformerLevelRepository;
     private final PlayerRepository playerRepository;
+    private final RecordUtils recordUtils;
+    private final PlayerUtils playerUtils;
 
     @Override
     public PlatformerRecord create(CreatePlatformerRecordRequest request) throws EntityNotFoundException, DuplicateRecordException {
@@ -40,7 +44,12 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
         }
         record.setLink(request.getLink());
         record.setRecordTime(request.getRecordTime());
-        return platformerRecordRepository.save(record);
+        platformerRecordRepository.save(record);
+        PlatformerRecord savedRecord = platformerRecordRepository.save(record);
+        recordUtils.setRecordHolder(savedRecord);
+        recordUtils.updatePlayerPlatformerPoints(savedRecord);
+        playerUtils.updateRegionPlatformerPoints(savedRecord.getPlayer());
+        return savedRecord;
     }
 
     @Override
@@ -80,7 +89,11 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
         }
         record.setLink(request.getLink());
         record.setRecordTime(request.getRecordTime());
-        return platformerRecordRepository.save(record);
+        PlatformerRecord savedRecord = platformerRecordRepository.save(record);
+        recordUtils.setRecordHolder(savedRecord);
+        recordUtils.updatePlayerPlatformerPoints(savedRecord);
+        playerUtils.updateRegionPlatformerPoints(savedRecord.getPlayer());
+        return savedRecord;
     }
 
     @Override
