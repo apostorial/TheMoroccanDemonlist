@@ -8,6 +8,7 @@ import LevelDetails from './LevelDetails';
 import Guidelines from './Guidelines';
 import { Toaster } from "@/components/ui/sonner"
 import Info from './Info';
+import Profile from './Profile';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -46,6 +47,7 @@ function Main() {
 
                   <Route path="/level/:id" element={<LevelDetails />} />
                   <Route path="/guidelines" element={<Guidelines />} />
+                  <Route path="/profile/:playerId" element={<Profile />} />
                 </Routes>
               </div>
               {location.pathname !== '/guidelines' && (
