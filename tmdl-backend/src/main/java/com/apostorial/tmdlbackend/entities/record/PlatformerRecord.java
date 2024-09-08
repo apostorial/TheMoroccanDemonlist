@@ -1,7 +1,11 @@
 package com.apostorial.tmdlbackend.entities.record;
 
+import com.apostorial.tmdlbackend.utilities.DurationDeserializer;
+import com.apostorial.tmdlbackend.utilities.DurationSerializer;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,6 +21,8 @@ import java.time.Duration;
         @CompoundIndex(name = "player_level_index", def = "{'player': 1, 'level': 1}", unique = true)
 })
 public class PlatformerRecord extends Record {
+    @JsonSerialize(using = DurationSerializer.class)
+    @JsonDeserialize(using = DurationDeserializer.class)
     private Duration recordTime;
     @DBRef
     private PlatformerLevel level;
