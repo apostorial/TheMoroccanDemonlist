@@ -14,5 +14,4 @@ public interface ClassicLevelService extends LevelService<ClassicLevel> {
     List<ClassicLevel> findByDuration(Duration duration);
     ClassicLevel update(String levelId, UpdateClassicLevelRequest request) throws EntityNotFoundException;
     List<ClassicLevel> findByFirstVictor(String playerId);
-    Optional<ClassicLevel> findHardestLevel(String playerId);
 }

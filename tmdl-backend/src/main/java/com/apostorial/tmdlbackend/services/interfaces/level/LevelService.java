@@ -12,4 +12,6 @@ public interface LevelService<T> {
     void deleteById(String levelId) throws EntityNotFoundException;
     List<T> findByDifficulty(Difficulty difficulty);
     LevelCountRequest getLevelCount(String playerId);
+    T findHardestLevel(String playerId) throws EntityNotFoundException;
+    List<T> findAllByPlayerId(String playerId);
 }

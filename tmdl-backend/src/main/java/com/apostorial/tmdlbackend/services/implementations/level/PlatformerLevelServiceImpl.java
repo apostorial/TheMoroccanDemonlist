@@ -78,11 +78,12 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     }
 
     @Override
-    public Optional<PlatformerLevel> findHardestLevel(String playerId) {
+    public PlatformerLevel findHardestLevel(String playerId) throws EntityNotFoundException {
         List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(playerId);
         return records.stream()
                 .map(PlatformerRecord::getLevel)
-                .min(Comparator.comparingInt(PlatformerLevel::getRanking));
+                .min(Comparator.comparingInt(PlatformerLevel::getRanking))
+                .orElseThrow(() -> new EntityNotFoundException("No level found for player with ID: " + playerId));
     }
 
     @Override
@@ -104,6 +105,16 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
                 .filter(level -> level.getRanking() > 150)
                 .count();
         return new LevelCountRequest(main, extended, legacy);
+    }
+
+    @Override
+    public List<PlatformerLevel> findAllByPlayerId(String playerId) {
+        List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(playerId);
+
+        return records.stream()
+                .map(PlatformerRecord::getLevel)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override

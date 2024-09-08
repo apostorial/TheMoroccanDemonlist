@@ -86,11 +86,12 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     }
 
     @Override
-    public Optional<ClassicLevel> findHardestLevel(String playerId) {
+    public ClassicLevel findHardestLevel(String playerId) throws EntityNotFoundException {
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
         return records.stream()
                 .map(ClassicRecord::getLevel)
-                .min(Comparator.comparingInt(ClassicLevel::getRanking));
+                .min(Comparator.comparingInt(ClassicLevel::getRanking))
+                .orElseThrow(() -> new EntityNotFoundException("No level found for player with ID: " + playerId));
     }
 
     @Override
@@ -112,6 +113,16 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
                 .filter(level -> level.getRanking() > 150)
                 .count();
         return new LevelCountRequest(main, extended, legacy);
+    }
+
+    @Override
+    public List<ClassicLevel> findAllByPlayerId(String playerId) {
+        List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
+
+        return records.stream()
+                .map(ClassicRecord::getLevel)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override
