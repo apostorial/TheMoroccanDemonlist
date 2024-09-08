@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/public/classic-levels")
 public class PublicClassicLevelController {
@@ -73,10 +72,12 @@ public class PublicClassicLevelController {
     }
 
     @GetMapping("/hardestLevel/{playerId}")
-    public ResponseEntity<Optional<ClassicLevel>> findHardestLevel(@PathVariable String playerId) {
+    public ResponseEntity<ClassicLevel> findHardestLevel(@PathVariable String playerId) {
         try {
-            Optional<ClassicLevel> level = classicLevelService.findHardestLevel(playerId);
+            ClassicLevel level = classicLevelService.findHardestLevel(playerId);
             return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -84,7 +85,25 @@ public class PublicClassicLevelController {
 
     @GetMapping("/count/{playerId}")
     public ResponseEntity<LevelCountRequest> getLevelCount(@PathVariable String playerId) {
-        return new ResponseEntity<>(classicLevelService.getLevelCount(playerId), HttpStatus.OK);
+        try {
+            LevelCountRequest count = classicLevelService.getLevelCount(playerId);
+            return new ResponseEntity<>(count, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<List<ClassicLevel>> findAllByPlayerId(@PathVariable String playerId) {
+        try {
+            List<ClassicLevel> levels = classicLevelService.findAllByPlayerId(playerId);
+            if (levels.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(levels, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping({"/list", "/list/{type}"})

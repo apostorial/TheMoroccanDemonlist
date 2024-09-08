@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/public/platformer-levels")
 public class PublicPlatformerLevelController {
@@ -59,10 +58,12 @@ public class PublicPlatformerLevelController {
     }
 
     @GetMapping("/hardestLevel/{playerId}")
-    public ResponseEntity<Optional<PlatformerLevel>> findHardestLevel(@PathVariable String playerId) {
+    public ResponseEntity<PlatformerLevel> findHardestLevel(@PathVariable String playerId) {
         try {
-            Optional<PlatformerLevel> level = platformerLevelService.findHardestLevel(playerId);
+            PlatformerLevel level = platformerLevelService.findHardestLevel(playerId);
             return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -70,7 +71,25 @@ public class PublicPlatformerLevelController {
 
     @GetMapping("/count/{playerId}")
     public ResponseEntity<LevelCountRequest> getLevelCount(@PathVariable String playerId) {
-        return new ResponseEntity<>(platformerLevelService.getLevelCount(playerId), HttpStatus.OK);
+        try {
+            LevelCountRequest count = platformerLevelService.getLevelCount(playerId);
+            return new ResponseEntity<>(count, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<List<PlatformerLevel>> findAllByPlayerId(@PathVariable String playerId) {
+        try {
+            List<PlatformerLevel> levels = platformerLevelService.findAllByPlayerId(playerId);
+            if (levels.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(levels, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping({"/list", "/list/{type}"})
