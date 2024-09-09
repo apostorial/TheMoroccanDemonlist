@@ -2,6 +2,7 @@ package com.apostorial.tmdlbackend.services.implementations.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
+import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.Player;
@@ -9,6 +10,7 @@ import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
+import com.apostorial.tmdlbackend.mappers.PlayerLevelMapper;
 import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.record.ClassicRecordRepository;
@@ -26,6 +28,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     private final PlayerRepository playerRepository;
     private final LevelUtils levelUtils;
     private final ClassicRecordRepository classicRecordRepository;
+    private final PlayerLevelMapper playerLevelMapper;
 
     @Override
     public ClassicLevel create(CreateClassicLevelRequest request) {
@@ -81,17 +84,22 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     }
 
     @Override
-    public List<ClassicLevel> findByFirstVictor(String playerId) {
-        return classicLevelRepository.findByFirstVictor(playerId);
+    public List<PlayerLevelRequest> findByFirstVictor(String playerId) {
+        return classicLevelRepository.findByFirstVictor(playerId).stream()
+                .map(playerLevelMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ClassicLevel findHardestLevel(String playerId) throws EntityNotFoundException {
+    public Optional<PlayerLevelRequest> findHardestLevel(String playerId) throws EntityNotFoundException {
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
+        if (records.isEmpty()) {
+            throw new EntityNotFoundException("Classic record with ID " + playerId + " not found");
+        }
         return records.stream()
                 .map(ClassicRecord::getLevel)
                 .min(Comparator.comparingInt(ClassicLevel::getRanking))
-                .orElseThrow(() -> new EntityNotFoundException("No level found for player with ID: " + playerId));
+                .map(playerLevelMapper::toDto);
     }
 
     @Override
@@ -116,12 +124,11 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     }
 
     @Override
-    public List<ClassicLevel> findAllByPlayerId(String playerId) {
+    public List<PlayerLevelRequest> findAllByPlayerId(String playerId) {
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
-
         return records.stream()
                 .map(ClassicRecord::getLevel)
-                .filter(Objects::nonNull)
+                .map(playerLevelMapper::toDto)
                 .toList();
     }
 

@@ -2,12 +2,14 @@ package com.apostorial.tmdlbackend.services.implementations.level;
 
 import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
+import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.record.PlatformerRecord;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
+import com.apostorial.tmdlbackend.mappers.PlayerLevelMapper;
 import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.record.PlatformerRecordRepository;
@@ -25,6 +27,7 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     private final PlayerRepository playerRepository;
     private final LevelUtils levelUtils;
     private final PlatformerRecordRepository platformerRecordRepository;
+    private final PlayerLevelMapper playerLevelMapper;
 
     @Override
     public PlatformerLevel create(CreatePlatformerLevelRequest request) {
@@ -73,17 +76,22 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     }
 
     @Override
-    public List<PlatformerLevel> findByRecordHolder(String playerId) {
-        return platformerLevelRepository.findByRecordHolder(playerId);
+    public List<PlayerLevelRequest> findByRecordHolder(String playerId) {
+        return platformerLevelRepository.findByRecordHolder(playerId).stream()
+                .map(playerLevelMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public PlatformerLevel findHardestLevel(String playerId) throws EntityNotFoundException {
+    public Optional<PlayerLevelRequest> findHardestLevel(String playerId) throws EntityNotFoundException {
         List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(playerId);
+        if (records.isEmpty()) {
+            throw new EntityNotFoundException("Platformer record with ID " + playerId + " not found");
+        }
         return records.stream()
                 .map(PlatformerRecord::getLevel)
                 .min(Comparator.comparingInt(PlatformerLevel::getRanking))
-                .orElseThrow(() -> new EntityNotFoundException("No level found for player with ID: " + playerId));
+                .map(playerLevelMapper::toDto);
     }
 
     @Override
@@ -108,12 +116,12 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     }
 
     @Override
-    public List<PlatformerLevel> findAllByPlayerId(String playerId) {
+    public List<PlayerLevelRequest> findAllByPlayerId(String playerId) {
         List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(playerId);
 
         return records.stream()
                 .map(PlatformerRecord::getLevel)
-                .filter(Objects::nonNull)
+                .map(playerLevelMapper::toDto)
                 .toList();
     }
 
