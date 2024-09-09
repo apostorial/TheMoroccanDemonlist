@@ -30,7 +30,7 @@ public class PublicClassicRecordController {
     }
 
     @GetMapping("/player/{playerId}")
-    public ResponseEntity<List<ClassicRecord>> findAllByPlayerId(@PathVariable String playerId) {
+    public ResponseEntity<List<ClassicRecord>> findAllByPlayer(@PathVariable String playerId) {
         try {
             List<ClassicRecord> records = classicRecordService.findAllByPlayerId(playerId);
             if (records.isEmpty()) {

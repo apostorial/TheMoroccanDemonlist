@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.controllers.open;
 
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
+import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/public/platformer-levels")
 public class PublicPlatformerLevelController {
@@ -45,9 +47,9 @@ public class PublicPlatformerLevelController {
     }
 
     @GetMapping("/recordHolder/{playerId}")
-    public ResponseEntity<List<PlatformerLevel>> findByRecordHolder(@PathVariable String playerId) {
+    public ResponseEntity<List<PlayerLevelRequest>> findByRecordHolder(@PathVariable String playerId) {
         try {
-            List<PlatformerLevel> levels = platformerLevelService.findByRecordHolder(playerId);
+            List<PlayerLevelRequest> levels = platformerLevelService.findByRecordHolder(playerId);
             if (levels.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -58,12 +60,12 @@ public class PublicPlatformerLevelController {
     }
 
     @GetMapping("/hardestLevel/{playerId}")
-    public ResponseEntity<PlatformerLevel> findHardestLevel(@PathVariable String playerId) {
+    public ResponseEntity<Optional<PlayerLevelRequest>> findHardestLevel(@PathVariable String playerId) {
         try {
-            PlatformerLevel level = platformerLevelService.findHardestLevel(playerId);
+            Optional<PlayerLevelRequest> level = platformerLevelService.findHardestLevel(playerId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -80,9 +82,9 @@ public class PublicPlatformerLevelController {
     }
 
     @GetMapping("/player/{playerId}")
-    public ResponseEntity<List<PlatformerLevel>> findAllByPlayerId(@PathVariable String playerId) {
+    public ResponseEntity<List<PlayerLevelRequest>> findAllByPlayer(@PathVariable String playerId) {
         try {
-            List<PlatformerLevel> levels = platformerLevelService.findAllByPlayerId(playerId);
+            List<PlayerLevelRequest> levels = platformerLevelService.findAllByPlayerId(playerId);
             if (levels.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.controllers.open;
 
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
+import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController @AllArgsConstructor @RequestMapping("/api/public/classic-levels")
 public class PublicClassicLevelController {
@@ -59,9 +61,9 @@ public class PublicClassicLevelController {
     }
 
     @GetMapping("/firstVictor/{playerId}")
-    public ResponseEntity<List<ClassicLevel>> findByFirstVictor(@PathVariable String playerId) {
+    public ResponseEntity<List<PlayerLevelRequest>> findByFirstVictor(@PathVariable String playerId) {
         try {
-            List<ClassicLevel> levels = classicLevelService.findByFirstVictor(playerId);
+            List<PlayerLevelRequest> levels = classicLevelService.findByFirstVictor(playerId);
             if (levels.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -72,12 +74,12 @@ public class PublicClassicLevelController {
     }
 
     @GetMapping("/hardestLevel/{playerId}")
-    public ResponseEntity<ClassicLevel> findHardestLevel(@PathVariable String playerId) {
+    public ResponseEntity<Optional<PlayerLevelRequest>> findHardestLevel(@PathVariable String playerId) {
         try {
-            ClassicLevel level = classicLevelService.findHardestLevel(playerId);
+            Optional<PlayerLevelRequest> level = classicLevelService.findHardestLevel(playerId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -94,9 +96,9 @@ public class PublicClassicLevelController {
     }
 
     @GetMapping("/player/{playerId}")
-    public ResponseEntity<List<ClassicLevel>> findAllByPlayerId(@PathVariable String playerId) {
+    public ResponseEntity<List<PlayerLevelRequest>> findAllByPlayer(@PathVariable String playerId) {
         try {
-            List<ClassicLevel> levels = classicLevelService.findAllByPlayerId(playerId);
+            List<PlayerLevelRequest> levels = classicLevelService.findAllByPlayerId(playerId);
             if (levels.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

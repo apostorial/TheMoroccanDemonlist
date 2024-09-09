@@ -30,7 +30,7 @@ public class PublicPlatformerRecordController {
     }
 
     @GetMapping("/player/{playerId}")
-    public ResponseEntity<List<PlatformerRecord>> findAllByPlayerId(@PathVariable String playerId) {
+    public ResponseEntity<List<PlatformerRecord>> findAllByPlayer(@PathVariable String playerId) {
         try {
             List<PlatformerRecord> records = platformerRecordService.findAllByPlayerId(playerId);
             if (records.isEmpty()) {
