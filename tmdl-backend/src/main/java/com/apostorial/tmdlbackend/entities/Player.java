@@ -1,7 +1,5 @@
 package com.apostorial.tmdlbackend.entities;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +13,11 @@ import java.time.LocalDateTime;
 public class Player {
     @Id
     private String id;
-    @NotNull @Indexed(unique = true) @Email
-    private String email;
-    @NotNull @Indexed(unique = true)
+    @Indexed(unique = true)
     private String username;
-    private String profilePicture;
+    @Indexed(unique = true)
+    private String email;
+    private String avatar;
     private boolean isStaff = false;
     private boolean isActive = true;
     private LocalDateTime dateJoined = LocalDateTime.now();
