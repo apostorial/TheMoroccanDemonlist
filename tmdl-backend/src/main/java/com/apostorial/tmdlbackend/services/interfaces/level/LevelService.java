@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.services.interfaces.level;
 
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
+import com.apostorial.tmdlbackend.dtos.level.OrderLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
@@ -16,4 +17,5 @@ public interface LevelService<T> {
     LevelCountRequest getLevelCount(String playerId);
     Optional<PlayerLevelRequest> findHardestLevel(String playerId) throws EntityNotFoundException;
     List<PlayerLevelRequest> findAllByPlayerId(String playerId);
+    void reorderLevels(List<OrderLevelRequest> order);
 }

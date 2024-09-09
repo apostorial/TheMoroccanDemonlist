@@ -1,9 +1,6 @@
 package com.apostorial.tmdlbackend.services.implementations.level;
 
-import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
-import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
-import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
-import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.*;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.record.PlatformerRecord;
@@ -15,6 +12,8 @@ import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.record.PlatformerRecordRepository;
 import com.apostorial.tmdlbackend.services.interfaces.level.PlatformerLevelService;
 import com.apostorial.tmdlbackend.utilities.LevelUtils;
+import com.apostorial.tmdlbackend.utilities.PlayerUtils;
+import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,8 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
     private final PlatformerLevelRepository platformerLevelRepository;
     private final PlayerRepository playerRepository;
     private final LevelUtils levelUtils;
+    private final RecordUtils recordUtils;
+    private final PlayerUtils playerUtils;
     private final PlatformerRecordRepository platformerRecordRepository;
     private final PlayerLevelMapper playerLevelMapper;
 
@@ -56,7 +57,10 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
 
     @Override
     public List<PlatformerLevel> findAll(String type) {
-        List<PlatformerLevel> levels = platformerLevelRepository.findAll();
+        List<PlatformerLevel> levels = platformerLevelRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingInt(PlatformerLevel::getRanking))
+                .collect(Collectors.toList());
         if (type == null) {
             return levels;
         }
@@ -124,6 +128,32 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
                 .map(playerLevelMapper::toDto)
                 .toList();
     }
+
+    @Override
+    public void reorderLevels(List<OrderLevelRequest> orderRequest) {
+        List<PlatformerLevel> levels = platformerLevelRepository.findAllById(
+                orderRequest.stream().map(OrderLevelRequest::getId).collect(Collectors.toList())
+        );
+
+        Map<String, Integer> rankingMap = orderRequest.stream()
+                .collect(Collectors.toMap(OrderLevelRequest::getId, OrderLevelRequest::getRanking));
+
+        for (PlatformerLevel level : levels) {
+            int newRanking = rankingMap.get(level.getId());
+            level.setRanking(newRanking);
+            levelUtils.calculatePlatformerPoints(level);
+            platformerLevelRepository.save(level);
+
+            List<PlatformerRecord> records = platformerRecordRepository.findAllByLevelId(level.getId());
+            for (PlatformerRecord record : records) {
+                Player player = playerRepository.findById(record.getPlayer().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Player not found: " + record.getPlayer().getId()));
+                recordUtils.updatePlayerPlatformerPoints(record);
+                playerUtils.updateRegionPlatformerPoints(player);
+            }
+        }
+    }
+
 
     @Override
     public PlatformerLevel update(String levelId, UpdatePlatformerLevelRequest request) throws EntityNotFoundException{

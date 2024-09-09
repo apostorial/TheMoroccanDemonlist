@@ -1,9 +1,6 @@
 package com.apostorial.tmdlbackend.services.implementations.level;
 
-import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
-import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
-import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
-import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.*;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
@@ -16,6 +13,8 @@ import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.repositories.record.ClassicRecordRepository;
 import com.apostorial.tmdlbackend.services.interfaces.level.ClassicLevelService;
 import com.apostorial.tmdlbackend.utilities.LevelUtils;
+import com.apostorial.tmdlbackend.utilities.PlayerUtils;
+import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +28,8 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     private final LevelUtils levelUtils;
     private final ClassicRecordRepository classicRecordRepository;
     private final PlayerLevelMapper playerLevelMapper;
+    private final RecordUtils recordUtils;
+    private final PlayerUtils playerUtils;
 
     @Override
     public ClassicLevel create(CreateClassicLevelRequest request) {
@@ -64,7 +65,10 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
 
     @Override
     public List<ClassicLevel> findAll(String type) {
-        List<ClassicLevel> levels = classicLevelRepository.findAll();
+        List<ClassicLevel> levels = classicLevelRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingInt(ClassicLevel::getRanking))
+                .collect(Collectors.toList());
         if (type == null) {
             return levels;
         }
@@ -130,6 +134,31 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
                 .map(ClassicRecord::getLevel)
                 .map(playerLevelMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public void reorderLevels(List<OrderLevelRequest> orderRequest) {
+        List<ClassicLevel> levels = classicLevelRepository.findAllById(
+                orderRequest.stream().map(OrderLevelRequest::getId).collect(Collectors.toList())
+        );
+
+        Map<String, Integer> rankingMap = orderRequest.stream()
+                .collect(Collectors.toMap(OrderLevelRequest::getId, OrderLevelRequest::getRanking));
+
+        for (ClassicLevel level : levels) {
+            int newRanking = rankingMap.get(level.getId());
+            level.setRanking(newRanking);
+            levelUtils.calculateClassicPoints(level);
+            classicLevelRepository.save(level);
+
+            List<ClassicRecord> records = classicRecordRepository.findAllByLevelId(level.getId());
+            for (ClassicRecord record : records) {
+                Player player = playerRepository.findById(record.getPlayer().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Player not found: " + record.getPlayer().getId()));
+                recordUtils.updatePlayerClassicPoints(record);
+                playerUtils.updateRegionClassicPoints(player);
+            }
+        }
     }
 
     @Override
