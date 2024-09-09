@@ -43,7 +43,7 @@ function List({ level_type, list_type }: ListProps) {
   };
 
   return (
-    <>
+    <div className="space-y-2">
       {isLoading && <LevelCardSkeleton />}
       {error && <p className="text-red-500">{error}</p>}
       {!isLoading && !error && Array.isArray(levels) && levels.length > 0 ? (
@@ -62,7 +62,7 @@ function List({ level_type, list_type }: ListProps) {
       ) : (
         <LevelCardSkeleton />
       )}
-    </>
+    </div>
   );
 }
 
