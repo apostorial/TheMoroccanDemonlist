@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/sonner"
 import Info from './Info';
 import Profile from './Profile';
 import Settings from './Settings';
+import ProtectedRoute from './ProtectedRoute';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -44,7 +45,14 @@ function Main() {
                   <Route path="/level/:id" element={<LevelDetails />} />
                   <Route path="/guidelines" element={<Guidelines />} />
                   <Route path="/profile/:username" element={<Profile />} />
-                  <Route path="/settings" element={<Settings />} />
+                  <Route 
+                    path="/settings" 
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    } 
+                  />
                 </Routes>
               </div>
               {location.pathname !== '/guidelines' && (
