@@ -14,9 +14,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const navigate = useNavigate();
 
   return (
-    <div className={`bg-gray-900 border-r border-gray-700 transition-all duration-300 ease-in-out ${isOpen ? 'w-64' : 'w-0'} md:w-64 flex flex-col h-full`}>
+    <div className={`border-r transition-all duration-300 ease-in-out ${isOpen ? 'w-64' : 'w-0'} md:w-64 flex flex-col h-full`}>
       <div className="flex-grow overflow-y-auto p-4">
-        <h2 className="text-2xl font-bold mb-4 text-gray-100">TMDL</h2>
+        <h2 className="text-2xl font-bold mb-4">TMDL</h2>
         <nav>
           <ul className="space-y-2">
             <li>

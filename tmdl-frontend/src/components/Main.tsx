@@ -3,12 +3,12 @@ import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import List from './List';
-import Login from './Login';
 import LevelDetails from './LevelDetails';
 import Guidelines from './Guidelines';
 import { Toaster } from "@/components/ui/sonner"
 import Info from './Info';
 import Profile from './Profile';
+import Settings from './Settings';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,17 +24,13 @@ function Main() {
     }
   }, [location, navigate]);
 
-  if (location.pathname === '/login') {
-    return <Login />;
-  }
-
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-900 text-gray-100">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex flex-col flex-1">
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <main className="flex-1 overflow-y-auto bg-gray-900">
-            <div className="flex h-screen bg-gray-900 text-white p-4">
+        <main className="flex-1 overflow-y-auto">
+            <div className="flex h-screen p-4">
               <div className="flex-1 pr-4">
                 <Routes>
                   <Route path="/" element={<List level_type="classic" list_type="main" />} />
@@ -47,7 +43,8 @@ function Main() {
 
                   <Route path="/level/:id" element={<LevelDetails />} />
                   <Route path="/guidelines" element={<Guidelines />} />
-                  <Route path="/profile/:playerId" element={<Profile />} />
+                  <Route path="/profile/:username" element={<Profile />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Routes>
               </div>
               {location.pathname !== '/guidelines' && (
@@ -58,18 +55,7 @@ function Main() {
             </div>
         </main>
       </div>
-      <Toaster
-        className="bg-gray-800 text-gray-100"
-        toastOptions={{
-          classNames: {
-            toast: "bg-gray-800 text-gray-100 border-gray-800",
-            title: "text-gray-100",
-            description: "text-gray-300",
-            actionButton: "bg-gray-800 text-gray-100",
-            cancelButton: "bg-gray-800 text-gray-100",
-          },
-        }}
-      />
+      <Toaster />
     </div>
   );
 }
