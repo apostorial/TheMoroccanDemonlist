@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { FaDiscord, FaYoutube, FaTwitter, FaTwitch } from 'react-icons/fa';
 import { GoDotFill } from "react-icons/go";
 import { User } from "lucide-react";
+import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface PlayerData {
   id: string;
@@ -55,23 +57,43 @@ const Profile = () => {
   const renderSocialMediaIcons = () => {
     if (!playerData) return null;
   
-    const socialMediaLinks = [
-      { icon: FaDiscord, link: playerData.discord },
-      { icon: FaYoutube, link: playerData.youtube },
-      { icon: FaTwitter, link: playerData.twitter },
-      { icon: FaTwitch, link: playerData.twitch },
-    ].filter(({ link }) => link);
+    const socialMediaHandles = [
+      { icon: FaDiscord, handle: playerData.discord, name: 'Discord' },
+      { icon: FaYoutube, handle: playerData.youtube, name: 'YouTube' },
+      { icon: FaTwitter, handle: playerData.twitter, name: 'Twitter' },
+      { icon: FaTwitch, handle: playerData.twitch, name: 'Twitch' },
+    ].filter(({ handle }) => handle);
   
-    if (socialMediaLinks.length === 0) return null;
+    if (socialMediaHandles.length === 0) return null;
+  
+    const handleSocialClick = (social: string, handle: string) => {
+      navigator.clipboard.writeText(handle);
+      toast.success(`${social} handle copied to clipboard!`, {
+        description: handle,
+      });
+    };
   
     return (
       <div className="flex gap-2 items-center">
         <GoDotFill className="text-sm hover:text-primary" />
-        {socialMediaLinks.map(({ icon: Icon, link }) => (
-          <a href={link} target="_blank" rel="noopener noreferrer" key={link}>
-            <Icon className="text-xl hover:text-primary" />
-          </a>
-        ))}
+        <TooltipProvider>
+          {socialMediaHandles.map(({ icon: Icon, handle, name }) => (
+            <Tooltip key={name}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => handleSocialClick(name, handle!)}
+                  className="focus:outline-none"
+                  aria-label={`Copy ${name} handle`}
+                >
+                  <Icon className="text-xl hover:text-primary transition-colors" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{handle}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </TooltipProvider>
       </div>
     );
   };
