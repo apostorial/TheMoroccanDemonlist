@@ -143,7 +143,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           </Button>
           <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isClassicStaffOpen ? 'max-h-32' : 'max-h-0'}`}>
             <ul className="ml-4 mt-2 space-y-2">
-              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Levels</Button></li>
+            <li>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-left text-xs"
+                  onClick={() => navigate("/staff/classic-levels")}
+                >
+                  Levels
+                </Button>
+              </li>
               <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Records</Button></li>
               <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Regions</Button></li>
             </ul>
@@ -160,7 +168,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           </Button>
           <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isPlatformerStaffOpen ? 'max-h-32' : 'max-h-0'}`}>
             <ul className="ml-4 mt-2 space-y-2">
-              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Levels</Button></li>
+            <li>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-left text-xs"
+                  onClick={() => navigate("/staff/platformer-levels")}
+                >
+                  Levels
+                </Button>
+              </li>
               <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Records</Button></li>
               <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Regions</Button></li>
             </ul>
