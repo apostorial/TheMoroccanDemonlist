@@ -10,11 +10,14 @@ import Info from './Info';
 import Profile from './Profile';
 import Settings from './Settings';
 import ProtectedRoute from './ProtectedRoute';
+import StaffList from './StaffList';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const showInfo = !['/guidelines', '/staff/classic-levels', '/staff/platformer-levels'].includes(location.pathname);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -31,36 +34,52 @@ function Main() {
       <div className="flex flex-col flex-1">
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="flex-1 overflow-y-auto">
-            <div className="flex h-screen p-4">
-              <div className="flex-1 pr-4">
-                <Routes>
-                  <Route path="/" element={<List level_type="classic" list_type="main" />} />
-                  <Route path="/classic/extended" element={<List level_type="classic" list_type="extended" />} />
-                  <Route path="/classic/legacy" element={<List level_type="classic" list_type="legacy" />} />
+          <div className={`grid gap-4 p-4 ${showInfo ? 'grid-cols-1 lg:grid-cols-4' : 'grid-cols-1'}`}>
+            <div className={showInfo ? 'lg:col-span-3' : 'col-span-full'}>
+              <Routes>
+                <Route path="/" element={<List level_type="classic" list_type="main" />} />
+                <Route path="/classic/extended" element={<List level_type="classic" list_type="extended" />} />
+                <Route path="/classic/legacy" element={<List level_type="classic" list_type="legacy" />} />
 
-                  <Route path="/platformer/main" element={<List level_type="platformer" list_type="main" />} />
-                  <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
-                  <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
+                <Route path="/platformer/main" element={<List level_type="platformer" list_type="main" />} />
+                <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
+                <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
 
-                  <Route path="/level/:id" element={<LevelDetails />} />
-                  <Route path="/guidelines" element={<Guidelines />} />
-                  <Route path="/profile/:username" element={<Profile />} />
-                  <Route 
-                    path="/settings" 
-                    element={
-                      <ProtectedRoute>
-                        <Settings />
-                      </ProtectedRoute>
-                    } 
-                  />
-                </Routes>
-              </div>
-              {location.pathname !== '/guidelines' && (
-              <div className="w-1/4">
+                <Route path="/level/:id" element={<LevelDetails />} />
+                <Route path="/guidelines" element={<Guidelines />} />
+                <Route path="/profile/:username" element={<Profile />} />
+                <Route 
+                  path="/settings" 
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/staff/classic-levels" 
+                  element={
+                    <ProtectedRoute staffOnly={true}>
+                      <StaffList levelType="classic" />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/staff/platformer-levels" 
+                  element={
+                    <ProtectedRoute staffOnly={true}>
+                      <StaffList levelType="platformer" />
+                    </ProtectedRoute>
+                  } 
+                />
+              </Routes>
+            </div>
+            {showInfo && (
+              <div className="lg:col-span-1">
                 <Info />
               </div>
             )}
-            </div>
+          </div>
         </main>
       </div>
       <Toaster />
