@@ -1,32 +1,35 @@
 import React from 'react';
 import { Button } from "./ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FaGoogle } from 'react-icons/fa';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
     const handleGoogleLogin = () => {
         window.location.href = 'http://localhost:8080/oauth2/authorization/google';
-        };
+    };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-900">
-        <Card className="w-[350px] bg-gray-800 text-gray-100">
-            <CardHeader>
-            <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-            <CardDescription className="text-gray-400">Login to access your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-            <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={handleGoogleLogin}
-            >
-                Sign in with Google
-            </Button>
-            </CardContent>
-            <CardFooter className="text-sm text-gray-400">
-            <p>By signing in, you agree to our Terms of Service and Privacy Policy.</p>
-            </CardFooter>
-        </Card>
-        </div>
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="sm:max-w-[350px]">
+                <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-center">Welcome Back</DialogTitle>
+                    <DialogDescription className="text-center">Login to access your account</DialogDescription>
+                </DialogHeader>
+                <div className="flex flex-col space-y-4 mt-4">
+                    <Button 
+                        className="w-full flex items-center justify-center"
+                        onClick={handleGoogleLogin}
+                    >
+                        <FaGoogle className="mr-2" /> Sign in with Google
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 
