@@ -20,6 +20,6 @@ public abstract class Record {
 
     @JsonProperty("player")
     public String getPlayerForSerialization() {
-        return player.getId();
+        return player.getUsername();
     }
 }
