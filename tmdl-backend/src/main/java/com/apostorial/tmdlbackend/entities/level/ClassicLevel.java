@@ -27,6 +27,6 @@ public class ClassicLevel extends Level {
         if (firstVictor == null) {
             return null;
         }
-        return firstVictor.getId();
+        return firstVictor.getUsername();
     }
 }
