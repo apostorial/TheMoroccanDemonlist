@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '../axios-config';
+import axios from '../normal-axios';
 import YouTube from 'react-youtube';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -27,16 +27,10 @@ interface Record {
   link: string;
 }
 
-interface Player {
-  id: string;
-  username: string;
-}
-
 function LevelDetails() {
   const { id } = useParams<{ id: string }>();
   const [level, setLevel] = useState<LevelDetails | null>(null);
   const [records, setRecords] = useState<Record[]>([]);
-  const [players, setPlayers] = useState<{ [key: string]: Player }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,16 +44,6 @@ function LevelDetails() {
         const recordsResponse = await axios.get<Record[]>(`/api/public/classic-records/level/${id}`);
         const fetchedRecords = Array.isArray(recordsResponse.data) ? recordsResponse.data : [];
         setRecords(fetchedRecords);
-
-        const playerIds = [...new Set(fetchedRecords.map(record => record.player))];
-        const playerPromises = playerIds.map(id => 
-          axios.get<Player>(`/api/public/players/${id}`)
-        );
-        const playerResponses = await Promise.all(playerPromises);
-        const playerMap = Object.fromEntries(
-          playerResponses.map(response => [response.data.id, response.data])
-        );
-        setPlayers(playerMap);
       } catch (err) {
         setError('Failed to fetch level details and records');
         console.error(err);
@@ -92,64 +76,60 @@ function LevelDetails() {
   };
 
   return (
-      <Card className="bg-gray-800 rounded-lg p-4 mb-4 border-none">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-100">#{level.ranking} - {level.name}</CardTitle>
-          <CardTitle className="mb-4 text-gray-100"><span className="font-normal">Published by:</span> {level.publisher}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {videoId && (
-            <div className="mb-6">
-              <YouTube
-                videoId={videoId}
-                opts={{ width: '100%', height: '400' }}
-              />
-            </div>
-          )}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              {/* <p className="text-gray-300"><span className="font-bold text-gray-100">Publisher:</span> {level.publisher}</p> */}
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Level ID:</span> {level.id}</p>
-              {/* <p className="text-gray-300"><span className="font-bold text-gray-100">Ranking:</span> {level.ranking}</p> */}
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Duration:</span> {formatDuration(level.duration)}</p>
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Difficulty:</span> {formatDifficulty(level.difficulty)}</p>
-            </div>
-            <div>
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Points:</span> {level.points}</p>
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Minimum Points:</span> {level.minPoints}</p>
-              <p className="text-gray-300"><span className="font-bold text-gray-100">Minimum Completion:</span> {level.minimumCompletion}%</p>
-            </div>
+    <Card className="rounded-lg p-4 mb-4">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold">#{level.ranking} - {level.name}</CardTitle>
+        <CardTitle className="mb-4"><span className="font-normal">Published by:</span> {level.publisher}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {videoId && (
+          <div className="mb-6">
+            <YouTube
+              videoId={videoId}
+              opts={{ width: '100%', height: '400' }}
+            />
           </div>
-          <Separator className="my-6" />
-          <h2 className="text-2xl font-bold mb-4 text-gray-100">Records</h2>
-          <Table className='text-gray-300'>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-gray-100">Player</TableHead>
-                <TableHead className="text-gray-100">Percentage</TableHead>
-                <TableHead className="text-gray-100">Video</TableHead>
+        )}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p><span className="font-bold">Level ID:</span> {level.id}</p>
+            <p><span className="font-bold">Duration:</span> {formatDuration(level.duration)}</p>
+            <p><span className="font-bold">Difficulty:</span> {formatDifficulty(level.difficulty)}</p>
+          </div>
+          <div>
+            <p><span className="font-bold">Points:</span> {level.points}</p>
+            <p><span className="font-bold">Minimum Points:</span> {level.minPoints}</p>
+            <p><span className="font-bold">Minimum Completion:</span> {level.minimumCompletion}%</p>
+          </div>
+        </div>
+        <Separator className="my-6" />
+        <h2 className="text-2xl font-bold mb-4">Records</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Player</TableHead>
+              <TableHead>Percentage</TableHead>
+              <TableHead>Video</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="hover:text-primary">
+            {records.map((record, index) => (
+              <TableRow key={index} className={record.recordPercentage === 100 ? 'font-bold' : ''}>
+                <TableCell><a href={`/profile/${record.player}`} target="_blank">{record.player}</a></TableCell>
+                <TableCell>{record.recordPercentage}%</TableCell>
+                <TableCell>
+                  <Button asChild>
+                    <a href={record.link} target="_blank" rel="noopener noreferrer">
+                      Watch
+                    </a>
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody className="hover:text-primary">
-              {records.map((record, index) => (
-                <TableRow key={index} className={record.recordPercentage === 100 ? 'font-bold' : ''}>
-                  <TableCell>{players[record.player]?.username || 'Loading...'}</TableCell>
-                  <TableCell>{record.recordPercentage}%</TableCell>
-                  <TableCell>
-                  <Button
-                      asChild
-                    >
-                      <a href={record.link} target="_blank" rel="noopener noreferrer">
-                        Watch
-                      </a>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 };
 
