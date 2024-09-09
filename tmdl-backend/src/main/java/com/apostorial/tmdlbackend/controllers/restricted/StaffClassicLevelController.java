@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.controllers.restricted;
 
 import com.apostorial.tmdlbackend.dtos.level.CreateClassicLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.OrderLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdateClassicLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController @AllArgsConstructor @PreAuthorize("hasRole('STAFF')") @RequestMapping("/api/staff/classic-levels") @SecurityRequirement(name = "bearer-jwt")
 public class StaffClassicLevelController {
@@ -36,6 +39,11 @@ public class StaffClassicLevelController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/reorder")
+    public void updateLevelRankings(@RequestBody List<OrderLevelRequest> reorderedLevels) {
+        classicLevelService.reorderLevels(reorderedLevels);
     }
 
     @DeleteMapping("/delete/{levelId}")

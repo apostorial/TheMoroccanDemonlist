@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.controllers.restricted;
 
 import com.apostorial.tmdlbackend.dtos.level.CreatePlatformerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.OrderLevelRequest;
 import com.apostorial.tmdlbackend.dtos.level.UpdatePlatformerLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController @AllArgsConstructor @PreAuthorize("hasRole('STAFF')") @RequestMapping("/api/staff/platformer-levels") @SecurityRequirement(name = "bearer-jwt")
 public class StaffPlatformerLevelController {
@@ -36,6 +39,11 @@ public class StaffPlatformerLevelController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/reorder")
+    public void updateLevelRankings(@RequestBody List<OrderLevelRequest> reorderedLevels) {
+        platformerLevelService.reorderLevels(reorderedLevels);
     }
 
     @DeleteMapping("/delete/{levelId}")
