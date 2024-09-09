@@ -3,6 +3,7 @@ package com.apostorial.tmdlbackend.config;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
 import com.apostorial.tmdlbackend.services.implementations.PlayerDetailsServiceImpl;
+import com.apostorial.tmdlbackend.utilities.UsernameGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final JwtTokenProvider tokenProvider;
     private final PlayerRepository playerRepository;
     private final PlayerDetailsServiceImpl playerDetailsService;
+    private final UsernameGenerator usernameGenerator;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -30,7 +32,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .orElseGet(() -> {
                     Player newPlayer = new Player();
                     newPlayer.setEmail(email);
-                    newPlayer.setProfilePicture("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbgk0yfCOe55931lf6q0osfhGRU-fnH8Im1g&s");
+                    newPlayer.setUsername(usernameGenerator.generateUsername());
                     return playerRepository.save(newPlayer);
                 });
 
