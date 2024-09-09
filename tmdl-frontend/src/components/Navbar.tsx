@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, User, Menu, LogIn } from "lucide-react";
 import { ThemeSwitcher } from './ThemeSwitcher';
 import Login from './Login';
+import { useAuthContext } from '../contexts/AuthContext';
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -20,22 +21,24 @@ interface Profile {
 
 const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
   const navigate = useNavigate();
-  const isAuthenticated = !!localStorage.getItem('jwtToken');
+  const { user, logout } = useAuthContext();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       jwtAxios.get('/api/authenticated/players/profile')
         .then(response => {
           setProfile(response.data);
           fetchAvatar(response.data.id);
         })
         .catch(error => console.error('Error fetching profile:', error));
+    } else {
+      setProfile(null);
+      setAvatar(null);
     }
-  }, [isAuthenticated]);
-
+  }, [user]);
   const fetchAvatar = async (playerId: string) => {
     try {
       const response = await jwtAxios.get(`/api/public/players/${playerId}/avatar`, {
@@ -54,8 +57,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
-    navigate('/login');
+    logout();
+    navigate('/');
   };
 
   const handleLogin = () => {
@@ -97,7 +100,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
               <div className="mr-2">
                 <ThemeSwitcher />
               </div>
-              {isAuthenticated ? (
+              {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative rounded-full p-1">
