@@ -6,7 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import jwtAxios from '../jwt-axios';
-import { User } from "lucide-react";
+import { User, Upload } from "lucide-react";
+import axios from 'axios';
 
 interface UserSettings {
   id: string;
@@ -72,7 +73,7 @@ const Settings: React.FC = () => {
       
       if (newAvatarFile) {
         const formData = new FormData();
-        formData.append('file', newAvatarFile); // Changed 'avatar' to 'file'
+        formData.append('file', newAvatarFile);
         await jwtAxios.post('/api/authenticated/players/upload/avatar', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -82,12 +83,18 @@ const Settings: React.FC = () => {
       toast.success('Settings updated successfully');
     } catch (error) {
       console.error('Error updating settings:', error);
-      toast.error('Failed to update settings');
+      if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
+        toast.error('File upload failed', {
+          description: 'The file size may exceed the server limit (1MB).',
+        });
+      } else {
+        toast.error('Failed to update settings');
+      }
     }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
         <CardTitle>User Settings</CardTitle>
       </CardHeader>
@@ -105,7 +112,30 @@ const Settings: React.FC = () => {
                 <AvatarFallback><User className="w-10 h-10" /></AvatarFallback>
               )}
             </Avatar>
-            <Input type="file" onChange={handleImageChange} accept="image/*" />
+            <div className="relative">
+              <Input
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden"
+                id="avatar-upload"
+              />
+              <Label
+                htmlFor="avatar-upload"
+                className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+              >
+                <Upload className="w-5 h-5 mr-2" />
+                Choose File
+              </Label>
+              {newAvatarFile && (
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  {newAvatarFile.name}
+                </p>
+              )}
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Note: File uploads should not exceed 1MB
+              </p>
+            </div>
           </div>
           
           <div className="space-y-2">
