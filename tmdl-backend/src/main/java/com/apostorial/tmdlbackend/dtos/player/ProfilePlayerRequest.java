@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class ProfilePlayerRequest {
+    private String id;
     private String username;
-    private String profilePicture;
     private LocalDateTime dateJoined;
     private Region region;
     private float classicPoints;
@@ -17,4 +17,5 @@ public class ProfilePlayerRequest {
     private String youtube;
     private String twitter;
     private String twitch;
+    private Boolean isStaff;
 }

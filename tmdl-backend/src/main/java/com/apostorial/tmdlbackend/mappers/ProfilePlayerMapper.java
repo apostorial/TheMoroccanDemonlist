@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 public class ProfilePlayerMapper {
     public ProfilePlayerRequest toDTO(Player player) {
         ProfilePlayerRequest dto = new ProfilePlayerRequest();
+        dto.setId(player.getId());
         dto.setUsername(player.getUsername());
-        dto.setProfilePicture(player.getProfilePicture());
         dto.setDateJoined(player.getDateJoined());
         dto.setRegion(player.getRegion());
         dto.setClassicPoints(player.getClassicPoints());
@@ -18,6 +18,7 @@ public class ProfilePlayerMapper {
         dto.setYoutube(player.getYoutube());
         dto.setTwitter(player.getTwitter());
         dto.setTwitch(player.getTwitch());
+        dto.setIsStaff(player.isStaff());
         return dto;
     }
 }
