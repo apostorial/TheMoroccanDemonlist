@@ -2,16 +2,12 @@ package com.apostorial.tmdlbackend.utilities;
 
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
-import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
-import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component @RequiredArgsConstructor @Slf4j
 public class LevelUtils {
-    private final ClassicLevelRepository classicLevelRepository;
-    private final PlatformerLevelRepository platformerLevelRepository;
 
     public void calculateClassicPoints(ClassicLevel level) {
         if (level.getRanking() == 0 || level.getRanking() > 150) {
