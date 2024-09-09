@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuthContext } from '../contexts/AuthContext';
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
@@ -9,8 +10,12 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
+  const { user } = useAuthContext();
   const [isClassicDemonlistOpen, setIsClassicDemonlistOpen] = React.useState(false);
   const [isPlatformerDemonlistOpen, setIsPlatformerDemonlistOpen] = React.useState(false);
+  const [isStaffMenuOpen, setIsStaffMenuOpen] = React.useState(false);
+  const [isClassicStaffOpen, setIsClassicStaffOpen] = React.useState(false);
+  const [isPlatformerStaffOpen, setIsPlatformerStaffOpen] = React.useState(false);
   const navigate = useNavigate();
 
   return (
@@ -114,6 +119,57 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                   Guidelines
               </Button>
             </li>
+            
+            {user?.role === 'STAFF' && (
+  <li>
+    <Button
+      variant="ghost"
+      className="w-full justify-between text-left"
+      onClick={() => setIsStaffMenuOpen(!isStaffMenuOpen)}
+    >
+      <span>Staff Menu</span>
+      {isStaffMenuOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+    </Button>
+    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isStaffMenuOpen ? 'max-h-96' : 'max-h-0'}`}>
+      <ul className="ml-4 mt-2 space-y-2">
+        <li>
+          <Button
+            variant="ghost"
+            className="w-full justify-between text-left text-sm"
+            onClick={() => setIsClassicStaffOpen(!isClassicStaffOpen)}
+          >
+            <span>Classic Demonlist</span>
+            {isClassicStaffOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isClassicStaffOpen ? 'max-h-32' : 'max-h-0'}`}>
+            <ul className="ml-4 mt-2 space-y-2">
+              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Levels</Button></li>
+              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Records</Button></li>
+              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Regions</Button></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <Button
+            variant="ghost"
+            className="w-full justify-between text-left text-sm"
+            onClick={() => setIsPlatformerStaffOpen(!isPlatformerStaffOpen)}
+          >
+            <span>Platformer Demonlist</span>
+            {isPlatformerStaffOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </Button>
+          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isPlatformerStaffOpen ? 'max-h-32' : 'max-h-0'}`}>
+            <ul className="ml-4 mt-2 space-y-2">
+              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Levels</Button></li>
+              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Records</Button></li>
+              <li><Button variant="ghost" className="w-full justify-start text-left text-xs">Regions</Button></li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </li>
+)}
           </ul>
         </nav>
       </div>
