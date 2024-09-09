@@ -1,9 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from '../axios-config';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from '../normal-axios';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { FaDiscord, FaYoutube, FaTwitter, FaTwitch } from 'react-icons/fa';
+import { GoDotFill } from "react-icons/go";
+import { User } from "lucide-react";
+
+interface PlayerData {
+  id: string;
+  username: string;
+  region: string;
+  classicPoints: number;
+  platformerPoints: number;
+  discord?: string;
+  youtube?: string;
+  twitter?: string;
+  twitch?: string;
+  isStaff: boolean;
+}
+
+interface LevelData {
+  id: string;
+  name: string;
+}
 
 interface LevelCount {
   main: number;
@@ -11,175 +34,263 @@ interface LevelCount {
   legacy: number;
 }
 
-interface LevelInfo {
-  id: string;
-  name: string;
-  // Add other properties as needed
-}
+const Profile = () => {
+  const { username } = useParams();
+  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [classicData, setClassicData] = useState<{
+    hardest: LevelData | null;
+    firstVictor: LevelData[];
+    completed: LevelData[];
+    count: LevelCount;
+  }>({ hardest: null, firstVictor: [], completed: [], count: { main: 0, extended: 0, legacy: 0 } });
+  const [platformerData, setPlatformerData] = useState<{
+    hardest: LevelData | null;
+    firstVictor: LevelData[];
+    completed: LevelData[];
+    count: LevelCount;
+  }>({ hardest: null, firstVictor: [], completed: [], count: { main: 0, extended: 0, legacy: 0 } });
+  const [activeTab, setActiveTab] = useState('classic');
 
-interface ProfileData {
-  classicHardestLevel: LevelInfo;
-  classicCompletedLevels: LevelInfo[];
-  classicFirstVictor: LevelInfo[];
-  classicLevelCount: LevelCount;
-  platformerHardestLevel?: LevelInfo;
-  platformerCompletedLevels?: LevelInfo[];
-  platformerFirstVictor?: LevelInfo[];
-  platformerLevelCount?: LevelCount;
-}
-
-export function Profile() {
-  const { playerId: urlPlayerId } = useParams<{ playerId?: string }>();
-  const navigate = useNavigate();
-  const [inputPlayerId, setInputPlayerId] = useState('');
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const renderSocialMediaIcons = () => {
+    if (!playerData) return null;
+  
+    const socialMediaLinks = [
+      { icon: FaDiscord, link: playerData.discord },
+      { icon: FaYoutube, link: playerData.youtube },
+      { icon: FaTwitter, link: playerData.twitter },
+      { icon: FaTwitch, link: playerData.twitch },
+    ].filter(({ link }) => link);
+  
+    if (socialMediaLinks.length === 0) return null;
+  
+    return (
+      <div className="flex gap-2 items-center">
+        <GoDotFill className="text-sm hover:text-primary" />
+        {socialMediaLinks.map(({ icon: Icon, link }) => (
+          <a href={link} target="_blank" rel="noopener noreferrer" key={link}>
+            <Icon className="text-xl hover:text-primary" />
+          </a>
+        ))}
+      </div>
+    );
+  };
 
   useEffect(() => {
-    if (urlPlayerId) {
-      fetchProfileData(urlPlayerId);
-    }
-  }, [urlPlayerId]);
+    const fetchData = async () => {
+      try {
+        const playerResponse = await axios.get<PlayerData>(`/api/public/players/username/${username}`);
+        setPlayerData(playerResponse.data);
+        fetchAvatar(playerResponse.data.id);
+        const playerId = playerResponse.data.id;
 
-  const fetchProfileData = async (id: string) => {
-    setLoading(true);
-    setError('');
+        const fetchClassicLevelData = async () => {
+          const hardestResponse = await axios.get<LevelData>(`/api/public/classic-levels/hardestLevel/${playerId}`);
+          const hardest = hardestResponse.data;
+
+          const completedResponse = await axios.get<LevelData[]>(`/api/public/classic-levels/player/${playerId}`);
+          const completed = completedResponse.data;
+          
+          const firstVictorResponse = await axios.get<LevelData[]>(`/api/public/classic-levels/firstVictor/${playerId}`);
+          const firstVictor = firstVictorResponse.data;
+
+          const countResponse = await axios.get<LevelCount>(`/api/public/classic-levels/count/${playerId}`);
+          const count = countResponse.data;
+
+          return { hardest , completed, firstVictor, count};
+        };
+
+        const fetchPlatformerLevelData = async () => {
+          const hardestResponse = await axios.get<LevelData>(`/api/public/platformer-levels/hardestLevel/${playerId}`);
+          const hardest = hardestResponse.data;
+
+          const completedResponse = await axios.get<LevelData[]>(`/api/public/platformer-levels/player/${playerId}`);
+          const completed = completedResponse.data;
+          
+          const firstVictorResponse = await axios.get<LevelData[]>(`/api/public/platformer-levels/recordHolder/${playerId}`);
+          const firstVictor = firstVictorResponse.data;
+
+          const countResponse = await axios.get<LevelCount>(`/api/public/platformer-levels/count/${playerId}`);
+          const count = countResponse.data;
+
+          return { hardest , completed, firstVictor, count};
+        };
+
+        const classicLevelData = await fetchClassicLevelData();
+        setClassicData(classicLevelData);
+
+        const platformerLevelData = await fetchPlatformerLevelData();
+        setPlatformerData(platformerLevelData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [username]);
+
+  const fetchAvatar = async (playerId: string) => {
     try {
-      const [
-        classicHardestLevel,
-        classicRecords,
-        classicFirstVictor,
-        classicLevelCount,
-        platformerHardestLevel,
-        platformerRecords,
-        platformerFirstVictor,
-        platformerLevelCount
-      ] = await Promise.all([
-        axios.get(`/api/public/classic-levels/hardestLevel/${id}`),
-        axios.get(`/api/public/classic-levels/player/${id}`),
-        axios.get(`/api/public/classic-levels/firstVictor/${id}`),
-        axios.get(`/api/public/classic-levels/count/${id}`),
-        axios.get(`/api/public/platformer-levels/hardestLevel/${id}`).catch(() => ({ data: null })),
-        axios.get(`/api/public/platformer-levels/player/${id}`).catch(() => ({ data: [] })),
-        axios.get(`/api/public/platformer-levels/recordHolder/${id}`).catch(() => ({ data: [] })),
-        axios.get(`/api/public/platformer-levels/count/${id}`).catch(() => ({ data: null }))
-      ]);
-
-      setProfileData({
-        classicHardestLevel: classicHardestLevel.data,
-        classicCompletedLevels: classicRecords.data,
-        classicFirstVictor: classicFirstVictor.data,
-        classicLevelCount: classicLevelCount.data,
-        platformerHardestLevel: platformerHardestLevel.data,
-        platformerCompletedLevels: platformerRecords.data,
-        platformerFirstVictor: platformerFirstVictor.data,
-        platformerLevelCount: platformerLevelCount.data
+      const response = await axios.get(`/api/public/players/${playerId}/avatar`, {
+        responseType: 'arraybuffer'
       });
-    } catch (err) {
-      setError('Failed to fetch profile data');
-      console.error(err);
-    } finally {
-      setLoading(false);
+      const base64 = btoa(
+        new Uint8Array(response.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          '',
+        )
+      );
+      setAvatar(`data:image/jpeg;base64,${base64}`);
+    } catch (error) {
+      console.error('Error fetching avatar:', error);
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputPlayerId) {
-      navigate(`/profile/${inputPlayerId}`);
+  const renderLevelList = (levels: LevelData[]) => {
+    if (levels.length === 0) {
+      return <Button disabled>No levels available</Button>;
     }
+    return (
+      <>
+        {levels.map((level) => (
+          <a href={`/level/${level.id}`} key={level.id} target="_blank">
+            <Button>{level.name}</Button>
+          </a>
+        ))}
+      </>
+    );
   };
+
+  const renderLevel = (level: LevelData | null) => {
+    if (!level) {
+      return <Button disabled>No level available</Button>;
+    }
+    return (
+      <a href={`/level/${level.id}`} target="_blank">
+        <Button>{level.name}</Button>
+      </a>
+    );
+  };
+
+  if (!playerData) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="p-4 space-y-4">
-      <form onSubmit={handleSearch} className="flex gap-2">
-        <Input
-          type="text"
-          value={inputPlayerId}
-          onChange={(e) => setInputPlayerId(e.target.value)}
-          placeholder="Enter player ID"
-          className="flex-grow"
-        />
-        <Button type="submit">Search</Button>
-      </form>
-
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {profileData && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Classic Levels</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p><strong>Hardest Level:</strong> {profileData.classicHardestLevel.name}</p>
-              <p><strong>Levels Count:</strong></p>
-              <ul>
-                <li>Main: {profileData.classicLevelCount.main}</li>
-                <li>Extended: {profileData.classicLevelCount.extended}</li>
-                <li>Legacy: {profileData.classicLevelCount.legacy}</li>
-              </ul>
-              <p><strong>Completed Levels:</strong></p>
-              <div className="flex flex-wrap gap-2">
-                {profileData.classicCompletedLevels.map((level) => (
-                  <Button key={level.id} variant="outline" size="sm">{level.name}</Button>
-                ))}
+    <Card className="rounded-lg p-4 mb-4">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
+            <Avatar className="w-32 h-32">
+              {avatar ? (
+                <AvatarImage 
+                  src={avatar} 
+                  alt={playerData.username}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <AvatarFallback><User className="w-16 h-16" /></AvatarFallback>
+              )}
+            </Avatar>
+            <div className="flex flex-col gap-2">
+              <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                {playerData.username} {renderSocialMediaIcons()}
+              </CardTitle>
+              <div className="flex flex-col gap-0.5">
+                <p className="font-normal"><span className="font-bold">Region:</span> {playerData.region}</p>
+                <p className="font-normal"><span className="font-bold">Classic rank:</span> {playerData.classicPoints}</p>
+                <p className="font-normal"><span className="font-bold">Platformer rank:</span> {playerData.platformerPoints}</p>
               </div>
-              <p><strong>First Victor In:</strong></p>
-              <div className="flex flex-wrap gap-2">
-                {profileData.classicFirstVictor.map((level) => (
-                  <Button key={level.id} variant="outline" size="sm">{level.name}</Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {profileData.platformerHardestLevel && (
+              {playerData.isStaff && <Badge variant="destructive" className="max-w-fit">List mod</Badge>}
+            </div>
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="classic" onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="classic">Classic</TabsTrigger>
+            <TabsTrigger value="platformer">Platformer</TabsTrigger>
+          </TabsList>
+          <div className="text-2xl font-bold mt-4 mb-2">
+            {activeTab === 'classic' ? 'Classic Details:' : 'Platformer Details:'}
+          </div>
+          <TabsContent value="classic" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Platformer Levels</CardTitle>
+                <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p><strong>Hardest Level:</strong> {profileData.platformerHardestLevel.name}</p>
-                {profileData.platformerLevelCount && (
-                  <>
-                    <p><strong>Levels Count:</strong></p>
-                    <ul>
-                      <li>Main: {profileData.platformerLevelCount.main}</li>
-                      <li>Extended: {profileData.platformerLevelCount.extended}</li>
-                      <li>Legacy: {profileData.platformerLevelCount.legacy}</li>
-                    </ul>
-                  </>
-                )}
-                {profileData.platformerCompletedLevels && profileData.platformerCompletedLevels.length > 0 && (
-                  <>
-                    <p><strong>Completed Levels:</strong></p>
-                    <div className="flex flex-wrap gap-2">
-                      {profileData.platformerCompletedLevels.map((level) => (
-                        <Button key={level.id} variant="outline" size="sm">{level.name}</Button>
-                      ))}
-                    </div>
-                  </>
-                )}
-                {profileData.platformerFirstVictor && profileData.platformerFirstVictor.length > 0 && (
-                  <>
-                    <p><strong>Record Holder In:</strong></p>
-                    <div className="flex flex-wrap gap-2">
-                      {profileData.platformerFirstVictor.map((level) => (
-                        <Button key={level.id} variant="outline" size="sm">{level.name}</Button>
-                      ))}
-                    </div>
-                  </>
-                )}
+              <CardContent className="flex flex-wrap gap-1">
+                {renderLevel(classicData.hardest)}
               </CardContent>
             </Card>
-          )}
-        </div>
-      )}
-    </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">First victor levels:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                {renderLevelList(classicData.firstVictor)}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                {renderLevelList(classicData.completed)}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Level count:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                <Button className='cursor-default'>Main: {classicData.count.main}</Button>
+                <Button className='cursor-default'>Extended: {classicData.count.extended}</Button>
+                <Button className='cursor-default'>Legacy: {classicData.count.legacy}</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="platformer" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                {renderLevel(platformerData.hardest)}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Record holder levels:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                {renderLevelList(platformerData.firstVictor)}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                {renderLevelList(platformerData.completed)}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Level count:</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-1">
+                <Button className='cursor-default'>Main: {platformerData.count.main}</Button>
+                <Button className='cursor-default'>Extended: {platformerData.count.extended}</Button>
+                <Button className='cursor-default'>Legacy: {platformerData.count.legacy}</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
-}
+};
 
 export default Profile;
