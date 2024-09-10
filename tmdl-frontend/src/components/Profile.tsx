@@ -220,8 +220,8 @@ const Profile = () => {
               </CardTitle>
               <div className="flex flex-col gap-0.5">
                 <p className="font-normal"><span className="font-bold">Region:</span> {playerData.region}</p>
-                <p className="font-normal"><span className="font-bold">Classic rank:</span> {playerData.classicPoints}</p>
-                <p className="font-normal"><span className="font-bold">Platformer rank:</span> {playerData.platformerPoints}</p>
+                <p className="font-normal"><span className="font-bold">Classic points:</span> {playerData.classicPoints}</p>
+                <p className="font-normal"><span className="font-bold">Platformer points:</span> {playerData.platformerPoints}</p>
               </div>
               {playerData.isStaff && <Badge variant="destructive" className="max-w-fit">List mod</Badge>}
             </div>
