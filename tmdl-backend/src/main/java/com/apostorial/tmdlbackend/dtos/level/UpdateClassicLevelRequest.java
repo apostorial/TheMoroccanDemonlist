@@ -17,5 +17,5 @@ public class UpdateClassicLevelRequest {
     private URL thumbnail;
     private Duration duration;
     private int minimumCompletion;
-    private String firstVictorId;
+    private String firstVictor;
 }

@@ -166,9 +166,9 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
         level.setRanking(request.getRanking());
         level.setLink(request.getLink());
         level.setThumbnail(request.getThumbnail());
-        if (request.getRecordHolderId() != null) {
-            Player firstVictor = playerRepository.findById(request.getRecordHolderId())
-                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getRecordHolderId() + " not found"));
+        if (request.getRecordHolder() != null) {
+            Player firstVictor = playerRepository.findById(request.getRecordHolder())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getRecordHolder() + " not found"));
             level.setRecordHolder(firstVictor);
         }
         levelUtils.calculatePlatformerPoints(level);

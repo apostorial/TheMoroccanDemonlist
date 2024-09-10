@@ -174,9 +174,9 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
         level.setThumbnail(request.getThumbnail());
         level.setDuration(request.getDuration());
         level.setMinimumCompletion(request.getMinimumCompletion());
-        if (request.getFirstVictorId() != null) {
-            Player firstVictor = playerRepository.findById(request.getFirstVictorId())
-                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getFirstVictorId() + " not found"));
+        if (request.getFirstVictor() != null) {
+            Player firstVictor = playerRepository.findById(request.getFirstVictor())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getFirstVictor() + " not found"));
             level.setFirstVictor(firstVictor);
         }
         levelUtils.calculateClassicPoints(level);

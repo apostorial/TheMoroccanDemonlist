@@ -14,5 +14,5 @@ public class UpdatePlatformerLevelRequest {
     private int ranking;
     private URL link;
     private URL thumbnail;
-    private String recordHolderId;
+    private String recordHolder;
 }
