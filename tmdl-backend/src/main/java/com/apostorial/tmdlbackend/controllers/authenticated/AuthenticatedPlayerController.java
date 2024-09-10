@@ -35,6 +35,18 @@ public class AuthenticatedPlayerController {
         }
     }
 
+    @PutMapping("/region/{regionId}")
+    public ResponseEntity<Void> addRegion(@PathVariable String regionId) {
+        try {
+            playerService.addRegion(regionId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (UnauthorizedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     @PutMapping("/profile/update")
     public ResponseEntity<UpdatePlayerRequest> updateAuthenticatedPlayer(@RequestBody UpdatePlayerRequest request) {
         try {
