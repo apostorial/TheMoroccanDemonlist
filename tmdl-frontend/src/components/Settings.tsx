@@ -66,6 +66,21 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleSocialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let newValue = value;
+    
+    if (name === 'youtube') {
+      newValue = value.startsWith('https://www.youtube.com/@') ? value : `https://www.youtube.com/@${value}`;
+    } else if (name === 'twitter') {
+      newValue = value.startsWith('https://twitter.com/') ? value : `https://twitter.com/${value}`;
+    } else if (name === 'twitch') {
+      newValue = value.startsWith('https://www.twitch.tv/') ? value : `https://www.twitch.tv/${value}`;
+    }
+
+    setSettings({ ...settings, [name]: newValue });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -139,22 +154,60 @@ const Settings: React.FC = () => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" name="username" value={settings.username} onChange={handleChange} placeholder="Your Geometry Dash username" />
+            <Label htmlFor="discord">Discord</Label>
+            <Input id="discord" name="discord" value={settings.discord} onChange={handleChange} placeholder="@username" />
           </div>
           
-          {['discord', 'youtube', 'twitter', 'twitch'].map((social) => (
-            <div key={social} className="space-y-2">
-              <Label htmlFor={social}>{social.charAt(0).toUpperCase() + social.slice(1)}</Label>
+          <div className="space-y-2">
+            <Label htmlFor="youtube">YouTube</Label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 text-sm border border-r-0 rounded-l-md">
+                https://www.youtube.com/@
+              </span>
               <Input
-                id={social}
-                name={social}
-                value={settings[social as keyof UserSettings] || ''}
-                onChange={handleChange}
-                placeholder={`${social.charAt(0).toUpperCase() + social.slice(1)} handle`}
+                id="youtube"
+                name="youtube"
+                value={settings.youtube?.replace('https://www.youtube.com/@', '')}
+                onChange={handleSocialChange}
+                className="rounded-l-none"
+                placeholder="username"
               />
             </div>
-          ))}
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="twitter">Twitter</Label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 text-sm border border-r-0 rounded-l-md">
+                https://twitter.com/
+              </span>
+              <Input
+                id="twitter"
+                name="twitter"
+                value={settings.twitter?.replace('https://twitter.com/', '')}
+                onChange={handleSocialChange}
+                className="rounded-l-none"
+                placeholder="username"
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="twitch">Twitch</Label>
+            <div className="flex">
+              <span className="inline-flex items-center px-3 text-sm border border-r-0 rounded-l-md">
+                https://www.twitch.tv/
+              </span>
+              <Input
+                id="twitch"
+                name="twitch"
+                value={settings.twitch?.replace('https://www.twitch.tv/', '')}
+                onChange={handleSocialChange}
+                className="rounded-l-none"
+                placeholder="username"
+              />
+            </div>
+          </div>
           
           <Button type="submit">Save Changes</Button>
         </form>
