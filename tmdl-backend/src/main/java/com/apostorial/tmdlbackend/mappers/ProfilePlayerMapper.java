@@ -11,7 +11,7 @@ public class ProfilePlayerMapper {
         dto.setId(player.getId());
         dto.setUsername(player.getUsername());
         dto.setDateJoined(player.getDateJoined());
-        dto.setRegion(player.getRegion());
+        dto.setRegion(player.getRegionForSerialization());
         dto.setClassicPoints(player.getClassicPoints());
         dto.setPlatformerPoints(player.getPlatformerPoints());
         dto.setDiscord(player.getDiscord());
