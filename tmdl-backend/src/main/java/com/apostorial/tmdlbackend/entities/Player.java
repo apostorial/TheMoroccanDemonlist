@@ -1,10 +1,12 @@
 package com.apostorial.tmdlbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -21,11 +23,17 @@ public class Player {
     private boolean isStaff = false;
     private boolean isActive = true;
     private LocalDateTime dateJoined = LocalDateTime.now();
+    @DBRef
     private Region region;
-    private float classicPoints = 0;
-    private float platformerPoints = 0;
+    private Double classicPoints = 0.0;
+    private Double platformerPoints = 0.0;
     private String discord;
     private String youtube;
     private String twitter;
     private String twitch;
+
+    @JsonProperty("region")
+    public String getRegionForSerialization() {
+        return region != null ? region.getId() : null;
+    }
 }
