@@ -168,12 +168,11 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
 
   return (
     <div className="p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{levelType.charAt(0).toUpperCase() + levelType.slice(1)} Levels</h2>
         <AddLevel levelType={levelType} onLevelAdded={handleLevelAdded} />
       </div>
       <div className="mb-4">
-        <p>Drag and drop levels to reorder them. Changes are saved automatically.</p>
         <p className="text-sm mt-1">Total levels: {levels.length}</p>
       </div>
       <DndContext 
