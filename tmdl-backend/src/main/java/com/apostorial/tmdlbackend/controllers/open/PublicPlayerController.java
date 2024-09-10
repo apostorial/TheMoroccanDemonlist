@@ -58,6 +58,32 @@ public class PublicPlayerController {
         }
     }
 
+    @GetMapping("/classic-points")
+    public ResponseEntity<List<Player>> findAllByClassicPoints() {
+        try {
+            List<Player> players = playerService.findAllByClassicPoints();
+            if (players.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(players, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/platformer-points")
+    public ResponseEntity<List<Player>> findAllByPlatformerPoints() {
+        try {
+            List<Player> players = playerService.findAllByPlatformerPoints();
+            if (players.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(players, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/region/{regionId}")
     public ResponseEntity<List<Player>> findAllByRegionId(@PathVariable("regionId") String regionId) {
         try {

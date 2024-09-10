@@ -5,12 +5,14 @@ import com.apostorial.tmdlbackend.dtos.player.ProfilePlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.SearchPlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.UpdatePlayerRequest;
 import com.apostorial.tmdlbackend.entities.Player;
+import com.apostorial.tmdlbackend.entities.Region;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.exceptions.UnauthorizedException;
 import com.apostorial.tmdlbackend.mappers.ProfilePlayerMapper;
 import com.apostorial.tmdlbackend.mappers.SearchPlayerMapper;
 import com.apostorial.tmdlbackend.mappers.UpdatePlayerMapper;
 import com.apostorial.tmdlbackend.repositories.PlayerRepository;
+import com.apostorial.tmdlbackend.repositories.RegionRepository;
 import com.apostorial.tmdlbackend.services.interfaces.PlayerService;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service @RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
+    private final RegionRepository regionRepository;
     private final SecurityUtils securityUtils;
     private final ProfilePlayerMapper profilePlayerMapper;
     private final UpdatePlayerMapper updatePlayerMapper;
@@ -56,6 +61,22 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public List<Player> findAll() {
         return playerRepository.findAll();
+    }
+
+    @Override
+    public List<Player> findAllByClassicPoints() {
+        return playerRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingDouble(Player::getClassicPoints).reversed())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Player> findAllByPlatformerPoints() {
+        return playerRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingDouble(Player::getPlatformerPoints).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -144,5 +165,14 @@ public class PlayerServiceImpl implements PlayerService {
             }
             return outputStream.toByteArray();
         }
+    }
+
+    @Override
+    public void addRegion(String regionId) throws EntityNotFoundException, UnauthorizedException {
+        Player player = securityUtils.getAuthenticatedPlayer();
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new EntityNotFoundException("Region not found with id: " + regionId));
+        player.setRegion(region);
+        playerRepository.save(player);
     }
 }
