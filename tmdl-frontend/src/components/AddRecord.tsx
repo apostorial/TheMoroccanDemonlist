@@ -109,8 +109,8 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
         <DialogHeader>
           <DialogTitle>Add New Record</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2 md:col-span-1">
             <Label htmlFor="level">Level</Label>
             <Select name="level" onValueChange={(value) => handleSelectChange('level', value)} required>
               <SelectTrigger>
@@ -123,7 +123,7 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 md:col-span-1">
             <Label htmlFor="player">Player</Label>
             <Select name="player" onValueChange={(value) => handleSelectChange('player', value)} required>
               <SelectTrigger>
@@ -137,7 +137,7 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
             </Select>
           </div>
           {recordType === 'classic' ? (
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="recordPercentage">Percentage (%)</Label>
               <Input 
                 id="recordPercentage" 
@@ -152,7 +152,7 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
               />
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
               <Input 
                 id="recordTime" 
@@ -166,11 +166,19 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
               />
             </div>
           )}
-          <div className="space-y-2 col-span-2">
+          <div className="space-y-2 md:col-span-2">
             <Label htmlFor="link">Record Link</Label>
-            <Input id="link" name="link" type="url" value={formData.link} onChange={handleInputChange} placeholder="https://youtu.be/dQw4w9WgXcQ" required />
+            <Input 
+              id="link" 
+              name="link" 
+              type="url" 
+              value={formData.link} 
+              onChange={handleInputChange} 
+              placeholder="https://youtu.be/dQw4w9WgXcQ" 
+              required 
+            />
           </div>
-          <div className="col-span-2 flex justify-end">
+          <div className="flex justify-end md:col-span-2">
             <Button type="submit">Add Record</Button>
           </div>
         </form>

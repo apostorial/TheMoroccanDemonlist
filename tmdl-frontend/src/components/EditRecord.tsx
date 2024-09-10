@@ -84,21 +84,21 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
           <span className="sr-only">Edit record</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Edit Record</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2 md:col-span-1">
             <Label htmlFor="level">Level</Label>
             <Input id="level" value={getLevelName(formData.level)} readOnly />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 md:col-span-1">
             <Label htmlFor="player">Player</Label>
             <Input id="player" value={formData.player} readOnly />
           </div>
           {recordType === 'classic' ? (
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="recordPercentage">Percentage</Label>
               <Input 
                 id="recordPercentage" 
@@ -112,7 +112,7 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
               />
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 md:col-span-2">
               <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
               <Input 
                 id="recordTime" 
@@ -126,7 +126,7 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
               />
             </div>
           )}
-          <div className="space-y-2">
+          <div className="space-y-2 md:col-span-2">
             <Label htmlFor="link">Video Link</Label>
             <Input 
               id="link" 
@@ -137,7 +137,7 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
               required 
             />
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end md:col-span-2">
             <Button type="submit">Update Record</Button>
           </div>
         </form>
