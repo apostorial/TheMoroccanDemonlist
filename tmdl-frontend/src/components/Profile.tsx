@@ -40,6 +40,7 @@ const Profile = () => {
   const { username } = useParams();
   const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [regionName, setRegionName] = useState<string>('');
   const [classicData, setClassicData] = useState<{
     hardest: LevelData | null;
     firstVictor: LevelData[];
@@ -67,10 +68,14 @@ const Profile = () => {
     if (socialMediaHandles.length === 0) return null;
   
     const handleSocialClick = (social: string, handle: string) => {
-      navigator.clipboard.writeText(handle);
-      toast.success(`${social} handle copied to clipboard!`, {
-        description: handle,
-      });
+      if (social === 'Discord') {
+        navigator.clipboard.writeText(handle);
+        toast.success(`Discord handle copied to clipboard!`, {
+          description: handle,
+        });
+      } else {
+        window.open(handle, '_blank');
+      }
     };
   
     return (
@@ -83,7 +88,7 @@ const Profile = () => {
                 <button
                   onClick={() => handleSocialClick(name, handle!)}
                   className="focus:outline-none"
-                  aria-label={`Copy ${name} handle`}
+                  aria-label={name === 'Discord' ? `Copy ${name} handle` : `Open ${name} profile`}
                 >
                   <Icon className="text-xl hover:text-primary transition-colors" />
                 </button>
@@ -104,6 +109,7 @@ const Profile = () => {
         const playerResponse = await axios.get<PlayerData>(`/api/public/players/username/${username}`);
         setPlayerData(playerResponse.data);
         fetchAvatar(playerResponse.data.id);
+        fetchRegionName(playerResponse.data.region);
         const playerId = playerResponse.data.id;
 
         const fetchClassicLevelData = async () => {
@@ -168,6 +174,16 @@ const Profile = () => {
     }
   };
 
+  const fetchRegionName = async (regionId: string) => {
+    try {
+      const response = await axios.get(`/api/public/regions/${regionId}`);
+      setRegionName(response.data.name);
+    } catch (error) {
+      console.error('Error fetching region name:', error);
+      setRegionName('Unknown Region');
+    }
+  };
+
   const renderLevelList = (levels: LevelData[]) => {
     if (levels.length === 0) {
       return <Button disabled>No levels available</Button>;
@@ -219,7 +235,7 @@ const Profile = () => {
                 {playerData.username} {renderSocialMediaIcons()}
               </CardTitle>
               <div className="flex flex-col gap-0.5">
-                <p className="font-normal"><span className="font-bold">Region:</span> {playerData.region}</p>
+                <p className="font-normal"><span className="font-bold">Region:</span> {regionName}</p>
                 <p className="font-normal"><span className="font-bold">Classic points:</span> {playerData.classicPoints}</p>
                 <p className="font-normal"><span className="font-bold">Platformer points:</span> {playerData.platformerPoints}</p>
               </div>
