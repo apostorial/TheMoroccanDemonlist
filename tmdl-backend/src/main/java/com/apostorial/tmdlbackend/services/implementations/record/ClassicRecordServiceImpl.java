@@ -14,12 +14,11 @@ import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordServic
 import com.apostorial.tmdlbackend.utilities.PlayerUtils;
 import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service @AllArgsConstructor @Slf4j
+@Service @AllArgsConstructor
 public class ClassicRecordServiceImpl implements ClassicRecordService {
     private final ClassicRecordRepository classicRecordRepository;
     private final ClassicLevelRepository classicLevelRepository;
@@ -29,18 +28,18 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
 
     @Override
     public ClassicRecord create(CreateClassicRecordRequest request) throws EntityNotFoundException, DuplicateRecordException {
-        if (classicRecordRepository.existsByPlayerIdAndLevelId(request.getPlayerId(), request.getLevelId())) {
+        if (classicRecordRepository.existsByPlayerIdAndLevelId(request.getPlayer(), request.getLevel())) {
             throw new DuplicateRecordException("A record for this player and level already exists");
         }
         ClassicRecord record = new ClassicRecord();
-        if (request.getPlayerId() != null) {
-            Player player = playerRepository.findById(request.getPlayerId())
-                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayerId() + " not found"));
+        if (request.getPlayer() != null) {
+            Player player = playerRepository.findById(request.getPlayer())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayer() + " not found"));
             record.setPlayer(player);
         }
-        if (request.getLevelId() != null) {
-            ClassicLevel level = classicLevelRepository.findById(request.getLevelId())
-                    .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + request.getLevelId() + " not found"));
+        if (request.getLevel() != null) {
+            ClassicLevel level = classicLevelRepository.findById(request.getLevel())
+                    .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + request.getLevel() + " not found"));
             record.setLevel(level);
         }
         record.setLink(request.getLink());
@@ -77,14 +76,14 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
     public ClassicRecord update(String recordId, UpdateClassicRecordRequest request) throws EntityNotFoundException {
         ClassicRecord record = classicRecordRepository.findById(recordId)
                 .orElseThrow(() -> new EntityNotFoundException("Classic record with id " + recordId + " not found"));
-        if (request.getPlayerId() != null) {
-            Player player = playerRepository.findById(request.getPlayerId())
-                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayerId() + " not found"));
+        if (request.getPlayer() != null) {
+            Player player = playerRepository.findByUsername(request.getPlayer())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with username " + request.getPlayer() + " not found"));
             record.setPlayer(player);
         }
-        if (request.getLevelId() != null) {
-            ClassicLevel level = classicLevelRepository.findById(request.getLevelId())
-                    .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + request.getLevelId() + " not found"));
+        if (request.getLevel() != null) {
+            ClassicLevel level = classicLevelRepository.findById(request.getLevel())
+                    .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + request.getLevel() + " not found"));
             record.setLevel(level);
         }
         record.setLink(request.getLink());

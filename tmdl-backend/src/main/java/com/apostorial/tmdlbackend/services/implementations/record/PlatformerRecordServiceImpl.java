@@ -28,18 +28,18 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
 
     @Override
     public PlatformerRecord create(CreatePlatformerRecordRequest request) throws EntityNotFoundException, DuplicateRecordException {
-        if (platformerRecordRepository.existsByPlayerIdAndLevelId(request.getPlayerId(), request.getLevelId())) {
+        if (platformerRecordRepository.existsByPlayerIdAndLevelId(request.getPlayer(), request.getLevel())) {
             throw new DuplicateRecordException("A record for this player and level already exists");
         }
         PlatformerRecord record = new PlatformerRecord();
-        if (request.getPlayerId() != null) {
-            Player player = playerRepository.findById(request.getPlayerId())
-                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayerId() + " not found"));
+        if (request.getPlayer() != null) {
+            Player player = playerRepository.findById(request.getPlayer())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayer() + " not found"));
             record.setPlayer(player);
         }
-        if (request.getLevelId() != null) {
-            PlatformerLevel level = platformerLevelRepository.findById(request.getLevelId())
-                    .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + request.getLevelId() + " not found"));
+        if (request.getLevel() != null) {
+            PlatformerLevel level = platformerLevelRepository.findById(request.getLevel())
+                    .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + request.getLevel() + " not found"));
             record.setLevel(level);
         }
         record.setLink(request.getLink());
@@ -77,14 +77,14 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
     public PlatformerRecord update(String recordId, UpdatePlatformerRecordRequest request) throws EntityNotFoundException {
         PlatformerRecord record = platformerRecordRepository.findById(recordId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer record with id " + recordId + " not found"));
-        if (request.getPlayerId() != null) {
-            Player player = playerRepository.findById(request.getPlayerId())
-                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayerId() + " not found"));
+        if (request.getPlayer() != null) {
+            Player player = playerRepository.findByUsername(request.getPlayer())
+                    .orElseThrow(() -> new EntityNotFoundException("Player with id " + request.getPlayer() + " not found"));
             record.setPlayer(player);
         }
-        if (request.getLevelId() != null) {
-            PlatformerLevel level = platformerLevelRepository.findById(request.getLevelId())
-                    .orElseThrow(() -> new EntityNotFoundException("Platformer level with id " + request.getLevelId() + " not found"));
+        if (request.getLevel() != null) {
+            PlatformerLevel level = platformerLevelRepository.findById(request.getLevel())
+                    .orElseThrow(() -> new EntityNotFoundException("Platformer level with id " + request.getLevel() + " not found"));
             record.setLevel(level);
         }
         record.setLink(request.getLink());
