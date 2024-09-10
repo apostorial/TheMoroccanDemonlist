@@ -180,6 +180,13 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
         PlatformerLevel level = platformerLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer level with id " + levelId + " not found"));
 
+        List<PlatformerRecord> records = platformerRecordRepository.findAllByLevelId(level.getId());
+        platformerRecordRepository.deleteByLevelId(level.getId());
         platformerLevelRepository.delete(level);
+        for (PlatformerRecord record : records) {
+            Player player = record.getPlayer();
+            recordUtils.updatePlayerPlatformerPoints(record);
+            playerUtils.updateRegionPlatformerPoints(player);
+        }
     }
 }

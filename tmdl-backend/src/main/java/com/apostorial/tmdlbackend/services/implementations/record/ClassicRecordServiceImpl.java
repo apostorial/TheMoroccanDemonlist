@@ -100,6 +100,9 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
         ClassicRecord record = classicRecordRepository.findById(recordId)
                 .orElseThrow(() -> new EntityNotFoundException("Classic record with id " + recordId + " not found"));
 
+        Player player = record.getPlayer();
         classicRecordRepository.delete(record);
+        recordUtils.updatePlayerClassicPoints(record);
+        playerUtils.updateRegionClassicPoints(player);
     }
 }

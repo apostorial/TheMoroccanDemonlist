@@ -188,6 +188,13 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
         ClassicLevel level = classicLevelRepository.findById(levelId)
                 .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
 
+        List<ClassicRecord> records = classicRecordRepository.findAllByLevelId(level.getId());
+        classicRecordRepository.deleteByLevelId(level.getId());
         classicLevelRepository.delete(level);
+        for (ClassicRecord record : records) {
+            Player player = record.getPlayer();
+            recordUtils.updatePlayerClassicPoints(record);
+            playerUtils.updateRegionClassicPoints(player);
+        }
     }
 }

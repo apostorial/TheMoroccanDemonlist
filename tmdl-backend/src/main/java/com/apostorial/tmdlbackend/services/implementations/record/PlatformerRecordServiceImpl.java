@@ -101,6 +101,9 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
         PlatformerRecord record = platformerRecordRepository.findById(recordId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer record with id " + recordId + " not found"));
 
+        Player player = record.getPlayer();
         platformerRecordRepository.delete(record);
+        recordUtils.updatePlayerPlatformerPoints(record);
+        playerUtils.updateRegionPlatformerPoints(player);
     }
 }
