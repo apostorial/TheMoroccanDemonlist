@@ -21,6 +21,6 @@ public class PlatformerLevel extends Level {
         if (recordHolder == null) {
             return null;
         }
-        return recordHolder.getUsername();
+        return recordHolder.getId();
     }
 }
