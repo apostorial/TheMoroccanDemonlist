@@ -7,7 +7,7 @@ import java.net.URL;
 @Data
 public class CreateClassicRecordRequest {
     private URL link;
-    private String playerId;
+    private String player;
     private int recordPercentage;
-    private String levelId;
+    private String level;
 }

@@ -8,7 +8,7 @@ import java.time.Duration;
 @Data
 public class UpdatePlatformerRecordRequest {
     private URL link;
-    private String playerId;
+    private String player;
     private Duration recordTime;
-    private String levelId;
+    private String level;
 }
