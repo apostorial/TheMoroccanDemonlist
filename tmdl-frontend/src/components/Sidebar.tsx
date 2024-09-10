@@ -112,6 +112,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
             <li>
               <Button variant="ghost"
                 className="w-full justify-start text-left text-sm"
+                onClick={() => {navigate("/leaderboard");}}
+                >
+                  Leaderboard
+              </Button>
+            </li>
+            <li>
+              <Button variant="ghost"
+                className="w-full justify-start text-left text-sm"
                 onClick={() => {navigate("/guidelines");}}
                 >
                   Guidelines

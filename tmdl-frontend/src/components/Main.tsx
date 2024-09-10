@@ -12,13 +12,15 @@ import Settings from './Settings';
 import ProtectedRoute from './ProtectedRoute';
 import StaffList from './StaffList';
 import StaffRecordList from './StaffRecordList';
+import StaffRegionList from './StaffRegionList';
+import Leaderboard from './Leaderboard';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const showInfo = !['/guidelines', '/staff/levels', '/staff/records'].includes(location.pathname);
+  const showInfo = !['/guidelines', '/staff/levels', '/staff/records', '/staff/regions'].includes(location.pathname);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -49,6 +51,7 @@ function Main() {
                 <Route path="/level/:id" element={<LevelDetails />} />
                 <Route path="/guidelines" element={<Guidelines />} />
                 <Route path="/profile/:username" element={<Profile />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route 
                   path="/settings" 
                   element={
@@ -70,6 +73,14 @@ function Main() {
                   element={
                     <ProtectedRoute staffOnly={true}>
                       <StaffRecordList />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/staff/regions" 
+                  element={
+                    <ProtectedRoute staffOnly={true}>
+                      <StaffRegionList />
                     </ProtectedRoute>
                   } 
                 />
