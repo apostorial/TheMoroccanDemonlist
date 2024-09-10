@@ -51,8 +51,11 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
     setIsLoading(true);
     try {
       const response = await axios.get(`/api/public/${recordType}-records`);
-      setRecords(response.data || []);
-      fetchLevelNames(response.data);
+      const fetchedRecords = response.data || [];
+      setRecords(fetchedRecords);
+      if (fetchedRecords.length > 0) {
+        fetchLevelNames(fetchedRecords);
+      }
     } catch (error) {
       console.error('Error fetching records:', error);
       toast.error('Failed to fetch records');
@@ -63,19 +66,22 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
   };
 
   const fetchLevelNames = async (records: (ClassicRecord | PlatformerRecord)[]) => {
-    const uniqueLevelIds = [...new Set(records.map(record => record.level))];
-    const levelNamePromises = uniqueLevelIds.map(levelId =>
-      axios.get(`/api/public/${recordType}-levels/${levelId}`)
-        .then(response => ({ [levelId]: response.data.name }))
-        .catch(error => {
-          console.error(`Error fetching level name for ID ${levelId}:`, error);
-          return { [levelId]: 'Unknown Level' };
-        })
-    );
-
-    const levelNameResults = await Promise.all(levelNamePromises);
-    const newLevelNames = Object.assign({}, ...levelNameResults);
-    setLevelNames(newLevelNames);
+    try {
+      const levelIds = [...new Set(records.map(record => record.level))];
+      const levelPromises = levelIds.map(id => 
+        axios.get(`/api/public/${recordType}-levels/${id}`)
+      );
+      const responses = await Promise.all(levelPromises);
+      const nameMap = responses.reduce((acc: { [key: string]: string }, response) => {
+        const level = response.data;
+        acc[level.id] = level.name;
+        return acc;
+      }, {});
+      setLevelNames(nameMap);
+    } catch (error) {
+      console.error('Error fetching level names:', error);
+      toast.error('Failed to fetch level names');
+    }
   };
 
   const getLevelName = (levelId: string): string => {
