@@ -17,7 +17,7 @@ function Main() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const showInfo = !['/guidelines', '/staff/classic-levels', '/staff/platformer-levels'].includes(location.pathname);
+  const showInfo = !['/guidelines', '/staff/levels'].includes(location.pathname);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -57,18 +57,10 @@ function Main() {
                   } 
                 />
                 <Route 
-                  path="/staff/classic-levels" 
+                  path="/staff/levels" 
                   element={
                     <ProtectedRoute staffOnly={true}>
-                      <StaffList levelType="classic" />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/staff/platformer-levels" 
-                  element={
-                    <ProtectedRoute staffOnly={true}>
-                      <StaffList levelType="platformer" />
+                      <StaffList />
                     </ProtectedRoute>
                   } 
                 />
