@@ -17,5 +17,5 @@ public abstract class Level {
     private Difficulty difficulty;
     private URL link;
     private URL thumbnail;
-    private float points;
+    private Double points;
 }

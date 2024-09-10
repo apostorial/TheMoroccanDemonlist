@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component @RequiredArgsConstructor
 public class RecordUtils {
@@ -32,7 +33,7 @@ public class RecordUtils {
     }
 
     public void updatePlayerClassicPoints(ClassicRecord classicRecord) {
-        float totalClassicPoints = 0;
+        Double totalClassicPoints = 0.0;
         Player player = classicRecord.getPlayer();
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(player.getId());
         for (ClassicRecord record : records) {
@@ -43,7 +44,7 @@ public class RecordUtils {
                 totalClassicPoints += level.getMinPoints();
             }
         }
-        if (player.getClassicPoints() != totalClassicPoints) {
+        if (!Objects.equals(player.getClassicPoints(), totalClassicPoints)) {
             player.setClassicPoints(totalClassicPoints);
             playerRepository.save(player);
         }
@@ -58,14 +59,14 @@ public class RecordUtils {
     }
 
     public void updatePlayerPlatformerPoints(PlatformerRecord platformerRecord) {
-        float totalPlatformerPoints = 0;
+        Double totalPlatformerPoints = 0.0;
         Player player = platformerRecord.getPlayer();
         List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(player.getId());
         for (PlatformerRecord record : records) {
             PlatformerLevel level = record.getLevel();
             totalPlatformerPoints += level.getPoints();
         }
-        if (player.getPlatformerPoints() != totalPlatformerPoints) {
+        if (!Objects.equals(player.getPlatformerPoints(), totalPlatformerPoints)) {
             player.setPlatformerPoints(totalPlatformerPoints);
             playerRepository.save(player);
         }

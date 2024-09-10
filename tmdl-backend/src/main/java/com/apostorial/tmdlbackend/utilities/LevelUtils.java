@@ -11,17 +11,17 @@ public class LevelUtils {
 
     public void calculateClassicPoints(ClassicLevel level) {
         if (level.getRanking() == 0 || level.getRanking() > 150) {
-            level.setPoints(0.0f);
-            level.setMinPoints(0.0f);
+            level.setPoints(0.0);
+            level.setMinPoints(0.0);
         } else {
             float points = (float) (500 * (1 - Math.log(level.getRanking()) / Math.log(151)));
-            level.setPoints(Math.round(points * 100) / 100f);
-            level.setMinPoints(Math.round(points / 3 * 100) / 100f);
+            level.setPoints(Math.round(points * 100) / 100.0);
+            level.setMinPoints(Math.round(points / 3 * 100) / 100.0);
         }
     }
 
     public void calculatePlatformerPoints(PlatformerLevel level) {
         float calculatedPoints = (float) (500 * (1 - Math.log(level.getRanking()) / Math.log(151)));
-        level.setPoints(Math.round(calculatedPoints * 100) / 100f);
+        level.setPoints(Math.round(calculatedPoints * 100) / 100.0);
     }
 }

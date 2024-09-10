@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component @RequiredArgsConstructor
 public class PlayerUtils {
@@ -25,7 +26,7 @@ public class PlayerUtils {
     private final PlatformerRecordRepository platformerRecordRepository;
 
     public void updatePlayerClassicPoints(Player player) {
-        float totalClassicPoints = 0;
+        Double totalClassicPoints = 0.0;
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(player.getId());
         for (ClassicRecord record : records) {
             ClassicLevel level = record.getLevel();
@@ -35,20 +36,20 @@ public class PlayerUtils {
                 totalClassicPoints += level.getMinPoints();
             }
         }
-        if (player.getClassicPoints() != totalClassicPoints) {
+        if (!Objects.equals(player.getClassicPoints(), totalClassicPoints)) {
             player.setClassicPoints(totalClassicPoints);
             playerRepository.save(player);
         }
     }
 
     public void updatePlayerPlatformerPoints(Player player) {
-        float totalPlatformerPoints = 0;
+        Double totalPlatformerPoints = 0.0;
         List<PlatformerRecord> records = platformerRecordRepository.findAllByPlayerId(player.getId());
         for (PlatformerRecord record : records) {
             PlatformerLevel level = record.getLevel();
             totalPlatformerPoints += level.getPoints();
         }
-        if (player.getPlatformerPoints() != totalPlatformerPoints) {
+        if (!Objects.equals(player.getPlatformerPoints(), totalPlatformerPoints)) {
             player.setPlatformerPoints(totalPlatformerPoints);
             playerRepository.save(player);
         }
@@ -58,13 +59,13 @@ public class PlayerUtils {
         if (player.getRegion() == null) {
             return;
         }
-        float totalClassicPoints = 0;
+        Double totalClassicPoints = 0.0;
         Region region = player.getRegion();
         List<Player> players = playerService.findAllByRegionId(region.getId());
         for (Player regionPlayer : players) {
             totalClassicPoints += regionPlayer.getClassicPoints();
         }
-        if (region.getClassicPoints() != totalClassicPoints) {
+        if (!Objects.equals(region.getClassicPoints(), totalClassicPoints)) {
             region.setClassicPoints(totalClassicPoints);
             regionRepository.save(region);
         }
@@ -74,13 +75,13 @@ public class PlayerUtils {
         if (player.getRegion() == null) {
             return;
         }
-        float totalPlatformerPoints = 0;
+        Double totalPlatformerPoints = 0.0;
         Region region = player.getRegion();
         List<Player> players = playerService.findAllByRegionId(region.getId());
         for (Player regionPlayer : players) {
             totalPlatformerPoints += regionPlayer.getPlatformerPoints();
         }
-        if (region.getPlatformerPoints() != totalPlatformerPoints) {
+        if (!Objects.equals(region.getPlatformerPoints(), totalPlatformerPoints)) {
             region.setPlatformerPoints(totalPlatformerPoints);
             regionRepository.save(region);
         }

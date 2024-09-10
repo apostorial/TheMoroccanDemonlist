@@ -16,7 +16,7 @@ public class ClassicLevel extends Level {
     @Min(0)
     private int ranking;
     private Duration duration;
-    private float minPoints;
+    private Double minPoints;
     @Min(1) @Max(100)
     private int minimumCompletion;
     @DBRef

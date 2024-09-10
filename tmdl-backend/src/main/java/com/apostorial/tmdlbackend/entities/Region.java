@@ -11,6 +11,6 @@ public class Region {
     @Id
     private String id;
     private String name;
-    private float classicPoints = 0;
-    private float platformerPoints = 0;
+    private Double classicPoints = 0.0;
+    private Double platformerPoints = 0.0;
 }

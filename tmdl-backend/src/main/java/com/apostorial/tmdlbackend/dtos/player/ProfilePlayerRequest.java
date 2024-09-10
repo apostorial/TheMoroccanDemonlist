@@ -1,6 +1,5 @@
 package com.apostorial.tmdlbackend.dtos.player;
 
-import com.apostorial.tmdlbackend.entities.Region;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,9 +9,9 @@ public class ProfilePlayerRequest {
     private String id;
     private String username;
     private LocalDateTime dateJoined;
-    private Region region;
-    private float classicPoints;
-    private float platformerPoints;
+    private String region;
+    private Double classicPoints;
+    private Double platformerPoints;
     private String discord;
     private String youtube;
     private String twitter;
