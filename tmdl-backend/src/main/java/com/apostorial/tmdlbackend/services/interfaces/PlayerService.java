@@ -15,10 +15,13 @@ public interface PlayerService {
     ProfilePlayerRequest findById(String playerId) throws EntityNotFoundException;
     ProfilePlayerRequest findByUsername(String username) throws EntityNotFoundException;
     List<Player> findAll();
+    List<Player> findAllByClassicPoints();
+    List<Player> findAllByPlatformerPoints();
     List<SearchPlayerRequest> findAllStaff();
     List<Player> findAllByRegionId(String regionId);
     ProfilePlayerRequest getAuthenticatedPlayer() throws EntityNotFoundException, UnauthorizedException;
     UpdatePlayerRequest updateAuthenticatedPlayer(UpdatePlayerRequest request) throws EntityNotFoundException, UnauthorizedException;
     ProfilePlayerRequest uploadAvatar(MultipartFile file) throws EntityNotFoundException, IOException, UnauthorizedException;
     byte[] getAvatar(String playerId) throws EntityNotFoundException, IOException;
+    void addRegion(String regionId) throws EntityNotFoundException, UnauthorizedException;
 }
