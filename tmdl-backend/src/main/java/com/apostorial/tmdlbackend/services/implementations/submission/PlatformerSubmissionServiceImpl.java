@@ -7,6 +7,7 @@ import com.apostorial.tmdlbackend.dtos.submission.UpdatePlatformerSubmissionRequ
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.entities.submission.PlatformerSubmission;
+import com.apostorial.tmdlbackend.enums.Status;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.exceptions.UnauthorizedException;
 import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service @AllArgsConstructor
 public class PlatformerSubmissionServiceImpl implements PlatformerSubmissionService {
@@ -46,16 +48,43 @@ public class PlatformerSubmissionServiceImpl implements PlatformerSubmissionServ
 
     @Override
     public PlatformerSubmission findById(String submissionId) throws EntityNotFoundException {
-        return null;
+        return platformerSubmissionRepository.findById(submissionId)
+                .orElseThrow(() -> new EntityNotFoundException("Platformer submission with id " + submissionId + " not found"));
+    }
+
+    @Override
+    public List<PlatformerSubmission> findByPlayerId(String playerId) {
+        return platformerSubmissionRepository.findByPlayerId(playerId);
+    }
+
+    @Override
+    public List<PlatformerSubmission> findByAuthenticatedPlayer() throws EntityNotFoundException, UnauthorizedException {
+        Player player = securityUtils.getAuthenticatedPlayer();
+        return platformerSubmissionRepository.findByPlayerId(player.getId());
     }
 
     @Override
     public List<PlatformerSubmission> findAll() {
-        return List.of();
+        return platformerSubmissionRepository.findAll();
     }
 
     @Override
-    public void deleteById(String regionId) throws EntityNotFoundException {
+    public void changeStatus(String submissionId, Status status) throws EntityNotFoundException {
+        PlatformerSubmission submission = platformerSubmissionRepository.findById(submissionId)
+                .orElseThrow(() -> new EntityNotFoundException("Platformer submission with id " + submissionId + " not found"));
+        submission.setStatus(status);
+        platformerSubmissionRepository.save(submission);
+    }
 
+    @Override
+    public void deleteById(String submissionId) throws EntityNotFoundException, UnauthorizedException {
+        Player player = securityUtils.getAuthenticatedPlayer();
+        PlatformerSubmission submission = platformerSubmissionRepository.findById(submissionId)
+                .orElseThrow(() -> new EntityNotFoundException("Platformer submission with id " + submissionId + " not found"));
+        if (Objects.equals(player.getId(), submission.getPlayer().getId()) || player.isStaff()) {
+            platformerSubmissionRepository.delete(submission);
+        } else {
+            throw new UnauthorizedException("You are not allowed to delete this platformer submission");
+        }
     }
 }

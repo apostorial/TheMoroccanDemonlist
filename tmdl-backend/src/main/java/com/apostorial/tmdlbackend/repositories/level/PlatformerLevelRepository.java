@@ -5,5 +5,5 @@ import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import java.util.List;
 
 public interface PlatformerLevelRepository extends LevelRepository<PlatformerLevel> {
-    List<PlatformerLevel> findByRecordHolder(String playerId);
+    List<PlatformerLevel> findByRecordHolderId(String playerId);
 }

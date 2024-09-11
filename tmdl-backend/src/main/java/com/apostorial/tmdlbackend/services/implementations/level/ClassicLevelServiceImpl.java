@@ -89,7 +89,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
 
     @Override
     public List<PlayerLevelRequest> findByFirstVictor(String playerId) {
-        return classicLevelRepository.findByFirstVictor(playerId).stream()
+        return classicLevelRepository.findByFirstVictorId(playerId).stream()
                 .map(playerLevelMapper::toDto)
                 .collect(Collectors.toList());
     }

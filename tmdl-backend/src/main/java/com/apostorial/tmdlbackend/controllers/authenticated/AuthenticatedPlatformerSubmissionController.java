@@ -9,10 +9,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController @AllArgsConstructor @PreAuthorize("isAuthenticated()") @RequestMapping("/api/authenticated/platformer-submissions") @SecurityRequirement(name = "bearer-jwt")
 public class AuthenticatedPlatformerSubmissionController {
@@ -23,6 +22,30 @@ public class AuthenticatedPlatformerSubmissionController {
         try {
             PlatformerSubmission submission = platformerSubmissionService.create(request);
             return new ResponseEntity<>(submission, HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<PlatformerSubmission>> getMySubmissions() {
+        try {
+            List<PlatformerSubmission> submissions = platformerSubmissionService.findByAuthenticatedPlayer();
+            return new ResponseEntity<>(submissions, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/delete/{submissionId}")
+    public ResponseEntity<Void> delete(@PathVariable String submissionId) {
+        try {
+            platformerSubmissionService.deleteById(submissionId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

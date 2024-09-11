@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ClassicLevelRepository extends LevelRepository<ClassicLevel> {
     List<ClassicLevel> findByDuration(Duration duration);
-    List<ClassicLevel> findByFirstVictor(String playerId);
+    List<ClassicLevel> findByFirstVictorId(String playerId);
 }

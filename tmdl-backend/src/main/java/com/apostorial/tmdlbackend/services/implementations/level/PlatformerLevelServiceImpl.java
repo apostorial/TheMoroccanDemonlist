@@ -81,7 +81,7 @@ public class PlatformerLevelServiceImpl implements PlatformerLevelService {
 
     @Override
     public List<PlayerLevelRequest> findByRecordHolder(String playerId) {
-        return platformerLevelRepository.findByRecordHolder(playerId).stream()
+        return platformerLevelRepository.findByRecordHolderId(playerId).stream()
                 .map(playerLevelMapper::toDto)
                 .collect(Collectors.toList());
     }

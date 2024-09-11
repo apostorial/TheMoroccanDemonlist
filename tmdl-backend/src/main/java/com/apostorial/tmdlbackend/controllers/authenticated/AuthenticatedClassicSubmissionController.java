@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController @AllArgsConstructor @PreAuthorize("isAuthenticated()") @RequestMapping("/api/authenticated/classic-submissions") @SecurityRequirement(name = "bearer-jwt")
 public class AuthenticatedClassicSubmissionController {
     private final ClassicSubmissionService classicSubmissionService;
@@ -20,6 +22,30 @@ public class AuthenticatedClassicSubmissionController {
         try {
             ClassicSubmission submission = classicSubmissionService.create(request);
             return new ResponseEntity<>(submission, HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<ClassicSubmission>> getMySubmissions() {
+        try {
+            List<ClassicSubmission> submissions = classicSubmissionService.findByAuthenticatedPlayer();
+            return new ResponseEntity<>(submissions, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/delete/{submissionId}")
+    public ResponseEntity<Void> delete(@PathVariable String submissionId) {
+        try {
+            classicSubmissionService.deleteById(submissionId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
