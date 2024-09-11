@@ -23,12 +23,13 @@ interface LevelDetails {
 
 interface Record {
   player: string;
-  recordPercentage: number;
+  recordPercentage?: number;
+  recordTime?: string;
   link: string;
 }
 
 function LevelDetails() {
-  const { id } = useParams<{ id: string }>();
+  const { id, levelType } = useParams<{ id: string; levelType: 'classic' | 'platformer' }>();
   const [level, setLevel] = useState<LevelDetails | null>(null);
   const [records, setRecords] = useState<Record[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,14 +39,14 @@ function LevelDetails() {
     const fetchLevelDetails = async () => {
       try {
         setLoading(true);
-        const levelResponse = await axios.get<LevelDetails>(`/api/public/classic-levels/${id}`);
+        const levelResponse = await axios.get<LevelDetails>(`/api/public/${levelType}-levels/${id}`);
         setLevel(levelResponse.data);
         
-        const recordsResponse = await axios.get<Record[]>(`/api/public/classic-records/level/${id}`);
+        const recordsResponse = await axios.get<Record[]>(`/api/public/${levelType}-records/level/${id}`);
         const fetchedRecords = Array.isArray(recordsResponse.data) ? recordsResponse.data : [];
         setRecords(fetchedRecords);
       } catch (err) {
-        setError('Failed to fetch level details and records');
+        setError(`Failed to fetch ${levelType} level details and records`);
         console.error(err);
       } finally {
         setLoading(false);
@@ -53,7 +54,7 @@ function LevelDetails() {
     };
 
     fetchLevelDetails();
-  }, [id]);
+  }, [id, levelType]);
 
   if (loading) return <div className="text-foreground">Loading...</div>;
   if (error) return <div className="text-destructive">Error: {error}</div>;
@@ -75,6 +76,24 @@ function LevelDetails() {
     return duration.charAt(0).toUpperCase() + duration.slice(1).toLowerCase();
   };
 
+  const formatTime = (time: string | undefined) => {
+    if (!time) return 'N/A';
+    
+    const match = time.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    if (!match) return time;
+
+    const hours = parseInt(match[1]) || 0;
+    const minutes = parseInt(match[2]) || 0;
+    const seconds = parseInt(match[3]) || 0;
+
+    let result = '';
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0 || hours > 0) result += `${minutes}m `;
+    result += `${seconds.toString().padStart(2, '0')}s`;
+
+    return result.trim();
+  };
+
   return (
     <Card className="rounded-lg p-4 mb-4">
       <CardHeader>
@@ -93,30 +112,45 @@ function LevelDetails() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p><span className="font-bold">Level ID:</span> {level.id}</p>
-            <p><span className="font-bold">Duration:</span> {formatDuration(level.duration)}</p>
+            {levelType === 'classic' && (
+              <p><span className="font-bold">Duration:</span> {formatDuration(level.duration)}</p>
+            )}
             <p><span className="font-bold">Difficulty:</span> {formatDifficulty(level.difficulty)}</p>
           </div>
           <div>
             <p><span className="font-bold">Points:</span> {level.points}</p>
-            <p><span className="font-bold">Minimum Points:</span> {level.minPoints}</p>
-            <p><span className="font-bold">Minimum Completion:</span> {level.minimumCompletion}%</p>
+            {levelType === 'classic' && (
+              <>
+                <p><span className="font-bold">Minimum Points:</span> {level.minPoints}</p>
+                <p><span className="font-bold">Minimum Completion:</span> {level.minimumCompletion}%</p>
+              </>
+            )}
           </div>
         </div>
-        <Separator className="my-6" />
+        <Separator className="mt-6 mb-2" />
         <h2 className="text-2xl font-bold mb-4">Records</h2>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Player</TableHead>
-              <TableHead>Percentage</TableHead>
+              <TableHead>{levelType === 'classic' ? 'Percentage' : 'Time'}</TableHead>
               <TableHead>Video</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="hover:text-primary">
             {records.map((record, index) => (
-              <TableRow key={index} className={record.recordPercentage === 100 ? 'font-bold' : ''}>
-                <TableCell><a href={`/profile/${record.player}`} target="_blank">{record.player}</a></TableCell>
-                <TableCell>{record.recordPercentage}%</TableCell>
+              <TableRow key={index} className={
+                levelType === 'classic' && record.recordPercentage === 100 ? 'font-bold' : ''
+              }>
+                <TableCell>
+                  <a href={`/profile/${record.player}`} target="_blank">{record.player}</a>
+                </TableCell>
+                <TableCell>
+                  {levelType === 'classic' 
+                    ? (record.recordPercentage != null ? `${record.recordPercentage}%` : 'N/A')
+                    : formatTime(record.recordTime)
+                  }
+                </TableCell>
                 <TableCell>
                   <Button asChild>
                     <a href={record.link} target="_blank" rel="noopener noreferrer">

@@ -13,13 +13,16 @@ interface LevelCardProps {
   publisher: string;
   thumbnail: string;
   points: number;
+  levelType: 'classic' | 'platformer';
 }
 
-const LevelCard: React.FC<LevelCardProps> = ({ ranking, name, publisher, id, thumbnail, difficulty, points }) => {
+const LevelCard: React.FC<LevelCardProps> = ({ 
+  ranking, name, publisher, id, thumbnail, difficulty, points, levelType 
+}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/level/${id}`);
+    navigate(`/${levelType}/level/${id}`);
   };
 
   const handleCopyLevelId = (e: React.MouseEvent) => {
@@ -51,6 +54,7 @@ const LevelCard: React.FC<LevelCardProps> = ({ ranking, name, publisher, id, thu
             <p><span className="font-semibold">Published by:</span> {publisher}</p>
             <p><span className="font-semibold">Difficulty:</span> {formatDifficulty(difficulty)}</p>
             <p><span className="font-semibold">Points:</span> {points} points</p>
+            <p><span className="font-semibold">Type:</span> {levelType.charAt(0).toUpperCase() + levelType.slice(1)}</p>
             <Button onClick={handleCopyLevelId} className="mt-2" >
               Copy Level ID
             </Button>

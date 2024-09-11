@@ -48,7 +48,7 @@ function Main() {
                 <Route path="/platformer/extended" element={<List level_type="platformer" list_type="extended" />} />
                 <Route path="/platformer/legacy" element={<List level_type="platformer" list_type="legacy" />} />
 
-                <Route path="/level/:id" element={<LevelDetails />} />
+                <Route path="/:levelType/level/:id" element={<LevelDetails />} />
                 <Route path="/guidelines" element={<Guidelines />} />
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />

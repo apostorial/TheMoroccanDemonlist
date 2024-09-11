@@ -14,7 +14,7 @@ interface Level {
 }
 
 interface ListProps {
-  level_type: string;
+  level_type: "classic" | "platformer";
   list_type: string;
 }
 
@@ -57,6 +57,7 @@ function List({ level_type, list_type }: ListProps) {
             thumbnail={level.thumbnail}
             difficulty={level.difficulty}
             points={level.points}
+            levelType={level_type}
           />
         ))
       ) : (
