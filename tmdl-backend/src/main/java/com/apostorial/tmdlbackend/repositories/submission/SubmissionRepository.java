@@ -1,7 +1,8 @@
 package com.apostorial.tmdlbackend.repositories.submission;
 
-import com.apostorial.tmdlbackend.entities.submission.Submission;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
-public interface SubmissionRepository extends MongoRepository<Submission, String> {
+@NoRepositoryBean
+public interface SubmissionRepository<T> extends MongoRepository<T, String> {
 }
