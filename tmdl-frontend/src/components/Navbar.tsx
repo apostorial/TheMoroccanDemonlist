@@ -71,6 +71,10 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
     }
   };
 
+  const handleSubmissionsClick = () => {
+    navigate('/submissions');
+  };
+
   const handleSettingsClick = () => {
     navigate('/settings');
   };
@@ -120,6 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={handleProfileClick}>Profile</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSubmissionsClick}>Submissions</DropdownMenuItem>
                     <DropdownMenuItem onClick={handleSettingsClick}>Settings</DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>Sign out</DropdownMenuItem>
                   </DropdownMenuContent>

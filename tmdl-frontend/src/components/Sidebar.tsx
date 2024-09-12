@@ -165,6 +165,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                         Regions
                       </Button>
                     </li>
+                    <li>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-left text-sm"
+                        onClick={() => {navigate("/staff/submissions");}}
+                      >
+                        Submissions
+                      </Button>
+                    </li>
                   </ul>
                 </div>
               </li>
