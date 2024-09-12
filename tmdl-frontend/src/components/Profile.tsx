@@ -4,6 +4,7 @@ import axios from '../normal-axios';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FaDiscord, FaYoutube, FaTwitter, FaTwitch } from 'react-icons/fa';
@@ -23,6 +24,7 @@ interface PlayerData {
   twitter?: string;
   twitch?: string;
   isStaff: boolean;
+  isActive: boolean;
 }
 
 interface LevelData {
@@ -215,119 +217,129 @@ const Profile = () => {
   }
 
   return (
-    <Card className="rounded-lg p-4 mb-4">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="w-32 h-32">
-              {avatar ? (
-                <AvatarImage 
-                  src={avatar} 
-                  alt={playerData.username}
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <AvatarFallback><User className="w-16 h-16" /></AvatarFallback>
-              )}
-            </Avatar>
-            <div className="flex flex-col gap-2">
-              <CardTitle className="text-3xl font-bold flex items-center gap-2">
-                {playerData.username} {renderSocialMediaIcons()}
-              </CardTitle>
-              <div className="flex flex-col gap-0.5">
-                <p className="font-normal"><span className="font-bold">Region:</span> {regionName}</p>
-                <p className="font-normal"><span className="font-bold">Classic points:</span> {playerData.classicPoints}</p>
-                <p className="font-normal"><span className="font-bold">Platformer points:</span> {playerData.platformerPoints}</p>
+    <>
+      {!playerData.isActive && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTitle>Action Required</AlertTitle>
+          <AlertDescription>
+            Your account is inactive. Please change your username in your account settings to activate your account.
+          </AlertDescription>
+        </Alert>
+      )}
+      <Card className="rounded-lg p-4 mb-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-32 h-32">
+                {avatar ? (
+                  <AvatarImage 
+                    src={avatar} 
+                    alt={playerData.username}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <AvatarFallback><User className="w-16 h-16" /></AvatarFallback>
+                )}
+              </Avatar>
+              <div className="flex flex-col gap-2">
+                <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                  {playerData.username} {renderSocialMediaIcons()}
+                </CardTitle>
+                <div className="flex flex-col gap-0.5">
+                  <p className="font-normal"><span className="font-bold">Region:</span> {regionName}</p>
+                  <p className="font-normal"><span className="font-bold">Classic points:</span> {playerData.classicPoints}</p>
+                  <p className="font-normal"><span className="font-bold">Platformer points:</span> {playerData.platformerPoints}</p>
+                </div>
+                {playerData.isStaff && <Badge variant="destructive" className="max-w-fit">List mod</Badge>}
               </div>
-              {playerData.isStaff && <Badge variant="destructive" className="max-w-fit">List mod</Badge>}
             </div>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="classic" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="classic">Classic</TabsTrigger>
-            <TabsTrigger value="platformer">Platformer</TabsTrigger>
-          </TabsList>
-          <div className="text-2xl font-bold mt-4 mb-2">
-            {activeTab === 'classic' ? 'Classic Details:' : 'Platformer Details:'}
-          </div>
-          <TabsContent value="classic" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="classic" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="classic">Classic</TabsTrigger>
+              <TabsTrigger value="platformer">Platformer</TabsTrigger>
+            </TabsList>
+            <div className="text-2xl font-bold mt-4 mb-2">
+              {activeTab === 'classic' ? 'Classic Details:' : 'Platformer Details:'}
+            </div>
+            <TabsContent value="classic" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {renderLevel(classicData.hardest)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">First victor levels:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {renderLevelList(classicData.firstVictor)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {renderLevelList(classicData.completed)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Level count:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  <Button className='cursor-default'>Main: {classicData.count.main}</Button>
+                  <Button className='cursor-default'>Extended: {classicData.count.extended}</Button>
+                  <Button className='cursor-default'>Legacy: {classicData.count.legacy}</Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="platformer" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                {renderLevel(classicData.hardest)}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">First victor levels:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                {renderLevelList(classicData.firstVictor)}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                {renderLevelList(classicData.completed)}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Level count:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                <Button className='cursor-default'>Main: {classicData.count.main}</Button>
-                <Button className='cursor-default'>Extended: {classicData.count.extended}</Button>
-                <Button className='cursor-default'>Legacy: {classicData.count.legacy}</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="platformer" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                {renderLevel(platformerData.hardest)}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Record holder levels:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                {renderLevelList(platformerData.firstVictor)}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                {renderLevelList(platformerData.completed)}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl font-bold">Level count:</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-1">
-                <Button className='cursor-default'>Main: {platformerData.count.main}</Button>
-                <Button className='cursor-default'>Extended: {platformerData.count.extended}</Button>
-                <Button className='cursor-default'>Legacy: {platformerData.count.legacy}</Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {renderLevel(platformerData.hardest)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Record holder levels:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {renderLevelList(platformerData.firstVictor)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  {renderLevelList(platformerData.completed)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Level count:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  <Button className='cursor-default'>Main: {platformerData.count.main}</Button>
+                  <Button className='cursor-default'>Extended: {platformerData.count.extended}</Button>
+                  <Button className='cursor-default'>Legacy: {platformerData.count.legacy}</Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
