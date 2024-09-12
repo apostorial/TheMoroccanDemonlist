@@ -106,6 +106,7 @@ public class PlayerServiceImpl implements PlayerService {
             player.setYoutube(request.getYoutube());
             player.setTwitter(request.getTwitter());
             player.setTwitch(request.getTwitch());
+            player.setActive(request.getIsActive());
             playerRepository.save(player);
             return updatePlayerMapper.toDTO(player);
         } catch (EntityNotFoundException e) {

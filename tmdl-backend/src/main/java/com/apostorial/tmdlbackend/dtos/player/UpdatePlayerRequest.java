@@ -9,4 +9,5 @@ public class UpdatePlayerRequest {
     private String youtube;
     private String twitter;
     private String twitch;
+    private Boolean isActive;
 }

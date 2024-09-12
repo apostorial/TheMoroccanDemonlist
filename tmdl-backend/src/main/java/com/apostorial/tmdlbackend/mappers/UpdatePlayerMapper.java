@@ -13,6 +13,7 @@ public class UpdatePlayerMapper {
         dto.setYoutube(player.getYoutube());
         dto.setTwitter(player.getTwitter());
         dto.setTwitch(player.getTwitch());
+        dto.setIsActive(player.isActive());
         return dto;
     }
 }
