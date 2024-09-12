@@ -58,11 +58,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                       Legacy list
                     </Button>
                   </li>
-                  <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
-                      Stat Viewer
-                    </Button>
-                  </li>
                 </ul>
               </div>
             </li>
@@ -101,11 +96,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                         Legacy list
                     </Button>
                   </li>
-                  <li>
-                    <Button variant="ghost" className="w-full justify-start text-left text-sm">
-                      Stat Viewer
-                    </Button>
-                  </li>
                 </ul>
               </div>
             </li>
@@ -115,6 +105,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                 onClick={() => {navigate("/leaderboard");}}
                 >
                   Leaderboard
+              </Button>
+            </li>
+            <li>
+              <Button variant="ghost"
+                className="w-full justify-start text-left text-sm"
+                onClick={() => {navigate("/stat-viewer");}}
+                >
+                  Stat Viewer
               </Button>
             </li>
             <li>

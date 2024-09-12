@@ -16,6 +16,7 @@ import StaffRegionList from './StaffRegionList';
 import Leaderboard from './Leaderboard';
 import SubmissionsList from './SubmissionsList';
 import StaffSubmissionsList from './StaffSubmissionsList';
+import StatViewer from './StatViewer';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -54,6 +55,7 @@ function Main() {
                 <Route path="/guidelines" element={<Guidelines />} />
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/stat-viewer" element={<StatViewer />} />
                 <Route path="/submissions" element={<SubmissionsList />} />
                 <Route 
                   path="/settings" 
