@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import jwtAxios from '../jwt-axios';
@@ -16,6 +17,7 @@ interface UserSettings {
   youtube?: string;
   twitter?: string;
   twitch?: string;
+  isActive: boolean;
 }
 
 const Settings: React.FC = () => {
@@ -26,14 +28,17 @@ const Settings: React.FC = () => {
     youtube: '',
     twitter: '',
     twitch: '',
+    isActive: false,
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
+  const [originalUsername, setOriginalUsername] = useState('');
 
   useEffect(() => {
     jwtAxios.get('/api/authenticated/players/profile')
       .then(response => {
         setSettings(response.data);
+        setOriginalUsername(response.data.username);
         fetchAvatar(response.data.id);
       })
       .catch(error => console.error('Error fetching settings:', error));
@@ -57,7 +62,13 @@ const Settings: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings({ ...settings, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setSettings(prev => ({ ...prev, [name]: value }));
+    
+    // If the username is being changed and the account is not active, set isActive to true
+    if (name === 'username' && value !== originalUsername && !settings.isActive) {
+      setSettings(prev => ({ ...prev, isActive: true }));
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +107,11 @@ const Settings: React.FC = () => {
       }
       
       toast.success('Settings updated successfully');
+      
+      // Update the original username if it was changed
+      if (settings.username !== originalUsername) {
+        setOriginalUsername(settings.username);
+      }
     } catch (error) {
       console.error('Error updating settings:', error);
       if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
@@ -109,6 +125,15 @@ const Settings: React.FC = () => {
   };
 
   return (
+    <>
+    {!settings.isActive && (
+      <Alert variant="destructive" className="mb-4">
+        <AlertTitle>Action Required</AlertTitle>
+        <AlertDescription>
+          Your account is inactive. Please change your username to activate your account.
+        </AlertDescription>
+      </Alert>
+    )}
     <Card className="w-full mx-auto">
       <CardHeader>
         <CardTitle>User Settings</CardTitle>
@@ -151,6 +176,11 @@ const Settings: React.FC = () => {
                 Note: File uploads should not exceed 1MB
               </p>
             </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input id="username" name="username" value={settings.username} onChange={handleChange} />
           </div>
           
           <div className="space-y-2">
@@ -213,6 +243,7 @@ const Settings: React.FC = () => {
         </form>
       </CardContent>
     </Card>
+    </>
   );
 };
 
