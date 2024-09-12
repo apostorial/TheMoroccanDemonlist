@@ -17,4 +17,5 @@ public class ProfilePlayerRequest {
     private String twitter;
     private String twitch;
     private Boolean isStaff;
+    private Boolean isActive;
 }

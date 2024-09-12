@@ -19,6 +19,7 @@ public class ProfilePlayerMapper {
         dto.setTwitter(player.getTwitter());
         dto.setTwitch(player.getTwitch());
         dto.setIsStaff(player.isStaff());
+        dto.setIsActive(player.isActive());
         return dto;
     }
 }
