@@ -21,7 +21,7 @@ public class Player {
     private String email;
     private String avatar;
     private boolean isStaff = false;
-    private boolean isActive = true;
+    private boolean isActive = false;
     private LocalDateTime dateJoined = LocalDateTime.now();
     @DBRef
     private Region region;
