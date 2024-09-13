@@ -10,7 +10,7 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+        window.location.href = 'http://www.themoroccandemonlist.live/oauth2/authorization/google';
     };
 
     return (

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 const jwtAxios = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://www.themoroccandemonlist.live',
 });
 
 jwtAxios.interceptors.request.use((config) => {
