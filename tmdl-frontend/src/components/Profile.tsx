@@ -186,14 +186,15 @@ const Profile = () => {
     }
   };
 
-  const renderLevelList = (levels: LevelData[]) => {
+  const renderLevelList = (levels: LevelData[], activeTab: string) => {
+    const levelType = activeTab === 'classic' ? 'classic' : 'platformer';
     if (levels.length === 0) {
       return <Button disabled>No levels available</Button>;
     }
     return (
       <>
         {levels.map((level) => (
-          <a href={`/level/${level.id}`} key={level.id} target="_blank">
+          <a href={`/${levelType}/level/${level.id}`} key={level.id} target="_blank">
             <Button>{level.name}</Button>
           </a>
         ))}
@@ -201,13 +202,18 @@ const Profile = () => {
     );
   };
 
-  const renderLevel = (level: LevelData | null) => {
+  const renderLevel = (level: LevelData | null, activeTab: string) => {
     if (!level) {
       return <Button disabled>No level available</Button>;
     }
+
+    const levelType = activeTab === 'classic' ? 'classic' : 'platformer';
+
     return (
-      <a href={`/level/${level.id}`} target="_blank">
-        <Button>{level.name}</Button>
+      <a href={`/${levelType}/level/${level.id}`} target="_blank">
+        <Button>
+          {level.name}
+        </Button>
       </a>
     );
   };
@@ -270,7 +276,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  {renderLevel(classicData.hardest)}
+                  {renderLevel(classicData.hardest, activeTab)}
                 </CardContent>
               </Card>
               <Card>
@@ -278,7 +284,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">First victor levels:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  {renderLevelList(classicData.firstVictor)}
+                  {renderLevelList(classicData.firstVictor, activeTab)}
                 </CardContent>
               </Card>
               <Card>
@@ -286,7 +292,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  {renderLevelList(classicData.completed)}
+                  {renderLevelList(classicData.completed, activeTab)}
                 </CardContent>
               </Card>
               <Card>
@@ -306,7 +312,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  {renderLevel(platformerData.hardest)}
+                  {renderLevel(platformerData.hardest, activeTab)}
                 </CardContent>
               </Card>
               <Card>
@@ -314,7 +320,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Record holder levels:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  {renderLevelList(platformerData.firstVictor)}
+                  {renderLevelList(platformerData.firstVictor, activeTab)}
                 </CardContent>
               </Card>
               <Card>
@@ -322,7 +328,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Completed levels:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  {renderLevelList(platformerData.completed)}
+                  {renderLevelList(platformerData.completed, activeTab)}
                 </CardContent>
               </Card>
               <Card>
