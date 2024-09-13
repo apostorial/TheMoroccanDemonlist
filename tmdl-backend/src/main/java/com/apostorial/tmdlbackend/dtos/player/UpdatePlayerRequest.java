@@ -10,4 +10,5 @@ public class UpdatePlayerRequest {
     private String twitter;
     private String twitch;
     private Boolean isActive;
+    private String region;
 }

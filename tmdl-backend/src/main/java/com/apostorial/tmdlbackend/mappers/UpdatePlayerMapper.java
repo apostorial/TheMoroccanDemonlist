@@ -14,6 +14,7 @@ public class UpdatePlayerMapper {
         dto.setTwitter(player.getTwitter());
         dto.setTwitch(player.getTwitch());
         dto.setIsActive(player.isActive());
+        dto.setRegion(String.valueOf(player.getRegion()));
         return dto;
     }
 }
