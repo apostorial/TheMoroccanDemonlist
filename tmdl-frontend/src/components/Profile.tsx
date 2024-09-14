@@ -111,8 +111,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(user);
-        console.log(playerData);
         const playerResponse = await axios.get<PlayerData>(`/api/public/players/username/${username}`);
         setPlayerData(playerResponse.data);
         fetchAvatar(playerResponse.data.id);
@@ -230,13 +228,13 @@ const Profile = () => {
   return (
     <>
       {!playerData.isActive && user && user.sub === playerData.email && (
-  <Alert variant="destructive" className="mb-4">
-    <AlertTitle>Action Required</AlertTitle>
-    <AlertDescription>
-      Your account is inactive. Please change your username in your account settings to activate your account.
-    </AlertDescription>
-  </Alert>
-)}
+        <Alert variant="destructive" className="mb-4">
+          <AlertTitle>Action Required</AlertTitle>
+          <AlertDescription>
+            Your account is inactive. Please change your username in your account settings to activate your account.
+          </AlertDescription>
+        </Alert>
+      )}
       <Card className="rounded-lg p-4 mb-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
