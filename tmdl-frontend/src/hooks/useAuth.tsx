@@ -11,8 +11,10 @@ interface User {
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const refreshUser = useCallback(() => {
+  const refreshUser = useCallback(async () => {
+    setLoading(true);
     const token = localStorage.getItem('jwtToken');
     if (token) {
       try {
@@ -27,6 +29,7 @@ export const useAuth = () => {
     } else {
       setUser(null);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -50,5 +53,5 @@ export const useAuth = () => {
     setUser(null);
   };
 
-  return { user, login, logout, refreshUser };
+  return { user, login, logout, refreshUser, loading };
 };

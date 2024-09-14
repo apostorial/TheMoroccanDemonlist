@@ -8,8 +8,12 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, staffOnly = false }) => {
-  const { user } = useAuthContext();
+  const { user, loading } = useAuthContext();
   const location = useLocation();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!user) {
     return <Navigate to="/" state={{ openLogin: true, from: location.pathname }} replace />;
