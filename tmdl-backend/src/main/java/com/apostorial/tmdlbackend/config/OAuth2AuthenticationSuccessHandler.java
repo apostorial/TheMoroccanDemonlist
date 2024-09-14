@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -18,6 +19,8 @@ import java.io.IOException;
 
 @Component @RequiredArgsConstructor @Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    @Value("${redirect.url}")
+    private String redirectURL;
     private final JwtTokenProvider tokenProvider;
     private final PlayerRepository playerRepository;
     private final PlayerDetailsServiceImpl playerDetailsService;
@@ -47,6 +50,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        return "http://localhost:5173/";
+        return redirectURL;
     }
 }

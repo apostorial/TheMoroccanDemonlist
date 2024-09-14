@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private final String jwtSecret = generateSecretKey();
-    private final long jwtExpiration = Long.parseLong(System.getProperty("jwt.expiration"));
 
     public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
         Date currentDate = new Date();
+        long jwtExpiration = 3600000;
         Date expireDate = new Date(currentDate.getTime() + jwtExpiration);
 
         return Jwts.builder()
