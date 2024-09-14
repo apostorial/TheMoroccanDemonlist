@@ -107,6 +107,9 @@ public class PlayerServiceImpl implements PlayerService {
             player.setTwitter(request.getTwitter());
             player.setTwitch(request.getTwitch());
             player.setActive(request.getIsActive());
+            Region region = regionRepository.findById(request.getRegion())
+                    .orElseThrow(() -> new EntityNotFoundException("Region with id " + request.getRegion() + " not found"));
+            player.setRegion(region);
             playerRepository.save(player);
             return updatePlayerMapper.toDTO(player);
         } catch (EntityNotFoundException e) {
