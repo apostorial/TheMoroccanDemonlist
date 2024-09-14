@@ -12,9 +12,11 @@ import { GoDotFill } from "react-icons/go";
 import { User } from "lucide-react";
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAuthContext } from '../contexts/AuthContext';
 
 interface PlayerData {
   id: string;
+  email: string;
   username: string;
   region: string;
   classicPoints: number;
@@ -39,6 +41,7 @@ interface LevelCount {
 }
 
 const Profile = () => {
+  const { user } = useAuthContext();
   const { username } = useParams();
   const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -108,6 +111,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log(user);
+        console.log(playerData);
         const playerResponse = await axios.get<PlayerData>(`/api/public/players/username/${username}`);
         setPlayerData(playerResponse.data);
         fetchAvatar(playerResponse.data.id);
@@ -224,14 +229,14 @@ const Profile = () => {
 
   return (
     <>
-      {!playerData.isActive && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertTitle>Action Required</AlertTitle>
-          <AlertDescription>
-            Your account is inactive. Please change your username in your account settings to activate your account.
-          </AlertDescription>
-        </Alert>
-      )}
+      {!playerData.isActive && user && user.sub === playerData.email && (
+  <Alert variant="destructive" className="mb-4">
+    <AlertTitle>Action Required</AlertTitle>
+    <AlertDescription>
+      Your account is inactive. Please change your username in your account settings to activate your account.
+    </AlertDescription>
+  </Alert>
+)}
       <Card className="rounded-lg p-4 mb-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
