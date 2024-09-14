@@ -12,6 +12,8 @@ import { useAuthContext } from '../contexts/AuthContext';
 
 interface NavbarProps {
   onMenuClick: () => void;
+  isLoginOpen: boolean;
+  setIsLoginOpen: (isOpen: boolean) => void;
 }
 
 interface Profile {
@@ -19,12 +21,11 @@ interface Profile {
   username: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ onMenuClick, isLoginOpen, setIsLoginOpen }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthContext();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   useEffect(() => {
     if (user) {

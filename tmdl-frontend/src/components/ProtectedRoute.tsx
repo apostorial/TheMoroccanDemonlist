@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
@@ -9,9 +9,10 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, staffOnly = false }) => {
   const { user } = useAuthContext();
+  const location = useLocation();
 
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" state={{ openLogin: true, from: location.pathname }} replace />;
   }
 
   if (staffOnly && user.role !== 'STAFF') {

@@ -20,6 +20,7 @@ import StatViewer from './StatViewer';
 
 function Main() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,13 +33,18 @@ function Main() {
       localStorage.setItem('jwtToken', token);
       navigate('/', { replace: true });
     }
+
+    if (location.state && location.state.openLogin) {
+      setIsLoginOpen(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
   }, [location, navigate]);
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex flex-col flex-1">
-        <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
         <main className="flex-1 overflow-y-auto">
           <div className={`grid gap-4 p-4 ${showInfo ? 'grid-cols-1 lg:grid-cols-4' : 'grid-cols-1'}`}>
             <div className={showInfo ? 'lg:col-span-3' : 'col-span-full'}>
@@ -56,7 +62,14 @@ function Main() {
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/stat-viewer" element={<StatViewer />} />
-                <Route path="/submissions" element={<SubmissionsList />} />
+                <Route 
+                  path="/submissions" 
+                  element={
+                    <ProtectedRoute>
+                      <SubmissionsList />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route 
                   path="/settings" 
                   element={
