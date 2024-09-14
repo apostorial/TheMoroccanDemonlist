@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNavigate } from 'react-router-dom';
 
 interface Region {
   id: string;
@@ -21,6 +22,7 @@ interface Player {
 }
 
 const StatViewer: React.FC = () => {
+  const navigate = useNavigate();
   const [regions, setRegions] = useState<Region[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
@@ -29,6 +31,10 @@ const StatViewer: React.FC = () => {
   useEffect(() => {
     fetchRegions();
   }, []);
+
+  const handlePlayerClick = (username: string) => {
+    navigate(`/profile/${username}`);
+  };
 
   useEffect(() => {
     if (regions.length > 0 && !selectedRegion) {
@@ -109,7 +115,11 @@ const StatViewer: React.FC = () => {
             <ScrollArea className="h-[calc(100vh-200px)]">
               <ul className="space-y-2">
                 {players.map((player) => (
-                  <li key={player.id} className="flex justify-between items-center p-2 bg-secondary/20 rounded-lg">
+                  <li 
+                    key={player.id} 
+                    className="flex justify-between items-center p-2 bg-secondary/20 rounded-lg cursor-pointer hover:bg-secondary/30 transition-colors"
+                    onClick={() => handlePlayerClick(player.username)}
+                  >
                     <span>{player.username}</span>
                     <div className="flex space-x-2">
                       <Badge variant="secondary">Classic: {player.classicPoints}</Badge>

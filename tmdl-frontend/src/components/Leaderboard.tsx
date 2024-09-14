@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
 interface Player {
   id: string;
@@ -14,6 +15,7 @@ interface Player {
 }
 
 const Leaderboard: React.FC = () => {
+  const navigate = useNavigate();
   const [classicPlayers, setClassicPlayers] = useState<Player[]>([]);
   const [platformerPlayers, setPlatformerPlayers] = useState<Player[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +24,10 @@ const Leaderboard: React.FC = () => {
   useEffect(() => {
     fetchLeaderboard();
   }, []);
+
+  const handlePlayerClick = (username: string) => {
+    navigate(`/profile/${username}`);
+  };
 
   const fetchLeaderboard = async () => {
     setIsLoading(true);
@@ -64,7 +70,11 @@ const Leaderboard: React.FC = () => {
 
   const renderPlayerList = (players: Player[]) => {
     return players.map((player, index) => (
-      <li key={player.id} className="flex items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
+      <li 
+        key={player.id} 
+        className="flex items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm cursor-pointer hover:bg-secondary/30 transition-colors"
+        onClick={() => handlePlayerClick(player.username)}
+      >
         <div className="flex items-center space-x-4">
           <span className="font-bold text-lg w-8">{index + 1}</span>
           <Avatar className="w-10 h-10">
