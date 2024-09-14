@@ -41,13 +41,15 @@ function Info() {
         <CardContent>
           <p className="mb-2">Contact any of these people if you need assistance regarding the list.</p>
           {staffMembers && staffMembers.length > 0 ? (
-            staffMembers.map((item) => (
-              <a href={`/profile/${item.username}`} target="_blank" key={item.username}>
-                <Button>
-                  {item.username}
-                </Button>
-              </a>
-            ))
+            <div className="flex flex-wrap gap-1">
+              {staffMembers.map((item) => (
+                <a href={`/profile/${item.username}`} target="_blank" key={item.username}>
+                  <Button>
+                    {item.username}
+                  </Button>
+                </a>
+              ))}
+            </div>
           ) : (
             <Button className="w-full" disabled>
               No staff members listed.
