@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
 import jwtAxios from '../jwt-axios';
 import { User, Upload } from "lucide-react";
+import normalAxios from '../normal-axios';
 import axios from 'axios';
 
 interface UserSettings {
@@ -18,6 +20,7 @@ interface UserSettings {
   twitter?: string;
   twitch?: string;
   isActive: boolean;
+  region: string | null;
 }
 
 const Settings: React.FC = () => {
@@ -29,19 +32,39 @@ const Settings: React.FC = () => {
     twitter: '',
     twitch: '',
     isActive: false,
+    region: null,
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
   const [originalUsername, setOriginalUsername] = useState('');
+  const [regions, setRegions] = useState<{ id: string; name: string }[]>([]);
+  const [originalRegion, setOriginalRegion] = useState<string | null>(null);
 
   useEffect(() => {
     jwtAxios.get('/api/authenticated/players/profile')
       .then(response => {
         setSettings(response.data);
         setOriginalUsername(response.data.username);
+        setOriginalRegion(response.data.region);
         fetchAvatar(response.data.id);
       })
       .catch(error => console.error('Error fetching settings:', error));
+  }, []);
+
+  useEffect(() => {
+    normalAxios.get('/api/public/regions')
+      .then(response => {
+        if (Array.isArray(response.data)) {
+          setRegions(response.data);
+        } else {
+          console.error('Unexpected response format for regions:', response.data);
+          setRegions([]);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching regions:', error);
+        setRegions([]);
+      });
   }, []);
 
   const fetchAvatar = async (playerId: string) => {
@@ -64,11 +87,6 @@ const Settings: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSettings(prev => ({ ...prev, [name]: value }));
-    
-    // If the username is being changed and the account is not active, set isActive to true
-    if (name === 'username' && value !== originalUsername && !settings.isActive) {
-      setSettings(prev => ({ ...prev, isActive: true }));
-    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +113,11 @@ const Settings: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      if (settings.username !== originalUsername && !settings.isActive) {
+        setSettings(prev => ({ ...prev, isActive: true }));
+        settings.isActive = true;
+      }
+  
       await jwtAxios.put('/api/authenticated/players/profile/update', settings);
       
       if (newAvatarFile) {
@@ -108,10 +131,11 @@ const Settings: React.FC = () => {
       
       toast.success('Settings updated successfully');
       
-      // Update the original username if it was changed
       if (settings.username !== originalUsername) {
         setOriginalUsername(settings.username);
       }
+      
+      setOriginalRegion(settings.region);
     } catch (error) {
       console.error('Error updating settings:', error);
       if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
@@ -180,12 +204,36 @@ const Settings: React.FC = () => {
           
           <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
-            <Input id="username" name="username" value={settings.username} onChange={handleChange} />
+            <Input id="username" name="username" value={settings.username || ''} onChange={handleChange} />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="region">Region</Label>
+            <Select
+              value={settings.region || ""}
+              onValueChange={(value) => setSettings(prev => ({ ...prev, region: value }))}
+              disabled={originalRegion !== null}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a region" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.isArray(regions) && regions.length > 0 ? (
+                  regions.map((region) => (
+                    <SelectItem key={region.id} value={region.id}>
+                      {region.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="no-regions">No regions available</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="space-y-2">
             <Label htmlFor="discord">Discord</Label>
-            <Input id="discord" name="discord" value={settings.discord} onChange={handleChange} placeholder="@username" />
+            <Input id="discord" name="discord" value={settings.discord || ''} onChange={handleChange} placeholder="@username" />
           </div>
           
           <div className="space-y-2">
@@ -197,7 +245,7 @@ const Settings: React.FC = () => {
               <Input
                 id="youtube"
                 name="youtube"
-                value={settings.youtube?.replace('https://www.youtube.com/@', '')}
+                value={settings.youtube?.replace('https://www.youtube.com/@', '') || ''}
                 onChange={handleSocialChange}
                 className="rounded-l-none"
                 placeholder="username"
@@ -214,7 +262,7 @@ const Settings: React.FC = () => {
               <Input
                 id="twitter"
                 name="twitter"
-                value={settings.twitter?.replace('https://twitter.com/', '')}
+                value={settings.twitter?.replace('https://twitter.com/', '') || ''}
                 onChange={handleSocialChange}
                 className="rounded-l-none"
                 placeholder="username"
@@ -231,7 +279,7 @@ const Settings: React.FC = () => {
               <Input
                 id="twitch"
                 name="twitch"
-                value={settings.twitch?.replace('https://www.twitch.tv/', '')}
+                value={settings.twitch?.replace('https://www.twitch.tv/', '') || ''}
                 onChange={handleSocialChange}
                 className="rounded-l-none"
                 placeholder="username"
