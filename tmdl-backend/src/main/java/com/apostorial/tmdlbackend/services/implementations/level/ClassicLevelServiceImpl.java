@@ -148,6 +148,11 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
         for (ClassicLevel level : levels) {
             int newRanking = rankingMap.get(level.getId());
             level.setRanking(newRanking);
+
+            if (newRanking > 75) {
+                level.setMinimumCompletion(100);
+            }
+
             levelUtils.calculateClassicPoints(level);
             classicLevelRepository.save(level);
 
