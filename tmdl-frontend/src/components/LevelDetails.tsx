@@ -60,13 +60,14 @@ function LevelDetails() {
   if (error) return <div className="text-destructive">Error: {error}</div>;
   if (!level) return <div className="text-foreground">No level data found</div>;
 
-  const getYouTubeVideoId = (url: string) => {
+  const getYouTubeVideoId = (url: string | null | undefined) => {
+    if (!url) return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
-  const videoId = getYouTubeVideoId(level.link);
+  const videoId = level?.link ? getYouTubeVideoId(level.link) : null;
 
   const formatDifficulty = (difficulty: string) => {
     return difficulty.toLowerCase().split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -97,8 +98,8 @@ function LevelDetails() {
   return (
     <Card className="rounded-lg p-4 mb-4">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">#{level.ranking} - {level.name}</CardTitle>
-        <CardTitle className="mb-4"><span className="font-normal">Published by:</span> {level.publisher}</CardTitle>
+        <CardTitle className="text-2xl font-bold">#{level?.ranking} - {level?.name}</CardTitle>
+        <CardTitle className="mb-4"><span className="font-normal">Published by:</span> {level?.publisher}</CardTitle>
       </CardHeader>
       <CardContent>
         {videoId && (
