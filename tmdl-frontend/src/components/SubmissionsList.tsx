@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink } from 'lucide-react';
+import { IoIosLink } from "react-icons/io";
+import { BsFiletypeRaw } from "react-icons/bs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import axios from '../jwt-axios';
 import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Submission {
   id: string;
@@ -17,6 +19,7 @@ interface Submission {
   recordPercentage?: number;
   recordTime?: string;
   link: string;
+  rawFootage?: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
@@ -29,6 +32,7 @@ function SubmissionList() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newSubmission, setNewSubmission] = useState({
     link: '',
+    rawFootage: '',
     comment: '',
     level: '',
     recordPercentage: '',
@@ -69,6 +73,7 @@ function SubmissionList() {
         setLevels(response.data);
       } catch (error) {
         console.error('Error fetching levels:', error);
+        setLevels([]); // Set to empty array in case of error
       }
     };
 
@@ -143,7 +148,7 @@ function SubmissionList() {
       }
       await axios.post(`/api/authenticated/${activeType}-submissions/create`, submissionData);
       setIsDialogOpen(false);
-      setNewSubmission({ link: '', comment: '', level: '', recordPercentage: '', recordTime: '' });
+      setNewSubmission({ link: '', rawFootage: '', comment: '', level: '', recordPercentage: '', recordTime: '' });
       const response = await axios.get(`/api/authenticated/${activeType}-submissions/list`);
       setSubmissions(response.data);
       toast.success("Submission created successfully!");
@@ -197,19 +202,31 @@ function SubmissionList() {
                 <Input id="link" name="link" value={newSubmission.link} onChange={handleInputChange} required />
               </div>
               <div>
+                <Label htmlFor="rawFootage">Raw Footage Link</Label>
+                <Input id="rawFootage" name="rawFootage" value={newSubmission.rawFootage} onChange={handleInputChange} />
+              </div>
+              <div>
                 <Label htmlFor="comment">Comment</Label>
                 <Input id="comment" name="comment" value={newSubmission.comment} onChange={handleInputChange} />
               </div>
               <div>
                 <Label htmlFor="level">Level</Label>
-                <Select name="level" value={newSubmission.level} onValueChange={(value) => handleInputChange({ target: { name: 'level', value } } as any)}>
+                <Select 
+                  name="level" 
+                  value={newSubmission.level} 
+                  onValueChange={(value) => handleInputChange({ target: { name: 'level', value } } as any)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a level" />
                   </SelectTrigger>
                   <SelectContent>
-                    {levels.map((level) => (
-                      <SelectItem key={level.id} value={level.id}>{level.name}</SelectItem>
-                    ))}
+                    {Array.isArray(levels) && levels.length > 0 ? (
+                      levels.map((level) => (
+                        <SelectItem key={level.id} value={level.id}>{level.name}</SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-levels" disabled>No levels available</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -248,8 +265,8 @@ function SubmissionList() {
         </Dialog>
       </div>
 
-      {submissions.length > 0 ? (
-        <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
+      <ScrollArea>
+        <ul className="space-y-4 p-4 rounded-md">
           {submissions.map((submission) => (
             <li key={submission.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
               <div className="flex flex-col mb-2 sm:mb-0">
@@ -264,22 +281,33 @@ function SubmissionList() {
                   }
                 </Badge>
                 {getStatusBadge(submission.status)}
-                <a 
-                  href={submission.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-blue-500 hover:text-blue-700 transition-colors"
-                >
-                  <ExternalLink size={20} />
-                  <span className="sr-only">Video link</span>
-                </a>
+                <div className="flex space-x-2">
+                  <a 
+                    href={submission.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-500 hover:text-blue-700 transition-colors"
+                  >
+                    <IoIosLink size={20} />
+                    <span className="sr-only">Video link</span>
+                  </a>
+                  {submission.rawFootage && (
+                    <a 
+                      href={submission.rawFootage} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-green-500 hover:text-green-700 transition-colors"
+                    >
+                      <BsFiletypeRaw size={20} />
+                      <span className="sr-only">Raw footage</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </li>
           ))}
         </ul>
-      ) : (
-        <p className="text-center mt-4">No submissions found.</p>
-      )}
+      </ScrollArea>
     </div>
   );
 }

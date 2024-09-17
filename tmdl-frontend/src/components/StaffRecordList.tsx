@@ -7,6 +7,7 @@ import { Trash2, ExternalLink } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ClassicRecord {
   id: string;
@@ -113,59 +114,61 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
         <p className="text-sm">Total records: {records.length}</p>
       </div>
       {records.length > 0 ? (
-        <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
-          {records.map((record) => (
-            <li key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
-              <div className="flex flex-col mb-2 sm:mb-0">
-                <span className="font-semibold text-lg">{record.player}</span>
-                <span className="text-sm text-muted-foreground">{getLevelName(record.level)}</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Badge variant="secondary" className="text-sm">
-                  {recordType === 'classic' 
-                    ? `${(record as ClassicRecord).recordPercentage}%`
-                    : formatDuration((record as PlatformerRecord).recordTime)
-                  }
-                </Badge>
-                <a 
-                  href={record.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-blue-500 hover:text-blue-700 transition-colors"
-                >
-                  <ExternalLink size={20} />
-                  <span className="sr-only">Video link</span>
-                </a>
-                <EditRecord
-                    recordType={recordType}
-                    record={record}
-                    onRecordEdited={fetchRecords}
-                    getLevelName={getLevelName}
-                    />
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
-                      <Trash2 size={20} />
-                      <span className="sr-only">Delete record</span>
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the record for <span className="font-semibold">{getLevelName(record.level)}</span> by <span className="font-semibold">{record.player}</span>.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(record.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ScrollArea>
+          <ul className="space-y-4 p-4 rounded-md">
+            {records.map((record) => (
+              <li key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
+                <div className="flex flex-col mb-2 sm:mb-0">
+                  <span className="font-semibold text-lg">{record.player}</span>
+                  <span className="text-sm text-muted-foreground">{getLevelName(record.level)}</span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Badge variant="secondary" className="text-sm">
+                    {recordType === 'classic' 
+                      ? `${(record as ClassicRecord).recordPercentage}%`
+                      : formatDuration((record as PlatformerRecord).recordTime)
+                    }
+                  </Badge>
+                  <a 
+                    href={record.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-500 hover:text-blue-700 transition-colors"
+                  >
+                    <ExternalLink size={20} />
+                    <span className="sr-only">Video link</span>
+                  </a>
+                  <EditRecord
+                      recordType={recordType}
+                      record={record}
+                      onRecordEdited={fetchRecords}
+                      getLevelName={getLevelName}
+                      />
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
+                        <Trash2 size={20} />
+                        <span className="sr-only">Delete record</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the record for <span className="font-semibold">{getLevelName(record.level)}</span> by <span className="font-semibold">{record.player}</span>.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(record.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </ScrollArea>
       ) : (
         <p className="text-center mt-4">No records found.</p>
       )}

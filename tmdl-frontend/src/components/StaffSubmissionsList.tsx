@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../jwt-axios';
 import { toast } from "sonner";
-import { Trash2, ExternalLink } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import { IoIosLink } from "react-icons/io";
+import { BsFiletypeRaw } from "react-icons/bs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Submission {
   id: string;
@@ -14,6 +17,7 @@ interface Submission {
   recordPercentage?: number;
   recordTime?: string;
   link: string;
+  rawFootage?: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
@@ -116,66 +120,81 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
         <p className="text-sm">Total submissions: {submissions.length}</p>
       </div>
       {submissions.length > 0 ? (
-        <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
-          {submissions.map((submission) => (
-            <li key={submission.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
-              <div className="flex flex-col mb-2 sm:mb-0">
-                <span className="font-semibold text-lg">{submission.player}</span>
-                <span className="text-sm text-muted-foreground">{getLevelName(submission.level)}</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Badge variant="secondary" className="text-sm">
-                  {submissionType === 'classic' 
-                    ? `${submission.recordPercentage}%`
-                    : formatDuration(submission.recordTime || '')
-                  }
-                </Badge>
-                <Select
-                  value={submission.status}
-                  onValueChange={(value) => handleStatusChange(submission.id, value as Submission['status'])}
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder="Change status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PENDING">Pending</SelectItem>
-                    <SelectItem value="APPROVED">Approved</SelectItem>
-                    <SelectItem value="REJECTED">Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
-                <a 
-                  href={submission.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-blue-500 hover:text-blue-700 transition-colors"
-                >
-                  <ExternalLink size={20} />
-                  <span className="sr-only">Video link</span>
-                </a>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
-                      <Trash2 size={20} />
-                      <span className="sr-only">Delete submission</span>
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the submission for <span className="font-semibold">{getLevelName(submission.level)}</span> by <span className="font-semibold">{submission.player}</span>.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(submission.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ScrollArea>
+          <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
+            {submissions.map((submission) => (
+              <li key={submission.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
+                <div className="flex flex-col mb-2 sm:mb-0">
+                  <span className="font-semibold text-lg">{submission.player}</span>
+                  <span className="text-sm text-muted-foreground">{getLevelName(submission.level)}</span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Badge variant="secondary" className="text-sm">
+                    {submissionType === 'classic' 
+                      ? `${submission.recordPercentage}%`
+                      : formatDuration(submission.recordTime || '')
+                    }
+                  </Badge>
+                  <Select
+                    value={submission.status}
+                    onValueChange={(value) => handleStatusChange(submission.id, value as Submission['status'])}
+                  >
+                    <SelectTrigger className="w-[120px]">
+                      <SelectValue placeholder="Change status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PENDING">Pending</SelectItem>
+                      <SelectItem value="APPROVED">Approved</SelectItem>
+                      <SelectItem value="REJECTED">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex space-x-2">
+                    <a 
+                      href={submission.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-500 hover:text-blue-700 transition-colors"
+                    >
+                      <IoIosLink size={20} />
+                      <span className="sr-only">Video link</span>
+                    </a>
+                    {submission.rawFootage && (
+                      <a 
+                        href={submission.rawFootage} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-green-500 hover:text-green-700 transition-colors"
+                      >
+                        <BsFiletypeRaw size={20} />
+                        <span className="sr-only">Raw footage</span>
+                      </a>
+                    )}
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
+                        <Trash2 size={20} />
+                        <span className="sr-only">Delete submission</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the submission for <span className="font-semibold">{getLevelName(submission.level)}</span> by <span className="font-semibold">{submission.player}</span>.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(submission.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </ScrollArea>
       ) : (
         <p className="text-center mt-4">No submissions found.</p>
       )}

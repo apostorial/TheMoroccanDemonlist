@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Region {
   id: string;
@@ -148,7 +149,7 @@ const RegionList: React.FC = () => {
 
   return (
     <div className="p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Regions</h2>
         <AddRegion onRegionAdded={fetchRegions} />
       </div>
@@ -156,40 +157,44 @@ const RegionList: React.FC = () => {
         <p className="text-sm">Total regions: {regions.length}</p>
       </div>
       {regions.length > 0 ? (
-        <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
-          {regions.map((region) => (
-            <li key={region.id} className="flex items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
-                <div className="flex flex-col mb-2 sm:mb-0">
-                <span className="font-semibold text-lg">{region.name}</span>
-                <span className="text-sm text-muted-foreground">Classic Points: {region.classicPoints}</span>
-                <span className="text-sm text-muted-foreground">Platformer Points: {region.platformerPoints}</span>
-                </div>
-              <div className="flex items-center space-x-2">
-                <EditRegion region={region} onRegionEdited={fetchRegions} />
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
-                      <Trash2 size={20} />
-                      <span className="sr-only">Delete region</span>
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the region "{region.name}".
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(region.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ScrollArea>
+          <div className="pr-4"> {/* Add padding to the right to account for the scrollbar */}
+            <ul className="space-y-4">
+              {regions.map((region) => (
+                <li key={region.id} className="flex items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
+                  <div className="flex flex-col mb-2 sm:mb-0">
+                    <span className="font-semibold text-lg">{region.name}</span>
+                    <span className="text-sm text-muted-foreground">Classic Points: {region.classicPoints}</span>
+                    <span className="text-sm text-muted-foreground">Platformer Points: {region.platformerPoints}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <EditRegion region={region} onRegionEdited={fetchRegions} />
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
+                          <Trash2 size={20} />
+                          <span className="sr-only">Delete region</span>
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the region "{region.name}".
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(region.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </ScrollArea>
       ) : (
         <p className="text-center mt-4">No regions found.</p>
       )}

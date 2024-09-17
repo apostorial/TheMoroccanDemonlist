@@ -12,6 +12,7 @@ import { GripVertical } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Level {
   id: string;
@@ -185,17 +186,19 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
           items={levels.map(level => level.id)}
           strategy={verticalListSortingStrategy}
         >
-          <ul className="space-y-2 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
-            {levels.map((level) => (
-              <SortableLevel 
-                key={level.id} 
-                level={level} 
-                levelType={levelType} 
-                onLevelEdited={handleLevelEdited} 
-                onLevelDeleted={handleLevelDeleted}
-              />
-            ))}
-          </ul>
+          <ScrollArea>
+            <ul className="space-y-2 p-4 rounded-md">
+              {levels.map((level) => (
+                <SortableLevel 
+                  key={level.id} 
+                  level={level} 
+                  levelType={levelType} 
+                  onLevelEdited={handleLevelEdited} 
+                  onLevelDeleted={handleLevelDeleted}
+                />
+              ))}
+            </ul>
+          </ScrollArea>
         </SortableContext>
       </DndContext>
       {levels.length === 0 && (
