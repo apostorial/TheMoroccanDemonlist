@@ -13,6 +13,7 @@ import { Trash2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2 } from 'lucide-react';
 
 interface Level {
   id: string;
@@ -98,6 +99,7 @@ const SortableLevel: React.FC<{ level: Level; levelType: 'classic' | 'platformer
 
 const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ levelType }) => {
   const [levels, setLevels] = useState<Level[]>([]);
+  const [isReordering, setIsReordering] = useState(false);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -115,14 +117,14 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
       setLevels(response.data.sort((a: Level, b: Level) => a.ranking - b.ranking));
     } catch (error) {
       console.error('Error fetching levels:', error);
-      toast.error('Failed to fetch levels');
     }
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
+      setIsReordering(true);
       setLevels((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
@@ -151,6 +153,8 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
       console.error('Error updating level rankings:', error);
       toast.error('Failed to update level rankings');
       fetchLevels();
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -173,8 +177,14 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
         <h2 className="text-2xl font-bold">{levelType.charAt(0).toUpperCase() + levelType.slice(1)} Levels</h2>
         <AddLevel levelType={levelType} onLevelAdded={handleLevelAdded} />
       </div>
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between mt-1">
         <p className="text-sm mt-1">Total levels: {levels.length}</p>
+        {isReordering && (
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Reordering... Please wait until reordering is complete.
+          </div>
+        )}
       </div>
       <DndContext 
         sensors={sensors}
