@@ -45,7 +45,6 @@ const SortableLevel: React.FC<{ level: Level; levelType: 'classic' | 'platformer
   const handleDelete = async () => {
     try {
       await axios.delete(`/api/staff/${levelType}-levels/delete/${level.id}`);
-      toast.success('Level deleted successfully');
       onLevelDeleted();
     } catch (error) {
       console.error('Error deleting level:', error);
@@ -163,8 +162,9 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
     fetchLevels();
   };
 
-  const handleLevelDeleted = () => {
-    fetchLevels();
+  const handleLevelDeleted = (deletedLevelId: string) => {
+    setLevels(prevLevels => prevLevels.filter(level => level.id !== deletedLevelId));
+    toast.success('Level deleted successfully');
   };
 
   return (
@@ -194,7 +194,7 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
                   level={level} 
                   levelType={levelType} 
                   onLevelEdited={handleLevelEdited} 
-                  onLevelDeleted={handleLevelDeleted}
+                  onLevelDeleted={() => handleLevelDeleted(level.id)}
                 />
               ))}
             </ul>
