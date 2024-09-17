@@ -31,7 +31,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
 
-        playerRepository.findByEmail(email)
+        Player player = playerRepository.findByEmail(email)
                 .orElseGet(() -> {
                     Player newPlayer = new Player();
                     newPlayer.setEmail(email);
@@ -40,7 +40,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 });
 
         UserDetails userDetails = playerDetailsService.loadUserByUsername(email);
-        String token = tokenProvider.generateToken(email, userDetails.getAuthorities());
+        String token = tokenProvider.generateToken(player.getId(), email, userDetails.getAuthorities());
         log.error(token);
 
         String url = determineTargetUrl(request, response, authentication);

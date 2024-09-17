@@ -18,13 +18,14 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private final String jwtSecret = generateSecretKey();
 
-    public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
+    public String generateToken(String playerId, String email, Collection<? extends GrantedAuthority> authorities) {
         Date currentDate = new Date();
         long jwtExpiration = 3600000;
         Date expireDate = new Date(currentDate.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .subject(email)
+                .subject(playerId)
+                .claim("email", email)
                 .claim("authorities", authorities.stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.toList()))
@@ -46,13 +47,22 @@ public class JwtTokenProvider {
         return Base64.getEncoder().encodeToString(keyBytes);
     }
 
-    public String getEmail(String token){
+    public String getUserId(String token){
         return Jwts.parser()
                 .verifyWith((SecretKey) key())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    public String getEmail(String token){
+        return Jwts.parser()
+                .verifyWith((SecretKey) key())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("email", String.class);
     }
 
     public boolean validateToken(String token){
