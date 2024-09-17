@@ -1,5 +1,6 @@
 package com.apostorial.tmdlbackend.controllers.open;
 
+import com.apostorial.tmdlbackend.dtos.player.DataPlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.ProfilePlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.SearchPlayerRequest;
 import com.apostorial.tmdlbackend.entities.Player;
@@ -46,9 +47,9 @@ public class PublicPlayerController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Player>> findAll() {
+    public ResponseEntity<List<ProfilePlayerRequest>> findAll() {
         try {
-            List<Player> players = playerService.findAll();
+            List<ProfilePlayerRequest> players = playerService.findAll();
             if (players.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -59,9 +60,9 @@ public class PublicPlayerController {
     }
 
     @GetMapping("/classic-points")
-    public ResponseEntity<List<Player>> findAllByClassicPoints() {
+    public ResponseEntity<List<DataPlayerRequest>> findAllByClassicPoints() {
         try {
-            List<Player> players = playerService.findAllByClassicPoints();
+            List<DataPlayerRequest> players = playerService.findAllByClassicPoints();
             if (players.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -72,9 +73,9 @@ public class PublicPlayerController {
     }
 
     @GetMapping("/platformer-points")
-    public ResponseEntity<List<Player>> findAllByPlatformerPoints() {
+    public ResponseEntity<List<DataPlayerRequest>> findAllByPlatformerPoints() {
         try {
-            List<Player> players = playerService.findAllByPlatformerPoints();
+            List<DataPlayerRequest> players = playerService.findAllByPlatformerPoints();
             if (players.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -85,9 +86,9 @@ public class PublicPlayerController {
     }
 
     @GetMapping("/region/{regionId}")
-    public ResponseEntity<List<Player>> findAllByRegionId(@PathVariable("regionId") String regionId) {
+    public ResponseEntity<List<DataPlayerRequest>> findAllRequestsByRegionId(@PathVariable("regionId") String regionId) {
         try {
-            List<Player> players = playerService.findAllByRegionId(regionId);
+            List<DataPlayerRequest> players = playerService.findAllRequestsByRegionId(regionId);
             if (players.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

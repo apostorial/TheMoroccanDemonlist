@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 @Data
 public class ProfilePlayerRequest {
     private String id;
-    private String email;
     private String username;
     private LocalDateTime dateJoined;
     private String region;

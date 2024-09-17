@@ -20,7 +20,6 @@ public class ProfilePlayerMapper {
         dto.setTwitch(player.getTwitch());
         dto.setIsStaff(player.isStaff());
         dto.setIsActive(player.isActive());
-        dto.setEmail(player.getEmail());
         return dto;
     }
 }

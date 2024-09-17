@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.services.implementations;
 
 import com.apostorial.tmdlbackend.config.SecurityUtils;
+import com.apostorial.tmdlbackend.dtos.player.DataPlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.ProfilePlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.SearchPlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.UpdatePlayerRequest;
@@ -8,6 +9,7 @@ import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.Region;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.exceptions.UnauthorizedException;
+import com.apostorial.tmdlbackend.mappers.DataPlayerMapper;
 import com.apostorial.tmdlbackend.mappers.ProfilePlayerMapper;
 import com.apostorial.tmdlbackend.mappers.SearchPlayerMapper;
 import com.apostorial.tmdlbackend.mappers.UpdatePlayerMapper;
@@ -16,6 +18,7 @@ import com.apostorial.tmdlbackend.repositories.RegionRepository;
 import com.apostorial.tmdlbackend.services.interfaces.PlayerService;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,7 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service @RequiredArgsConstructor
+@Service @RequiredArgsConstructor @Slf4j
 public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
     private final RegionRepository regionRepository;
@@ -39,6 +42,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final ProfilePlayerMapper profilePlayerMapper;
     private final UpdatePlayerMapper updatePlayerMapper;
     private final SearchPlayerMapper searchPlayerMapper;
+    private final DataPlayerMapper dataPlayerMapper;
     private final GridFsTemplate gridFsTemplate;
     private final GridFsOperations gridFsOperations;
 
@@ -59,23 +63,28 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<Player> findAll() {
-        return playerRepository.findAll();
-    }
-
-    @Override
-    public List<Player> findAllByClassicPoints() {
+    public List<ProfilePlayerRequest> findAll() {
         return playerRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparingDouble(Player::getClassicPoints).reversed())
+                .map(profilePlayerMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Player> findAllByPlatformerPoints() {
+    public List<DataPlayerRequest> findAllByClassicPoints() {
+        return playerRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingDouble(Player::getClassicPoints).reversed())
+                .map(dataPlayerMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DataPlayerRequest> findAllByPlatformerPoints() {
         return playerRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparingDouble(Player::getPlatformerPoints).reversed())
+                .map(dataPlayerMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -89,6 +98,14 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public List<Player> findAllByRegionId(String regionId) {
         return playerRepository.findAllByRegionId(regionId);
+    }
+
+    @Override
+    public List<DataPlayerRequest> findAllRequestsByRegionId(String regionId) {
+        return playerRepository.findAllByRegionId(regionId)
+                .stream()
+                .map(dataPlayerMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
