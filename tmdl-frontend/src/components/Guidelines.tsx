@@ -106,7 +106,7 @@ function Guidelines() {
           <CardContent>
             <ul className="list-disc pl-5 space-y-1">
               <li>Audible clicks are required (no click sound mods, excluding mobile players).</li>
-              <li>The completion must come with raw footage, no less than 2 minutes.</li>
+              <li>Extreme demon completions require raw footage (atleast 2 minutes of gameplay before completion attempt)</li>
               <li>2 player levels will require a recording with a hand cam.</li>
               <li>Extreme demons must have cheat indicator on (IOS players excluded).</li>
               <li>The recording must show the level being completed from 0% until 100% and show the full level complete screen.</li>
