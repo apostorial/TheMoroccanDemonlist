@@ -112,7 +112,7 @@ const AddLevel: React.FC<AddLevelProps> = ({ levelType, onLevelAdded }) => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="minimumCompletion">Min Completion (%)</Label>
+                <Label htmlFor="minimumCompletion">List Percentage (%)</Label>
                 <Input id="minimumCompletion" name="minimumCompletion" type="number" min="0" max="100" value={formData.minimumCompletion} onChange={handleInputChange} placeholder="55" required />
               </div>
             </>
