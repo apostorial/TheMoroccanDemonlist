@@ -90,16 +90,18 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, isLoginOpen, setIsLoginOpe
               <Button variant="ghost" className="md:hidden mr-2 text-gray-200" onClick={onMenuClick}>
                 <Menu className="h-6 w-6" />
               </Button>
-              {/* <div className="relative max-w-xs w-full mr-4">
+              {/* <div className="relative max-w-xs w-full mr-4"> */}
+              <div className="relative w-full mr-4">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5" />
+                  {/* <Search className="h-5 w-5" /> */}
                 </div>
-                <Input
+                {/* <Input
                   type="search"
                   placeholder="Search"
                   className="block w-full pl-10 pr-3 py-2 border rounded-md leading-5 focus:outline-none focus:ring-1 sm:text-sm"
-                />
-              </div> */}
+                /> */}
+                <p>Welcome to The Official Moroccan List Website!</p>
+              </div>
             </div>
             
             <div className="flex items-center">

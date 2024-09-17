@@ -3,7 +3,6 @@ package com.apostorial.tmdlbackend.controllers.open;
 import com.apostorial.tmdlbackend.dtos.player.DataPlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.ProfilePlayerRequest;
 import com.apostorial.tmdlbackend.dtos.player.SearchPlayerRequest;
-import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.PlayerService;
 import lombok.AllArgsConstructor;
