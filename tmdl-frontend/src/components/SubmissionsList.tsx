@@ -73,7 +73,7 @@ function SubmissionList() {
         setLevels(response.data);
       } catch (error) {
         console.error('Error fetching levels:', error);
-        setLevels([]); // Set to empty array in case of error
+        setLevels([]);
       }
     };
 
