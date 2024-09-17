@@ -4,7 +4,6 @@ import axios from '../normal-axios';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FaDiscord, FaYoutube, FaTwitter, FaTwitch } from 'react-icons/fa';
@@ -12,11 +11,9 @@ import { GoDotFill } from "react-icons/go";
 import { User } from "lucide-react";
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useAuthContext } from '../contexts/AuthContext';
 
 interface PlayerData {
   id: string;
-  email: string;
   username: string;
   region: string;
   classicPoints: number;
@@ -41,7 +38,6 @@ interface LevelCount {
 }
 
 const Profile = () => {
-  const { user } = useAuthContext();
   const { username } = useParams();
   const [playerData, setPlayerData] = useState<PlayerData | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -227,14 +223,6 @@ const Profile = () => {
 
   return (
     <>
-      {!playerData.isActive && user && user.sub === playerData.email && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertTitle>Action Required</AlertTitle>
-          <AlertDescription>
-            Your account is inactive. Please change your username in your account settings to activate your account.
-          </AlertDescription>
-        </Alert>
-      )}
       <Card className="rounded-lg p-4 mb-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
