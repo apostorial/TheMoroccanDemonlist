@@ -202,7 +202,7 @@ function SubmissionList() {
                 <Input id="link" name="link" value={newSubmission.link} onChange={handleInputChange} required />
               </div>
               <div>
-                <Label htmlFor="rawFootage">Raw Footage Link</Label>
+                <Label htmlFor="rawFootage">Raw Footage Link (Optional - Only mandatory for Extreme Demons)</Label>
                 <Input id="rawFootage" name="rawFootage" value={newSubmission.rawFootage} onChange={handleInputChange} />
               </div>
               <div>

@@ -123,7 +123,7 @@ function LevelDetails() {
             {levelType === 'classic' && (
               <>
                 <p><span className="font-bold">Minimum Points:</span> {level.minPoints}</p>
-                <p><span className="font-bold">Minimum Completion:</span> {level.minimumCompletion}%</p>
+                <p><span className="font-bold">List Percentage:</span> {level.minimumCompletion}%</p>
               </>
             )}
           </div>
