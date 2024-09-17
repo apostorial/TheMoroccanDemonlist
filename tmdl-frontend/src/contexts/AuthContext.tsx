@@ -1,8 +1,15 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useAuth as useAuthHook } from '../hooks/useAuth';
 
+interface User {
+  id: string;
+  email: string;
+  authorities: string[];
+  role: 'STAFF' | 'USER';
+}
+
 interface AuthContextType {
-  user: any;
+  user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
