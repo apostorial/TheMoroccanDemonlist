@@ -31,6 +31,7 @@ public class ClassicSubmissionServiceImpl implements ClassicSubmissionService {
         ClassicSubmission classicSubmission = new ClassicSubmission();
         classicSubmission.setPlayer(player);
         classicSubmission.setLink(request.getLink());
+        classicSubmission.setRawFootage(request.getRawFootage());
         classicSubmission.setComment(request.getComment());
         if (request.getLevel() != null) {
             ClassicLevel level = classicLevelRepository.findById(request.getLevel())
