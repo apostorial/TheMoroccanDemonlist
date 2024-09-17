@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import jwtAxios from '../jwt-axios';
 import { useNavigate } from 'react-router-dom';
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, User, Menu, LogIn } from "lucide-react";
+// import { Search, User, Menu, LogIn } from "lucide-react";
+import { User, Menu, LogIn } from "lucide-react";
 import { ThemeSwitcher } from './ThemeSwitcher';
 import Login from './Login';
 import { useAuthContext } from '../contexts/AuthContext';
@@ -89,7 +90,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, isLoginOpen, setIsLoginOpe
               <Button variant="ghost" className="md:hidden mr-2 text-gray-200" onClick={onMenuClick}>
                 <Menu className="h-6 w-6" />
               </Button>
-              <div className="relative max-w-xs w-full mr-4">
+              {/* <div className="relative max-w-xs w-full mr-4">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-5 w-5" />
                 </div>
@@ -98,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, isLoginOpen, setIsLoginOpe
                   placeholder="Search"
                   className="block w-full pl-10 pr-3 py-2 border rounded-md leading-5 focus:outline-none focus:ring-1 sm:text-sm"
                 />
-              </div>
+              </div> */}
             </div>
             
             <div className="flex items-center">
