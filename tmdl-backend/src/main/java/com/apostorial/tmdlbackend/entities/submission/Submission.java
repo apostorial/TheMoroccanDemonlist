@@ -19,6 +19,7 @@ public abstract class Submission {
     @DBRef
     private Player player;
     private URL link;
+    private URL rawFootage;
     private String comment;
     private LocalDateTime submissionDate = LocalDateTime.now();
     private LocalDateTime approvalDate;

@@ -31,6 +31,7 @@ public class PlatformerSubmissionServiceImpl implements PlatformerSubmissionServ
         PlatformerSubmission platformerSubmission = new PlatformerSubmission();
         platformerSubmission.setPlayer(player);
         platformerSubmission.setLink(request.getLink());
+        platformerSubmission.setRawFootage(request.getRawFootage());
         platformerSubmission.setComment(request.getComment());
         if (request.getLevel() != null) {
             PlatformerLevel level = platformerLevelRepository.findById(request.getLevel())

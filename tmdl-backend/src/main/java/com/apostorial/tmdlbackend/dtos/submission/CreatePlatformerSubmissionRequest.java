@@ -8,6 +8,7 @@ import java.time.Duration;
 @Data
 public class CreatePlatformerSubmissionRequest {
     private URL link;
+    private URL rawFootage;
     private String comment;
     private String level;
     private Duration recordTime;
