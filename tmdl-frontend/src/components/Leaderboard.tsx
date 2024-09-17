@@ -3,8 +3,9 @@ import axios from '../normal-axios';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucide-react";
+import { User, Medal } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Player {
   id: string;
@@ -68,6 +69,19 @@ const Leaderboard: React.FC = () => {
     return points.toFixed(2);
   };
 
+  const getMedalIcon = (index: number) => {
+    switch(index) {
+      case 0:
+        return <Medal className="w-6 h-6 text-yellow-400" />; // Gold
+      case 1:
+        return <Medal className="w-6 h-6 text-gray-400" />; // Silver
+      case 2:
+        return <Medal className="w-6 h-6 text-amber-600" />; // Bronze
+      default:
+        return null;
+    }
+  };
+
   const renderPlayerList = (players: Player[]) => {
     return players.map((player, index) => (
       <li 
@@ -76,7 +90,9 @@ const Leaderboard: React.FC = () => {
         onClick={() => handlePlayerClick(player.username)}
       >
         <div className="flex items-center space-x-4">
-          <span className="font-bold text-lg w-8">{index + 1}</span>
+          <span className="font-bold text-lg w-8 flex items-center justify-center">
+            {getMedalIcon(index) || (index + 1)}
+          </span>
           <Avatar className="w-10 h-10">
             {player.avatarUrl ? (
               <AvatarImage src={player.avatarUrl} alt={player.username} className="object-cover w-full h-full"/>
@@ -116,12 +132,14 @@ const Leaderboard: React.FC = () => {
           </Button>
         </div>
       </div>
-      <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-200px)] overflow-y-auto">
-        {activeTab === 'classic' 
-          ? renderPlayerList(classicPlayers)
-          : renderPlayerList(platformerPlayers)
-        }
-      </ul>
+      <ScrollArea className="h-[calc(100vh-200px)]">
+        <ul className="space-y-4 p-4 rounded-md">
+          {activeTab === 'classic' 
+            ? renderPlayerList(classicPlayers)
+            : renderPlayerList(platformerPlayers)
+          }
+        </ul>
+      </ScrollArea>
     </div>
   );
 };
