@@ -82,7 +82,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
                     .collect(Collectors.toList());
             case "legacy" -> levels.size() <= 151
                     ? Collections.emptyList()
-                    : levels.subList(151, levels.size());
+                    : levels.subList(150, levels.size());
             default -> levels;
         };
     }
