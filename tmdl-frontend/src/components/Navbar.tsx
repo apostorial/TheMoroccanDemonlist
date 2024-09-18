@@ -100,7 +100,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick, isLoginOpen, setIsLoginOpe
                   placeholder="Search"
                   className="block w-full pl-10 pr-3 py-2 border rounded-md leading-5 focus:outline-none focus:ring-1 sm:text-sm"
                 /> */}
-                <p>Welcome to The Official Moroccan List Website!</p>
+                <p className="welcome-text">Welcome to The Official Moroccan List Website!</p>
               </div>
             </div>
             

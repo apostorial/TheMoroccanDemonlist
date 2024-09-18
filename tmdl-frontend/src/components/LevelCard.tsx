@@ -42,19 +42,18 @@ const LevelCard: React.FC<LevelCardProps> = ({
       className="w-full cursor-pointer hover:shadow-lg transition-shadow"
       onClick={handleClick}
     >
-      <CardContent className="p-4 flex">
-        <div className="w-1/4 mr-4">
+      <CardContent className="p-4 flex flex-col sm:flex-row">
+        <div className="w-full sm:w-1/4 mb-4 sm:mb-0 sm:mr-4">
           <AspectRatio ratio={16 / 9}>
-              <img src={thumbnail} alt={`Thumbnail for ${name}`} className="object-cover w-full h-full rounded-lg" />
+            <img src={thumbnail} alt={`Thumbnail for ${name}`} className="object-cover w-full h-full rounded-lg" />
           </AspectRatio>
         </div>
-        <div className="w-2/3 flex flex-col justify-between">
+        <div className="w-full sm:w-2/3 flex flex-col justify-between">
           <div>
             <h2 className="text-lg font-bold">#{ranking} - {name}</h2>
             <p><span className="font-semibold">Published by:</span> {publisher}</p>
             <p><span className="font-semibold">Difficulty:</span> {formatDifficulty(difficulty)}</p>
             <p><span className="font-semibold">Points:</span> {points} points</p>
-            <p><span className="font-semibold">Type:</span> {levelType.charAt(0).toUpperCase() + levelType.slice(1)}</p>
             <Button onClick={handleCopyLevelId} className="mt-2" >
               Copy Level ID
             </Button>

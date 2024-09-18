@@ -86,23 +86,23 @@ const Leaderboard: React.FC = () => {
     return players.map((player, index) => (
       <li 
         key={player.id} 
-        className="flex items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm cursor-pointer hover:bg-secondary/30 transition-colors"
+        className="flex flex-col sm:flex-row items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm cursor-pointer hover:bg-secondary/30 transition-colors"
         onClick={() => handlePlayerClick(player.username)}
       >
-        <div className="flex items-center space-x-4">
-          <span className="font-bold text-lg w-8 flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row items-center sm:space-x-4 mb-2 sm:mb-0">
+          <span className="font-bold text-lg w-8 flex items-center justify-center mb-2 sm:mb-0">
             {getMedalIcon(index) || (index + 1)}
           </span>
-          <Avatar className="w-10 h-10">
+          <Avatar className="w-16 h-16 sm:w-10 sm:h-10 mb-2 sm:mb-0">
             {player.avatarUrl ? (
               <AvatarImage src={player.avatarUrl} alt={player.username} className="object-cover w-full h-full"/>
             ) : (
               <AvatarFallback><User className="w-6 h-6" /></AvatarFallback>
             )}
           </Avatar>
-          <span className="font-semibold">{player.username}</span>
+          <span className="font-semibold text-center sm:text-left">{player.username}</span>
         </div>
-        <span className="font-bold">
+        <span className="font-bold mt-2 sm:mt-0">
           {formatPoints(activeTab === 'classic' ? player.classicPoints : player.platformerPoints)} points
         </span>
       </li>
@@ -114,26 +114,28 @@ const Leaderboard: React.FC = () => {
   }
 
   return (
-    <div className="p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Leaderboard</h2>
-        <div className="space-x-2">
+    <div className="p-4 sm:p-6 rounded-lg shadow-md">
+      <div className="flex flex-col xs:flex-row justify-between items-center mb-4 space-y-2 xs:space-y-0">
+        <h2 className="text-2xl font-bold mb-2 xs:mb-0">Leaderboard</h2>
+        <div className="flex space-x-2">
           <Button 
             onClick={() => setActiveTab('classic')} 
             variant={activeTab === 'classic' ? 'default' : 'outline'}
+            size="sm"
           >
             Classic
           </Button>
           <Button 
             onClick={() => setActiveTab('platformer')} 
             variant={activeTab === 'platformer' ? 'default' : 'outline'}
+            size="sm"
           >
             Platformer
           </Button>
         </div>
       </div>
       <ScrollArea className="h-[calc(100vh-200px)]">
-        <ul className="space-y-4 p-4 rounded-md">
+        <ul className="space-y-4 p-4 rounded-md sm:pl-4 pl-1">
           {activeTab === 'classic' 
             ? renderPlayerList(classicPlayers)
             : renderPlayerList(platformerPlayers)

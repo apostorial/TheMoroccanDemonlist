@@ -201,6 +201,10 @@ const Profile = () => {
     );
   };
 
+  const formatPoints = (points: number): string => {
+    return points.toFixed(2);
+  };
+
   const renderLevel = (level: LevelData | null, activeTab: string) => {
     if (!level) {
       return <Button disabled>No level available</Button>;
@@ -225,30 +229,28 @@ const Profile = () => {
     <>
       <Card className="rounded-lg p-4 mb-4">
         <CardHeader>
-          <CardTitle className="flex items-center gap-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="w-32 h-32">
-                {avatar ? (
-                  <AvatarImage 
-                    src={avatar} 
-                    alt={playerData.username}
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <AvatarFallback><User className="w-16 h-16" /></AvatarFallback>
-                )}
-              </Avatar>
-              <div className="flex flex-col gap-2">
-                <CardTitle className="text-3xl font-bold flex items-center gap-2">
-                  {playerData.username} {renderSocialMediaIcons()}
-                </CardTitle>
-                <div className="flex flex-col gap-0.5">
-                  <p className="font-normal"><span className="font-bold">Region:</span> {regionName}</p>
-                  <p className="font-normal"><span className="font-bold">Classic points:</span> {playerData.classicPoints}</p>
-                  <p className="font-normal"><span className="font-bold">Platformer points:</span> {playerData.platformerPoints}</p>
-                </div>
-                {playerData.isStaff && <Badge variant="destructive" className="max-w-fit">List mod</Badge>}
+          <CardTitle className="flex flex-col sm:flex-row items-center gap-4">
+            <Avatar className="w-32 h-32">
+              {avatar ? (
+                <AvatarImage 
+                  src={avatar} 
+                  alt={playerData.username}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <AvatarFallback><User className="w-16 h-16" /></AvatarFallback>
+              )}
+            </Avatar>
+            <div className="flex flex-col items-center sm:items-start gap-2 mt-4 sm:mt-0">
+              <CardTitle className="text-3xl font-bold flex items-center gap-2 text-center sm:text-left">
+                {playerData.username} {renderSocialMediaIcons()}
+              </CardTitle>
+              <div className="flex flex-col gap-0.5 items-center sm:items-start">
+                <p className="font-normal"><span className="font-bold">Region:</span> {regionName}</p>
+                <p className="font-normal"><span className="font-bold">Classic points:</span> {formatPoints(playerData.classicPoints)}</p>
+                <p className="font-normal"><span className="font-bold">Platformer points:</span> {formatPoints(playerData.platformerPoints)}</p>
               </div>
+              {playerData.isStaff && <Badge variant="destructive" className="max-w-fit mt-2 sm:mt-0">List mod</Badge>}
             </div>
           </CardTitle>
         </CardHeader>
@@ -272,6 +274,16 @@ const Profile = () => {
               </Card>
               <Card>
                 <CardHeader>
+                  <CardTitle className="text-xl font-bold">Level count:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  <Button className='cursor-default'>Main: {classicData.count.main}</Button>
+                  <Button className='cursor-default'>Extended: {classicData.count.extended}</Button>
+                  <Button className='cursor-default'>Legacy: {classicData.count.legacy}</Button>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
                   <CardTitle className="text-xl font-bold">First victor levels:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
@@ -286,24 +298,24 @@ const Profile = () => {
                   {renderLevelList(classicData.completed, activeTab)}
                 </CardContent>
               </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">Level count:</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-1">
-                  <Button className='cursor-default'>Main: {classicData.count.main}</Button>
-                  <Button className='cursor-default'>Extended: {classicData.count.extended}</Button>
-                  <Button className='cursor-default'>Legacy: {classicData.count.legacy}</Button>
-                </CardContent>
-              </Card>
             </TabsContent>
             <TabsContent value="platformer" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card>
+              <Card>
                 <CardHeader>
                   <CardTitle className="text-xl font-bold">Hardest level:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
                   {renderLevel(platformerData.hardest, activeTab)}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold">Level count:</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-1">
+                  <Button className='cursor-default'>Main: {platformerData.count.main}</Button>
+                  <Button className='cursor-default'>Extended: {platformerData.count.extended}</Button>
+                  <Button className='cursor-default'>Legacy: {platformerData.count.legacy}</Button>
                 </CardContent>
               </Card>
               <Card>
@@ -320,16 +332,6 @@ const Profile = () => {
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
                   {renderLevelList(platformerData.completed, activeTab)}
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold">Level count:</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-1">
-                  <Button className='cursor-default'>Main: {platformerData.count.main}</Button>
-                  <Button className='cursor-default'>Extended: {platformerData.count.extended}</Button>
-                  <Button className='cursor-default'>Legacy: {platformerData.count.legacy}</Button>
                 </CardContent>
               </Card>
             </TabsContent>

@@ -169,100 +169,99 @@ function SubmissionList() {
         </Alert>
       )}
 
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Submissions</h1>
-        <div className="flex space-x-2">
-          <Button 
-            variant={activeType === 'classic' ? 'default' : 'outline'}
-            onClick={() => setActiveType('classic')}
-          >
-            Classic
-          </Button>
-          <Button 
-            variant={activeType === 'platformer' ? 'default' : 'outline'}
-            onClick={() => setActiveType('platformer')}
-          >
-            Platformer
-          </Button>
+      <div className="flex flex-col mb-4">
+        <h1 className="text-2xl font-bold mb-2">Submissions</h1>
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <div className="flex space-x-2">
+            <Button 
+              variant={activeType === 'classic' ? 'default' : 'outline'}
+              onClick={() => setActiveType('classic')}
+            >
+              Classic
+            </Button>
+            <Button 
+              variant={activeType === 'platformer' ? 'default' : 'outline'}
+              onClick={() => setActiveType('platformer')}
+            >
+              Platformer
+            </Button>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button disabled={!isActive}>Create Submission</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Submission</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="link">Link</Label>
+                  <Input id="link" name="link" value={newSubmission.link} onChange={handleInputChange} required />
+                </div>
+                <div>
+                  <Label htmlFor="rawFootage">Raw Footage Link (Optional - Only mandatory for Extreme Demons)</Label>
+                  <Input id="rawFootage" name="rawFootage" value={newSubmission.rawFootage} onChange={handleInputChange} />
+                </div>
+                <div>
+                  <Label htmlFor="comment">Comment</Label>
+                  <Input id="comment" name="comment" value={newSubmission.comment} onChange={handleInputChange} />
+                </div>
+                <div>
+                  <Label htmlFor="level">Level</Label>
+                  <Select 
+                    name="level" 
+                    value={newSubmission.level} 
+                    onValueChange={(value) => handleInputChange({ target: { name: 'level', value } } as any)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.isArray(levels) && levels.length > 0 ? (
+                        levels.map((level) => (
+                          <SelectItem key={level.id} value={level.id}>{level.name}</SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-levels" disabled>No levels available</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {activeType === 'classic' ? (
+                  <div>
+                    <Label htmlFor="recordPercentage">Record Percentage (%)</Label>
+                    <Input
+                      id="recordPercentage"
+                      name="recordPercentage"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={newSubmission.recordPercentage}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
+                    <Input 
+                      id="recordTime" 
+                      name="recordTime" 
+                      type="text" 
+                      pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
+                      placeholder="01:10:32"
+                      value={newSubmission.recordTime} 
+                      onChange={handleInputChange} 
+                      required 
+                    />
+                  </div>
+                )}
+                <Button type="submit">Submit</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
-
-      <div className="flex justify-end mb-4">
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button disabled={!isActive}>Create Submission</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create {activeType.charAt(0).toUpperCase() + activeType.slice(1)} Submission</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="link">Link</Label>
-                <Input id="link" name="link" value={newSubmission.link} onChange={handleInputChange} required />
-              </div>
-              <div>
-                <Label htmlFor="rawFootage">Raw Footage Link (Optional - Only mandatory for Extreme Demons)</Label>
-                <Input id="rawFootage" name="rawFootage" value={newSubmission.rawFootage} onChange={handleInputChange} />
-              </div>
-              <div>
-                <Label htmlFor="comment">Comment</Label>
-                <Input id="comment" name="comment" value={newSubmission.comment} onChange={handleInputChange} />
-              </div>
-              <div>
-                <Label htmlFor="level">Level</Label>
-                <Select 
-                  name="level" 
-                  value={newSubmission.level} 
-                  onValueChange={(value) => handleInputChange({ target: { name: 'level', value } } as any)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.isArray(levels) && levels.length > 0 ? (
-                      levels.map((level) => (
-                        <SelectItem key={level.id} value={level.id}>{level.name}</SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="no-levels" disabled>No levels available</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-              {activeType === 'classic' ? (
-                <div>
-                  <Label htmlFor="recordPercentage">Record Percentage (%)</Label>
-                  <Input
-                    id="recordPercentage"
-                    name="recordPercentage"
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={newSubmission.recordPercentage}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              ) : (
-                <div>
-                  <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
-                  <Input 
-                    id="recordTime" 
-                    name="recordTime" 
-                    type="text" 
-                    pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
-                    placeholder="01:10:32"
-                    value={newSubmission.recordTime} 
-                    onChange={handleInputChange} 
-                    required 
-                  />
-                </div>
-              )}
-              <Button type="submit">Submit</Button>
-            </form>
-          </DialogContent>
-        </Dialog>
       </div>
 
       <ScrollArea>

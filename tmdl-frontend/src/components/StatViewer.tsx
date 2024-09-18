@@ -73,30 +73,34 @@ const StatViewer: React.FC = () => {
     fetchPlayers(region.id);
   };
 
+  const formatPoints = (points: number): string => {
+    return points.toFixed(2);
+  };
+
   if (isLoading && regions.length === 0) {
     return <div className="p-6 rounded-lg shadow-md">Loading...</div>;
   }
 
   return (
-    <div className="flex space-x-4">
-      <Card className="w-1/2">
+    <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 p-4 sm:p-6">
+      <Card className="w-full lg:w-1/2">
         <CardHeader>
           <CardTitle>Regions</CardTitle>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[calc(100vh-200px)]">
-            <ul className="space-y-2">
+          <ScrollArea className="h-[calc(100vh-250px)]">
+            <ul className="space-y-2 pr-4 pl-1 sm:pl-4">
               {regions.map((region) => (
                 <li key={region.id}>
                   <Button
                     variant={selectedRegion?.id === region.id ? "secondary" : "ghost"}
-                    className="w-full justify-between"
+                    className="w-full justify-between flex-col sm:flex-row items-start sm:items-center p-2 h-auto"
                     onClick={() => handleRegionClick(region)}
                   >
-                    <span>{region.name}</span>
-                    <div className="flex space-x-2">
-                      <Badge variant="secondary">Classic: {region.classicPoints}</Badge>
-                      <Badge variant="secondary">Platformer: {region.platformerPoints}</Badge>
+                    <span className="mb-2 sm:mb-0">{region.name}</span>
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                      <Badge variant="secondary">Classic: {formatPoints(region.classicPoints)}</Badge>
+                      <Badge variant="secondary">Platformer: {formatPoints(region.platformerPoints)}</Badge>
                     </div>
                   </Button>
                 </li>
@@ -106,24 +110,24 @@ const StatViewer: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-1/2">
+      <Card className="w-full lg:w-1/2">
         <CardHeader>
           <CardTitle>{selectedRegion ? `Players in ${selectedRegion.name}` : 'Select a region'}</CardTitle>
         </CardHeader>
         <CardContent>
           {selectedRegion ? (
-            <ScrollArea className="h-[calc(100vh-200px)]">
-              <ul className="space-y-2">
+            <ScrollArea className="h-[calc(100vh-250px)]">
+              <ul className="space-y-2 pr-4 pl-1 sm:pl-4">
                 {players.map((player) => (
                   <li 
                     key={player.id} 
-                    className="flex justify-between items-center p-2 bg-secondary/20 rounded-lg cursor-pointer hover:bg-secondary/30 transition-colors"
+                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 bg-secondary/20 rounded-lg cursor-pointer hover:bg-secondary/30 transition-colors"
                     onClick={() => handlePlayerClick(player.username)}
                   >
-                    <span>{player.username}</span>
-                    <div className="flex space-x-2">
-                      <Badge variant="secondary">Classic: {player.classicPoints}</Badge>
-                      <Badge variant="secondary">Platformer: {player.platformerPoints}</Badge>
+                    <span className="mb-2 sm:mb-0">{player.username}</span>
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                      <Badge variant="secondary">Classic: {formatPoints(player.classicPoints)}</Badge>
+                      <Badge variant="secondary">Platformer: {formatPoints(player.platformerPoints)}</Badge>
                     </div>
                   </li>
                 ))}

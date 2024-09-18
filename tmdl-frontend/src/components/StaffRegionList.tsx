@@ -143,29 +143,35 @@ const RegionList: React.FC = () => {
     }
   };
 
+  const formatPoints = (points: number): string => {
+    return points.toFixed(2);
+  };
+
   if (isLoading) {
     return <div className="p-6 rounded-lg shadow-md">Loading...</div>;
   }
 
   return (
     <div className="p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Regions</h2>
-        <AddRegion onRegionAdded={fetchRegions} />
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+        <h2 className="text-2xl font-bold mb-2 sm:mb-0">Regions</h2>
+        <div className="mb-2 sm:mb-0">
+          <AddRegion onRegionAdded={fetchRegions} />
+        </div>
       </div>
       <div className="mb-4">
         <p className="text-sm">Total regions: {regions.length}</p>
       </div>
       {regions.length > 0 ? (
         <ScrollArea>
-          <div className="pr-4"> {/* Add padding to the right to account for the scrollbar */}
+          <div className="pr-4">
             <ul className="space-y-4">
               {regions.map((region) => (
                 <li key={region.id} className="flex items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
                   <div className="flex flex-col mb-2 sm:mb-0">
                     <span className="font-semibold text-lg">{region.name}</span>
-                    <span className="text-sm text-muted-foreground">Classic Points: {region.classicPoints}</span>
-                    <span className="text-sm text-muted-foreground">Platformer Points: {region.platformerPoints}</span>
+                    <span className="text-sm text-muted-foreground">Classic Points: {formatPoints(region.classicPoints)}</span>
+                    <span className="text-sm text-muted-foreground">Platformer Points: {formatPoints(region.platformerPoints)}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <EditRegion region={region} onRegionEdited={fetchRegions} />
