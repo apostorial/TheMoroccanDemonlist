@@ -2,6 +2,7 @@ package com.apostorial.tmdlbackend.controllers.open;
 
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
 import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.RecordLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
@@ -25,6 +26,18 @@ public class PublicPlatformerLevelController {
     public ResponseEntity<PlatformerLevel> findById(@PathVariable String levelId) {
         try {
             PlatformerLevel level = platformerLevelService.findById(levelId);
+            return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/name/{levelId}")
+    public ResponseEntity<RecordLevelRequest> findLevelName(@PathVariable String levelId) {
+        try {
+            RecordLevelRequest level = platformerLevelService.findLevelName(levelId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

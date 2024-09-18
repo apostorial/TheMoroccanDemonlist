@@ -2,6 +2,7 @@ package com.apostorial.tmdlbackend.controllers.open;
 
 import com.apostorial.tmdlbackend.dtos.level.LevelCountRequest;
 import com.apostorial.tmdlbackend.dtos.level.PlayerLevelRequest;
+import com.apostorial.tmdlbackend.dtos.level.RecordLevelRequest;
 import com.apostorial.tmdlbackend.entities.level.ClassicLevel;
 import com.apostorial.tmdlbackend.enums.Difficulty;
 import com.apostorial.tmdlbackend.enums.Duration;
@@ -26,6 +27,18 @@ public class PublicClassicLevelController {
     public ResponseEntity<ClassicLevel> findById(@PathVariable String levelId) {
         try {
             ClassicLevel level = classicLevelService.findById(levelId);
+            return new ResponseEntity<>(level, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/name/{levelId}")
+    public ResponseEntity<RecordLevelRequest> findLevelName(@PathVariable String levelId) {
+        try {
+            RecordLevelRequest level = classicLevelService.findLevelName(levelId);
             return new ResponseEntity<>(level, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -95,6 +95,16 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     }
 
     @Override
+    public RecordLevelRequest findLevelName(String levelId) throws EntityNotFoundException {
+          ClassicLevel level = classicLevelRepository.findLevelNameById(levelId)
+                 .orElseThrow(() -> new EntityNotFoundException("Classic level with id " + levelId + " not found"));
+          RecordLevelRequest request = new RecordLevelRequest();
+          request.setId(level.getId());
+          request.setName(level.getName());
+          return request;
+    }
+
+    @Override
     public Optional<PlayerLevelRequest> findHardestLevel(String playerId) throws EntityNotFoundException {
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
         if (records.isEmpty()) {
