@@ -20,7 +20,7 @@ public class JwtTokenProvider {
 
     public String generateToken(String playerId, String email, Collection<? extends GrantedAuthority> authorities) {
         Date currentDate = new Date();
-        long jwtExpiration = 3600000;
+        long jwtExpiration = 86400000;
         Date expireDate = new Date(currentDate.getTime() + jwtExpiration);
 
         return Jwts.builder()
