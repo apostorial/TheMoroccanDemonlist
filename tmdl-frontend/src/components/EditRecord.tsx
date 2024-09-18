@@ -134,7 +134,6 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
               type="url" 
               value={formData.link} 
               onChange={handleInputChange} 
-              required 
             />
           </div>
           <div className="flex justify-end md:col-span-2">

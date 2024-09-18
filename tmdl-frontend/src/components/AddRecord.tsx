@@ -83,6 +83,7 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
         ...formData,
         recordTime: recordType === 'platformer' ? formatTimeToISO8601(formData.recordTime) : undefined,
         recordPercentage: recordType === 'classic' ? Number(formData.recordPercentage) : undefined,
+        link: formData.link.trim() === '' ? null : formData.link,
       };
       await jwtAxios.post(`/api/staff/${recordType}-records/create`, dataToSend);
       toast.success('Record added successfully');
@@ -174,8 +175,7 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
               type="url" 
               value={formData.link} 
               onChange={handleInputChange} 
-              placeholder="https://youtu.be/dQw4w9WgXcQ" 
-              required 
+              placeholder="https://youtu.be/dQw4w9WgXcQ"
             />
           </div>
           <div className="flex justify-end md:col-span-2">
