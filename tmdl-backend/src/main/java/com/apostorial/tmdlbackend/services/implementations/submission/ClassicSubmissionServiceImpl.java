@@ -14,6 +14,8 @@ import com.apostorial.tmdlbackend.repositories.level.ClassicLevelRepository;
 import com.apostorial.tmdlbackend.repositories.submission.ClassicSubmissionRepository;
 import com.apostorial.tmdlbackend.services.interfaces.submission.ClassicSubmissionService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,8 +67,8 @@ public class ClassicSubmissionServiceImpl implements ClassicSubmissionService {
     }
 
     @Override
-    public List<ClassicSubmission> findAll() {
-        return classicSubmissionRepository.findAll();
+    public Page<ClassicSubmission> findAll(Pageable pageable) {
+        return classicSubmissionRepository.findAll(pageable);
     }
 
     @Override

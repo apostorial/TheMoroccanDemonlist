@@ -14,6 +14,8 @@ import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import com.apostorial.tmdlbackend.repositories.submission.PlatformerSubmissionRepository;
 import com.apostorial.tmdlbackend.services.interfaces.submission.PlatformerSubmissionService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,8 +67,8 @@ public class PlatformerSubmissionServiceImpl implements PlatformerSubmissionServ
     }
 
     @Override
-    public List<PlatformerSubmission> findAll() {
-        return platformerSubmissionRepository.findAll();
+    public Page<PlatformerSubmission> findAll(Pageable pageable) {
+        return platformerSubmissionRepository.findAll(pageable);
     }
 
     @Override
