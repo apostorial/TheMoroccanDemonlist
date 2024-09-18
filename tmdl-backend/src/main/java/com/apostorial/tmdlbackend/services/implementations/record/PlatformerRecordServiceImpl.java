@@ -14,6 +14,8 @@ import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordSer
 import com.apostorial.tmdlbackend.utilities.PlayerUtils;
 import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,8 +71,8 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
     }
 
     @Override
-    public List<PlatformerRecord> findAll() {
-        return platformerRecordRepository.findAll();
+    public Page<PlatformerRecord> findAll(Pageable pageable) {
+        return platformerRecordRepository.findAll(pageable);
     }
 
     @Override

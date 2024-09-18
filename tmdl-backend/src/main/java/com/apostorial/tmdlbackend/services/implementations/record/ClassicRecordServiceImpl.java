@@ -14,6 +14,8 @@ import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordServic
 import com.apostorial.tmdlbackend.utilities.PlayerUtils;
 import com.apostorial.tmdlbackend.utilities.RecordUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,8 +70,8 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
     }
 
     @Override
-    public List<ClassicRecord> findAll() {
-        return classicRecordRepository.findAll();
+    public Page<ClassicRecord> findAll(Pageable pageable) {
+        return classicRecordRepository.findAll(pageable);
     }
 
     @Override

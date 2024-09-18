@@ -4,6 +4,8 @@ import com.apostorial.tmdlbackend.entities.record.ClassicRecord;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.record.ClassicRecordService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,9 +58,9 @@ public class PublicClassicRecordController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ClassicRecord>> findAll() {
+    public ResponseEntity<Page<ClassicRecord>> findAll(Pageable pageable) {
         try {
-            List<ClassicRecord> records = classicRecordService.findAll();
+            Page<ClassicRecord> records = classicRecordService.findAll(pageable);
             if (records.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

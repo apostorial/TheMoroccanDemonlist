@@ -6,6 +6,8 @@ import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.submission.ClassicSubmissionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,9 +47,9 @@ public class StaffClassicSubmissionController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ClassicSubmission>> findAll() {
+    public ResponseEntity<Page<ClassicSubmission>> findAll(Pageable pageable) {
         try {
-            List<ClassicSubmission> submissions = classicSubmissionService.findAll();
+            Page<ClassicSubmission> submissions = classicSubmissionService.findAll(pageable);
             if (submissions.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

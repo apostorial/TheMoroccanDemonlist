@@ -4,6 +4,8 @@ import com.apostorial.tmdlbackend.entities.record.PlatformerRecord;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,9 +58,9 @@ public class PublicPlatformerRecordController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<PlatformerRecord>> findAll() {
+    public ResponseEntity<Page<PlatformerRecord>> findAll(Pageable pageable) {
         try {
-            List<PlatformerRecord> records = platformerRecordService.findAll();
+            Page<PlatformerRecord> records = platformerRecordService.findAll(pageable);
             if (records.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
