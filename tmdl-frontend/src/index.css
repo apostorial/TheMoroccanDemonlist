@@ -64,3 +64,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.welcome-text {
+  display: block;
+}
+
+@media (max-width: 440px) {
+  .welcome-text {
+    display: none;
+  }
+}
