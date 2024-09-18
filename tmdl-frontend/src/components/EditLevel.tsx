@@ -153,41 +153,45 @@ const EditLevel: React.FC<EditLevelProps> = ({ levelType, level, onLevelEdited }
                 <SelectValue placeholder="Select difficulty" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="EASY_DEMON">Easy</SelectItem>
+                <SelectItem value="MEDIUM_DEMON">Medium</SelectItem>
                 <SelectItem value="HARD_DEMON">Hard</SelectItem>
                 <SelectItem value="INSANE_DEMON">Insane</SelectItem>
                 <SelectItem value="EXTREME_DEMON">Extreme</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="duration">Duration</Label>
-            <Select name="duration" onValueChange={(value) => handleSelectChange('duration', value)} value={formData.duration || ''}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select duration" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="TINY">Tiny</SelectItem>
-                <SelectItem value="SHORT">Short</SelectItem>
-                <SelectItem value="MEDIUM">Medium</SelectItem>
-                <SelectItem value="LONG">Long</SelectItem>
-                <SelectItem value="XL">XL</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
           {levelType === 'classic' && (
-            <div className="space-y-2">
-              <Label htmlFor="minimumCompletion">Min Completion %</Label>
-              <Input 
-                id="minimumCompletion" 
-                name="minimumCompletion" 
-                type="number" 
-                min="0" 
-                max="100" 
-                value={(formData as ClassicLevel).minimumCompletion} 
-                onChange={handleInputChange} 
-                required 
-              />
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration</Label>
+                <Select name="duration" onValueChange={(value) => handleSelectChange('duration', value)} value={formData.duration || ''}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select duration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="TINY">Tiny</SelectItem>
+                    <SelectItem value="SHORT">Short</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="LONG">Long</SelectItem>
+                    <SelectItem value="XL">XL</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="minimumCompletion">List Percentage (%)</Label>
+                <Input
+                  id="minimumCompletion"
+                  name="minimumCompletion"
+                  type="number"
+                  min="0" 
+                  max="100"
+                  value={(formData as ClassicLevel).minimumCompletion}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </>
           )}
           <div className="space-y-2">
             <Label htmlFor="link">Link</Label>

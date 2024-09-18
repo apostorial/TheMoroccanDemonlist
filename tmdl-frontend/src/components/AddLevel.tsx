@@ -88,6 +88,8 @@ const AddLevel: React.FC<AddLevelProps> = ({ levelType, onLevelAdded }) => {
                 <SelectValue placeholder="Select difficulty" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="EASY_DEMON">Easy</SelectItem>
+                <SelectItem value="MEDIUM_DEMON">Medium</SelectItem>
                 <SelectItem value="HARD_DEMON">Hard</SelectItem>
                 <SelectItem value="INSANE_DEMON">Insane</SelectItem>
                 <SelectItem value="EXTREME_DEMON">Extreme</SelectItem>
