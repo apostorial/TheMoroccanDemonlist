@@ -57,7 +57,7 @@ const SortableLevel: React.FC<{ level: Level; levelType: 'classic' | 'platformer
     <li 
       ref={setNodeRef} 
       style={style} 
-      className="flex items-center border rounded-md mb-2"
+      className="flex flex-col sm:flex-row items-start sm:items-center border rounded-md mb-2"
     >
       <div 
         {...attributes} 
@@ -69,13 +69,11 @@ const SortableLevel: React.FC<{ level: Level; levelType: 'classic' | 'platformer
       <div className="p-2 flex-grow">
         #{level.ranking} - {level.name}
       </div>
-      <div className="p-2">
+      <div className="p-2 flex sm:block">
         <EditLevel levelType={levelType} level={level} onLevelEdited={onLevelEdited} />
-      </div>
-      <div className="p-2">
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700">
+            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 ml-2 sm:ml-0">
               <Trash2 size={20} />
             </Button>
           </AlertDialogTrigger>
@@ -173,12 +171,14 @@ const StaffLevelList: React.FC<{ levelType: 'classic' | 'platformer' }> = ({ lev
 
   return (
     <div className="p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">{levelType.charAt(0).toUpperCase() + levelType.slice(1)} Levels</h2>
-        <AddLevel levelType={levelType} onLevelAdded={handleLevelAdded} />
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+        <h2 className="text-2xl font-bold mb-2 sm:mb-0">{levelType.charAt(0).toUpperCase() + levelType.slice(1)} Levels</h2>
+        <div className="mb-4 sm:mb-0">
+          <AddLevel levelType={levelType} onLevelAdded={handleLevelAdded} />
+        </div>
       </div>
-      <div className="mb-4 flex items-center justify-between mt-1">
-        <p className="text-sm mt-1">Total levels: {levels.length}</p>
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1">
+        <p className="text-sm mt-1 mb-2 sm:mb-0">Total levels: {levels.length}</p>
         {isReordering && (
           <div className="flex items-center text-sm text-muted-foreground">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
