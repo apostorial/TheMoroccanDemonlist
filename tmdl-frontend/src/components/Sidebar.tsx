@@ -84,6 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                     <Button variant="ghost"
                       className="w-full justify-start text-left text-sm"
                       onClick={() => {navigate("/platformer/extended");}}
+                      disabled
                       >
                         Extended list
                     </Button>
@@ -92,6 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                     <Button variant="ghost"
                       className="w-full justify-start text-left text-sm"
                       onClick={() => {navigate("/platformer/legacy");}}
+                      disabled
                       >
                         Legacy list
                     </Button>
