@@ -17,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const navigate = useNavigate();
 
   return (
-    <div className={`border-r transition-all duration-300 ease-in-out ${isOpen ? 'w-64' : 'w-16'} md:w-64 flex flex-col h-full`}>
+    <div className={`border-r transition-all duration-300 ease-in-out ${isOpen ? 'w-64' : 'w-0'} md:w-64 flex flex-col h-full`}>
       <div className="flex-grow overflow-y-auto p-4">
         <h2 className={`text-2xl font-bold mb-4 ${isOpen ? '' : 'hidden'} md:block`}>TMDL</h2>
         <nav className={`${isOpen ? '' : 'hidden'} md:block`}>
