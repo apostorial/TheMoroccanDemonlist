@@ -11,6 +11,7 @@ import { GoDotFill } from "react-icons/go";
 import { User } from "lucide-react";
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PlayerData {
   id: string;
@@ -55,6 +56,7 @@ const Profile = () => {
     count: LevelCount;
   }>({ hardest: null, firstVictor: [], completed: [], count: { main: 0, extended: 0, legacy: 0 } });
   const [activeTab, setActiveTab] = useState('classic');
+  const [isLoading, setIsLoading] = useState(true);
 
   const renderSocialMediaIcons = () => {
     if (!playerData) return null;
@@ -106,6 +108,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const playerResponse = await axios.get<PlayerData>(`/api/public/players/username/${username}`);
         setPlayerData(playerResponse.data);
@@ -113,45 +116,29 @@ const Profile = () => {
         fetchRegionName(playerResponse.data.region);
         const playerId = playerResponse.data.id;
 
-        const fetchClassicLevelData = async () => {
-          const hardestResponse = await axios.get<LevelData>(`/api/public/classic-levels/hardestLevel/${playerId}`);
-          const hardest = hardestResponse.data;
+        const [classicCount, platformerCount, classicHardest, platformerHardest] = await Promise.all([
+          axios.get<LevelCount>(`/api/public/classic-levels/count/${playerId}`),
+          axios.get<LevelCount>(`/api/public/platformer-levels/count/${playerId}`),
+          axios.get<LevelData>(`/api/public/classic-levels/hardestLevel/${playerId}`),
+          axios.get<LevelData>(`/api/public/platformer-levels/hardestLevel/${playerId}`),
+        ]);
 
-          const completedResponse = await axios.get<LevelData[]>(`/api/public/classic-levels/player/${playerId}`);
-          const completed = completedResponse.data;
-          
-          const firstVictorResponse = await axios.get<LevelData[]>(`/api/public/classic-levels/firstVictor/${playerId}`);
-          const firstVictor = firstVictorResponse.data;
+        setClassicData(prev => ({ ...prev, count: classicCount.data, hardest: classicHardest.data }));
+        setPlatformerData(prev => ({ ...prev, count: platformerCount.data, hardest: platformerHardest.data }));
 
-          const countResponse = await axios.get<LevelCount>(`/api/public/classic-levels/count/${playerId}`);
-          const count = countResponse.data;
+        const [classicCompleted, classicFirstVictor, platformerCompleted, platformerFirstVictor] = await Promise.all([
+          axios.get<LevelData[]>(`/api/public/classic-levels/player/${playerId}`),
+          axios.get<LevelData[]>(`/api/public/classic-levels/firstVictor/${playerId}`),
+          axios.get<LevelData[]>(`/api/public/platformer-levels/player/${playerId}`),
+          axios.get<LevelData[]>(`/api/public/platformer-levels/recordHolder/${playerId}`),
+        ]);
 
-          return { hardest , completed, firstVictor, count};
-        };
-
-        const fetchPlatformerLevelData = async () => {
-          const hardestResponse = await axios.get<LevelData>(`/api/public/platformer-levels/hardestLevel/${playerId}`);
-          const hardest = hardestResponse.data;
-
-          const completedResponse = await axios.get<LevelData[]>(`/api/public/platformer-levels/player/${playerId}`);
-          const completed = completedResponse.data;
-          
-          const firstVictorResponse = await axios.get<LevelData[]>(`/api/public/platformer-levels/recordHolder/${playerId}`);
-          const firstVictor = firstVictorResponse.data;
-
-          const countResponse = await axios.get<LevelCount>(`/api/public/platformer-levels/count/${playerId}`);
-          const count = countResponse.data;
-
-          return { hardest , completed, firstVictor, count};
-        };
-
-        const classicLevelData = await fetchClassicLevelData();
-        setClassicData(classicLevelData);
-
-        const platformerLevelData = await fetchPlatformerLevelData();
-        setPlatformerData(platformerLevelData);
+        setClassicData(prev => ({ ...prev, completed: classicCompleted.data, firstVictor: classicFirstVictor.data }));
+        setPlatformerData(prev => ({ ...prev, completed: platformerCompleted.data, firstVictor: platformerFirstVictor.data }));
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -187,6 +174,16 @@ const Profile = () => {
 
   const renderLevelList = (levels: LevelData[], activeTab: string) => {
     const levelType = activeTab === 'classic' ? 'classic' : 'platformer';
+    if (isLoading) {
+      return (
+        <>
+          <Skeleton className="h-10 w-32 mr-1 mb-1" />
+          <Skeleton className="h-10 w-24 mr-1 mb-1" />
+          <Skeleton className="h-10 w-28 mr-1 mb-1" />
+          <Skeleton className="h-10 w-36 mr-1 mb-1" />
+        </>
+      );
+    }
     if (levels.length === 0) {
       return <Button disabled>No levels available</Button>;
     }
@@ -206,6 +203,9 @@ const Profile = () => {
   };
 
   const renderLevel = (level: LevelData | null, activeTab: string) => {
+    if (isLoading) {
+      return <Skeleton className="h-10 w-32" />;
+    }
     if (!level) {
       return <Button disabled>No level available</Button>;
     }
@@ -218,6 +218,25 @@ const Profile = () => {
           {level.name}
         </Button>
       </a>
+    );
+  };
+
+  const renderLevelCount = (count: LevelCount) => {
+    if (isLoading) {
+      return (
+        <>
+          <Skeleton className="h-10 w-24 mr-1" />
+          <Skeleton className="h-10 w-24 mr-1" />
+          <Skeleton className="h-10 w-24" />
+        </>
+      );
+    }
+    return (
+      <>
+        <Button className='cursor-default'>Main: {count.main}</Button>
+        <Button className='cursor-default'>Extended: {count.extended}</Button>
+        <Button className='cursor-default'>Legacy: {count.legacy}</Button>
+      </>
     );
   };
 
@@ -277,9 +296,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Level count:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  <Button className='cursor-default'>Main: {classicData.count.main}</Button>
-                  <Button className='cursor-default'>Extended: {classicData.count.extended}</Button>
-                  <Button className='cursor-default'>Legacy: {classicData.count.legacy}</Button>
+                  {renderLevelCount(classicData.count)}
                 </CardContent>
               </Card>
               <Card>
@@ -313,9 +330,7 @@ const Profile = () => {
                   <CardTitle className="text-xl font-bold">Level count:</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-1">
-                  <Button className='cursor-default'>Main: {platformerData.count.main}</Button>
-                  <Button className='cursor-default'>Extended: {platformerData.count.extended}</Button>
-                  <Button className='cursor-default'>Legacy: {platformerData.count.legacy}</Button>
+                  {renderLevelCount(platformerData.count)}
                 </CardContent>
               </Card>
               <Card>
