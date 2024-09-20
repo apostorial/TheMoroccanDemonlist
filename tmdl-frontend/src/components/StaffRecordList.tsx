@@ -8,7 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 
 interface ClassicRecord {
   id: string;
@@ -47,10 +47,35 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 10;
+  const [visiblePages, setVisiblePages] = useState<(number | string)[]>([]);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   useEffect(() => {
     fetchRecords(currentPage);
-  }, [recordType, currentPage]);
+    const calculateVisiblePages = () => {
+      const delta = 2;
+      const range = [];
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+      }
+
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+
+      range.unshift(1);
+      if (totalPages !== 1) {
+        range.push(totalPages);
+      }
+
+      setVisiblePages(range as (number | string)[]);
+    };
+
+    calculateVisiblePages();
+  }, [recordType, currentPage, totalPages]);
 
   const fetchRecords = async (page: number) => {
     setIsLoading(true);
@@ -60,7 +85,8 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
       });
       const fetchedRecords = response.data.content || [];
       setRecords(fetchedRecords);
-      setTotalPages(response.data.totalPages);
+      setTotalPages(response.data.totalPages || 0);
+      setTotalRecords(response.data.totalElements || 0);
       if (fetchedRecords.length > 0) {
         fetchLevelNames(fetchedRecords);
       }
@@ -68,6 +94,8 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
       console.error('Error fetching records:', error);
       toast.error('Failed to fetch records');
       setRecords([]);
+      setTotalPages(0);
+      setTotalRecords(0);
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +142,14 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
   return (
     <div className="p-6 rounded-lg shadow-md">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
-        <h2 className="text-2xl font-bold mb-2 sm:mb-0">{recordType.charAt(0).toUpperCase() + recordType.slice(1)} Records</h2>
+        <div>
+          <h2 className="text-2xl font-bold mb-2 sm:mb-0">
+            {recordType.charAt(0).toUpperCase() + recordType.slice(1)} Records
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Total Records: {totalRecords}
+          </p>
+        </div>
         <div className="mb-2 sm:mb-0">
           <AddRecord recordType={recordType} onRecordAdded={() => fetchRecords(currentPage)} />
         </div>
@@ -176,34 +211,35 @@ const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ record
               ))}
             </ul>
           </ScrollArea>
-          <Pagination className="mt-4">
+          <Pagination className="mt-4 flex flex-wrap justify-center">
             <PaginationContent>
               <PaginationItem>
-                {currentPage > 1 ? (
-                  <PaginationPrevious 
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    className="cursor-pointer"
-                  />
-                ) : (
-                  <PaginationPrevious aria-disabled="true" className="pointer-events-none opacity-50" />
-                )}
+                <PaginationPrevious 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  className="cursor-pointer"
+                  aria-disabled={currentPage === 1}
+                />
               </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
+              {visiblePages.map((page, index) => (
                 <PaginationItem key={index}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(index + 1)}
-                    isActive={currentPage === index + 1}
-                    className="cursor-pointer"
-                  >
-                    {index + 1}
-                  </PaginationLink>
+                  {typeof page === "string" ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      onClick={() => setCurrentPage(page)}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  )}
                 </PaginationItem>
               ))}
               <PaginationItem>
                 <PaginationNext 
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  aria-disabled={currentPage === totalPages}
                   className="cursor-pointer"
+                  aria-disabled={currentPage === totalPages}
                 />
               </PaginationItem>
             </PaginationContent>

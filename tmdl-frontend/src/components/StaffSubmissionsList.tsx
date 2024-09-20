@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 
 interface Submission {
   id: string;
@@ -20,6 +20,7 @@ interface Submission {
   link: string;
   rawFootage?: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  comment?: string;
 }
 
 const formatDuration = (duration: string): string => {
@@ -41,19 +42,51 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
   const [levelNames, setLevelNames] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(submissions.length / itemsPerPage);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 10;
+  const [visiblePages, setVisiblePages] = useState<(number | string)[]>([]);
+  const [totalSubmissions, setTotalSubmissions] = useState(0);
 
   useEffect(() => {
-    fetchSubmissions();
-  }, [submissionType]);
+    fetchSubmissions(currentPage);
+  }, [submissionType, currentPage]);
 
-  const fetchSubmissions = async () => {
+  useEffect(() => {
+    const calculateVisiblePages = () => {
+      const delta = 2;
+      const range = [];
+      for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+        range.push(i);
+      }
+
+      if (currentPage - delta > 2) {
+        range.unshift("...");
+      }
+      if (currentPage + delta < totalPages - 1) {
+        range.push("...");
+      }
+
+      range.unshift(1);
+      if (totalPages !== 1) {
+        range.push(totalPages);
+      }
+
+      setVisiblePages(range as (number | string)[]);
+    };
+
+    calculateVisiblePages();
+  }, [currentPage, totalPages]);
+
+  const fetchSubmissions = async (page: number) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`/api/staff/${submissionType}-submissions/list`);
-      const fetchedSubmissions = response.data || [];
+      const response = await axios.get(`/api/staff/${submissionType}-submissions/list`, {
+        params: { page: page - 1, size: pageSize }
+      });
+      const fetchedSubmissions = response.data.content || [];
       setSubmissions(fetchedSubmissions);
+      setTotalPages(response.data.totalPages || 0);
+      setTotalSubmissions(response.data.totalElements || 0);
       if (fetchedSubmissions.length > 0) {
         fetchLevelNames(fetchedSubmissions);
       }
@@ -61,6 +94,8 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
       console.error('Error fetching submissions:', error);
       toast.error('Failed to fetch submissions');
       setSubmissions([]);
+      setTotalPages(0);
+      setTotalSubmissions(0);
     } finally {
       setIsLoading(false);
     }
@@ -93,7 +128,7 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
     try {
       await axios.delete(`/api/authenticated/${submissionType}-submissions/delete/${submissionId}`);
       toast.success('Submission deleted successfully');
-      fetchSubmissions();
+      fetchSubmissions(currentPage);
     } catch (error) {
       console.error('Error deleting submission:', error);
       toast.error('Failed to delete submission');
@@ -104,17 +139,12 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
     try {
       await axios.put(`/api/staff/${submissionType}-submissions/${submissionId}/change-status/${newStatus}`);
       toast.success('Submission status updated successfully');
-      fetchSubmissions();
+      fetchSubmissions(currentPage);
     } catch (error) {
       console.error('Error updating submission status:', error);
       toast.error('Failed to update submission status');
     }
   };
-
-  const paginatedSubmissions = submissions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   if (isLoading) {
     return <div className="p-6 rounded-lg shadow-md">Loading...</div>;
@@ -123,19 +153,28 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
   return (
     <div className="p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">{submissionType.charAt(0).toUpperCase() + submissionType.slice(1)} Submissions</h2>
-      </div>
-      <div className="mb-4">
-        <p className="text-sm">Total submissions: {submissions.length}</p>
+        <div>
+          <h2 className="text-2xl font-bold">{submissionType.charAt(0).toUpperCase() + submissionType.slice(1)} Submissions</h2>
+          <p className="text-sm text-muted-foreground">
+            Total Submissions: {totalSubmissions}
+          </p>
+        </div>
       </div>
       {submissions.length > 0 ? (
         <>
           <ScrollArea>
             <ul className="space-y-4 p-4 rounded-md max-h-[calc(100vh-300px)] overflow-y-auto">
-              {paginatedSubmissions.map((submission) => (
+              {submissions.map((submission) => (
                 <li key={submission.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-secondary/20 rounded-lg p-4 shadow-sm">
                   <div className="flex flex-col mb-2 sm:mb-0">
-                    <span className="font-semibold text-lg">{submission.player}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-semibold text-lg">{submission.player}</span>
+                      {submission.comment && (
+                        <span className="text-sm text-muted-foreground">
+                          - {submission.comment}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-sm text-muted-foreground">{getLevelName(submission.level)}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
@@ -158,12 +197,12 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
                         <SelectItem value="REJECTED">Rejected</SelectItem>
                       </SelectContent>
                     </Select>
-                    <div className="flex space-x-2">
+                    <div className="flex items-center space-x-2">
                       <a 
                         href={submission.link} 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="text-blue-500 hover:text-blue-700 transition-colors"
+                        className="text-blue-500 hover:text-blue-700 transition-colors p-2"
                       >
                         <IoIosLink size={20} />
                         <span className="sr-only">Video link</span>
@@ -173,7 +212,7 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
                           href={submission.rawFootage} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="text-green-500 hover:text-green-700 transition-colors"
+                          className="text-green-500 hover:text-green-700 transition-colors p-2"
                         >
                           <BsFiletypeRaw size={20} />
                           <span className="sr-only">Raw footage</span>
@@ -181,7 +220,7 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
                       )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90">
+                          <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90 p-2">
                             <Trash2 size={20} />
                             <span className="sr-only">Delete submission</span>
                           </Button>
@@ -205,20 +244,35 @@ const SubmissionList: React.FC<{ submissionType: 'classic' | 'platformer' }> = (
               ))}
             </ul>
           </ScrollArea>
-          <Pagination className="mt-4">
+          <Pagination className="mt-4 flex flex-wrap justify-center">
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious 
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  aria-disabled={currentPage === 1}
                   className="cursor-pointer"
+                  aria-disabled={currentPage === 1}
                 />
               </PaginationItem>
+              {visiblePages.map((page, index) => (
+                <PaginationItem key={index}>
+                  {typeof page === "string" ? (
+                    <PaginationEllipsis />
+                  ) : (
+                    <PaginationLink
+                      onClick={() => setCurrentPage(page)}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  )}
+                </PaginationItem>
+              ))}
               <PaginationItem>
                 <PaginationNext 
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  aria-disabled={currentPage === totalPages}
                   className="cursor-pointer"
+                  aria-disabled={currentPage === totalPages}
                 />
               </PaginationItem>
             </PaginationContent>
