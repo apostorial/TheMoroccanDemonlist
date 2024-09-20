@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate } from 'react-router-dom';
+import StatViewerSkeleton from './StatViewerSkeleton';
 
 interface Region {
   id: string;
@@ -78,10 +79,11 @@ const StatViewer: React.FC = () => {
   };
 
   if (isLoading && regions.length === 0) {
-    return <div className="p-6 rounded-lg shadow-md">Loading...</div>;
+    return <StatViewerSkeleton />;
   }
 
   return (
+    <>
     <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 p-4 sm:p-6">
       <Card className="w-full lg:w-1/2">
         <CardHeader>
@@ -139,6 +141,7 @@ const StatViewer: React.FC = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 
