@@ -2,16 +2,19 @@ package com.apostorial.tmdlbackend.services.implementations.submission;
 
 
 import com.apostorial.tmdlbackend.config.SecurityUtils;
+import com.apostorial.tmdlbackend.dtos.record.CreatePlatformerRecordRequest;
 import com.apostorial.tmdlbackend.dtos.submission.CreatePlatformerSubmissionRequest;
 import com.apostorial.tmdlbackend.dtos.submission.UpdatePlatformerSubmissionRequest;
 import com.apostorial.tmdlbackend.entities.Player;
 import com.apostorial.tmdlbackend.entities.level.PlatformerLevel;
 import com.apostorial.tmdlbackend.entities.submission.PlatformerSubmission;
 import com.apostorial.tmdlbackend.enums.Status;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.exceptions.UnauthorizedException;
 import com.apostorial.tmdlbackend.repositories.level.PlatformerLevelRepository;
 import com.apostorial.tmdlbackend.repositories.submission.PlatformerSubmissionRepository;
+import com.apostorial.tmdlbackend.services.interfaces.record.PlatformerRecordService;
 import com.apostorial.tmdlbackend.services.interfaces.submission.PlatformerSubmissionService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +29,7 @@ public class PlatformerSubmissionServiceImpl implements PlatformerSubmissionServ
     private final PlatformerSubmissionRepository platformerSubmissionRepository;
     private final PlatformerLevelRepository platformerLevelRepository;
     private final SecurityUtils securityUtils;
+    private final PlatformerRecordService platformerRecordService;
 
     @Override
     public PlatformerSubmission create(CreatePlatformerSubmissionRequest request) throws EntityNotFoundException, UnauthorizedException {
@@ -72,11 +76,24 @@ public class PlatformerSubmissionServiceImpl implements PlatformerSubmissionServ
     }
 
     @Override
-    public void changeStatus(String submissionId, Status status) throws EntityNotFoundException {
+    public void changeStatus(String submissionId, Status status) throws EntityNotFoundException, DuplicateRecordException {
         PlatformerSubmission submission = platformerSubmissionRepository.findById(submissionId)
                 .orElseThrow(() -> new EntityNotFoundException("Platformer submission with id " + submissionId + " not found"));
         submission.setStatus(status);
         platformerSubmissionRepository.save(submission);
+
+        if (status == Status.APPROVED) {
+            try {
+                CreatePlatformerRecordRequest recordRequest = new CreatePlatformerRecordRequest();
+                recordRequest.setPlayer(submission.getPlayer().getId());
+                recordRequest.setLevel(submission.getLevel().getId());
+                recordRequest.setLink(submission.getLink());
+                recordRequest.setRecordTime(submission.getRecordTime());
+                platformerRecordService.create(recordRequest);
+            } catch (DuplicateRecordException e) {
+                throw new DuplicateRecordException("A record for this player and level already exists");
+            }
+        }
     }
 
     @Override
