@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Medal } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import LeaderboardSkeleton from './LeaderboardSkeleton';
 
 interface Player {
   id: string;
@@ -72,11 +73,11 @@ const Leaderboard: React.FC = () => {
   const getMedalIcon = (index: number) => {
     switch(index) {
       case 0:
-        return <Medal className="w-6 h-6 text-yellow-400" />; // Gold
+        return <Medal className="w-6 h-6 text-yellow-400" />;
       case 1:
-        return <Medal className="w-6 h-6 text-gray-400" />; // Silver
+        return <Medal className="w-6 h-6 text-gray-400" />;
       case 2:
-        return <Medal className="w-6 h-6 text-amber-600" />; // Bronze
+        return <Medal className="w-6 h-6 text-amber-600" />;
       default:
         return null;
     }
@@ -110,7 +111,7 @@ const Leaderboard: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="p-6 rounded-lg shadow-md">Loading...</div>;
+    return <LeaderboardSkeleton />
   }
 
   return (
@@ -134,7 +135,7 @@ const Leaderboard: React.FC = () => {
           </Button>
         </div>
       </div>
-      <ScrollArea className="h-[calc(100vh-200px)]">
+      <ScrollArea>
         <ul className="space-y-4 p-4 rounded-md sm:pl-4 pl-1">
           {activeTab === 'classic' 
             ? renderPlayerList(classicPlayers)
