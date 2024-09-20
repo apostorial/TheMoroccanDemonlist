@@ -1,6 +1,7 @@
 package com.apostorial.tmdlbackend.services.interfaces.submission;
 
 import com.apostorial.tmdlbackend.enums.Status;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.exceptions.UnauthorizedException;
 import org.springframework.data.domain.Page;
@@ -14,5 +15,5 @@ public interface SubmissionService<T> {
     List<T> findByAuthenticatedPlayer() throws EntityNotFoundException, UnauthorizedException;
     Page<T> findAll(Pageable pageable);
     void deleteById(String submissionId) throws EntityNotFoundException, UnauthorizedException;
-    void changeStatus(String submissionId, Status status) throws EntityNotFoundException;
+    void changeStatus(String submissionId, Status status) throws EntityNotFoundException, DuplicateRecordException;
 }
