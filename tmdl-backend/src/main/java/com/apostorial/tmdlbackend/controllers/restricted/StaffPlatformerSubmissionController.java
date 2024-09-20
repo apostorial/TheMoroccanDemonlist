@@ -2,6 +2,7 @@ package com.apostorial.tmdlbackend.controllers.restricted;
 
 import com.apostorial.tmdlbackend.entities.submission.PlatformerSubmission;
 import com.apostorial.tmdlbackend.enums.Status;
+import com.apostorial.tmdlbackend.exceptions.DuplicateRecordException;
 import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 import com.apostorial.tmdlbackend.services.interfaces.submission.PlatformerSubmissionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -66,6 +67,8 @@ public class StaffPlatformerSubmissionController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DuplicateRecordException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
