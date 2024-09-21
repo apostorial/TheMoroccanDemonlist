@@ -27,11 +27,22 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
   const [durationInput, setDurationInput] = useState('');
 
   useEffect(() => {
-    setFormData(record);
     if (recordType === 'platformer' && record.recordTime) {
-      setDurationInput(formatISO8601ToDuration(record.recordTime));
+      const formattedDuration = formatISO8601ToDuration(record.recordTime);
+      setDurationInput(formattedDuration);
     }
   }, [record, recordType]);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      setFormData(record);
+      if (recordType === 'platformer' && record.recordTime) {
+        const formattedDuration = formatISO8601ToDuration(record.recordTime);
+        setDurationInput(formattedDuration);
+      }
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,19 +54,31 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
   };
 
   const formatTimeToISO8601 = (time: string): string => {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    return `PT${hours}H${minutes}M${seconds}S`;
+    const [hours, minutes, seconds, milliseconds] = time.split(/[:.]/).map(Number);
+    return `PT${hours}H${minutes}M${seconds}.${milliseconds.toString().padStart(3, '0')}S`;
   };
 
-  const formatISO8601ToDuration = (iso8601: string): string => {
-    const match = iso8601.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-    if (!match) return '00:00:00';
-    
-    const hours = match[1] ? match[1].replace('H', '') : '0';
-    const minutes = match[2] ? match[2].replace('M', '') : '0';
-    const seconds = match[3] ? match[3].replace('S', '') : '0';
-    
-    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
+  const formatISO8601ToDuration = (input: string): string => {
+    console.log('Input:', input);
+
+    if (/^\d{2}:\d{2}:\d{2}\.\d{3}$/.test(input)) {
+      return input;
+    }
+
+    const match = input.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)(?:\.(\d+))?S)?/);
+    if (match) {
+      const hours = match[1] ? match[1].padStart(2, '0') : '00';
+      const minutes = match[2] ? match[2].padStart(2, '0') : '00';
+      const seconds = match[3] ? match[3].split('.')[0].padStart(2, '0') : '00';
+      const milliseconds = match[4] ? match[4].padEnd(3, '0') : '000';
+      
+      const result = `${hours}:${minutes}:${seconds}.${milliseconds}`;
+      console.log('Formatted result:', result);
+      return result;
+    }
+
+    console.log('No match found, returning default');
+    return '00:00:00.000';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +100,7 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
           <Pencil className="h-4 w-4" />
@@ -113,13 +136,13 @@ const EditRecord: React.FC<EditRecordProps> = ({ recordType, record, onRecordEdi
             </div>
           ) : (
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
+              <Label htmlFor="recordTime">Record Time (HH:mm:ss.SSS)</Label>
               <Input 
                 id="recordTime" 
                 name="recordTime" 
                 type="text" 
-                pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
-                placeholder="00:00:00"
+                pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}"
+                placeholder="01:10:32.456"
                 value={durationInput} 
                 onChange={handleInputChange} 
                 required 

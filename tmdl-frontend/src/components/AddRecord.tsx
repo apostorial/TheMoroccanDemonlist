@@ -72,8 +72,8 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
   };
 
   const formatTimeToISO8601 = (time: string): string => {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    return `PT${hours}H${minutes}M${seconds}S`;
+    const [hours, minutes, seconds, milliseconds] = time.split(/[:.]/).map(Number);
+    return `PT${hours}H${minutes}M${seconds}.${milliseconds.toString().padStart(3, '0')}S`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,13 +154,13 @@ const AddRecord: React.FC<AddRecordProps> = ({ recordType, onRecordAdded }) => {
             </div>
           ) : (
             <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
+              <Label htmlFor="recordTime">Record Time (HH:mm:ss.SSS)</Label>
               <Input 
                 id="recordTime" 
                 name="recordTime" 
                 type="text" 
-                pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
-                placeholder="01:10:32"
+                pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}"
+                placeholder="01:10:32.456"
                 value={formData.recordTime} 
                 onChange={handleInputChange} 
                 required 

@@ -27,17 +27,15 @@ interface PlatformerRecord {
 }
 
 const formatDuration = (duration: string): string => {
-  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)(?:\.\d+)?S)?/);
-  if (!match) return duration;
-
-  const [, hours, minutes, seconds] = match;
+  const [hours, minutes, seconds, milliseconds] = duration.split(/[:.]/).map(Number);
+  
   let result = '';
+  if (hours > 0) result += `${hours}h `;
+  if (minutes > 0 || hours > 0) result += `${minutes}m `;
+  result += `${seconds}s`;
+  if (milliseconds > 0) result += ` ${milliseconds}ms`;
 
-  if (hours) result += `${hours}h `;
-  if (minutes) result += `${minutes}m `;
-  if (seconds) result += `${Math.round(parseFloat(seconds))}s`;
-
-  return result.trim() || '0s';
+  return result.trim();
 };
 
 const RecordList: React.FC<{ recordType: 'classic' | 'platformer' }> = ({ recordType }) => {

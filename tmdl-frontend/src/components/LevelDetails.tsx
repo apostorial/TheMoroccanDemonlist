@@ -77,20 +77,16 @@ function LevelDetails() {
     return duration.charAt(0).toUpperCase() + duration.slice(1).toLowerCase();
   };
 
-  const formatTime = (time: string | undefined) => {
+  const formatTime = (time: string | undefined): string => {
     if (!time) return 'N/A';
     
-    const match = time.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-    if (!match) return time;
-
-    const hours = parseInt(match[1]) || 0;
-    const minutes = parseInt(match[2]) || 0;
-    const seconds = parseInt(match[3]) || 0;
-
+    const [hours, minutes, seconds, milliseconds] = time.split(/[:.]/).map(Number);
+    
     let result = '';
     if (hours > 0) result += `${hours}h `;
     if (minutes > 0 || hours > 0) result += `${minutes}m `;
-    result += `${seconds.toString().padStart(2, '0')}s`;
+    result += `${seconds}s`;
+    if (milliseconds > 0) result += ` ${milliseconds}ms`;
 
     return result.trim();
   };

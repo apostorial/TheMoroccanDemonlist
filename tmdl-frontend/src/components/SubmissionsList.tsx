@@ -103,22 +103,20 @@ function SubmissionList() {
   };
 
   const formatDuration = (duration: string): string => {
-    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)(?:\.\d+)?S)?/);
-    if (!match) return duration;
-
-    const [, hours, minutes, seconds] = match;
+    const [hours, minutes, seconds, milliseconds] = duration.split(/[:.]/).map(Number);
+    
     let result = '';
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0 || hours > 0) result += `${minutes}m `;
+    result += `${seconds}s`;
+    if (milliseconds > 0) result += ` ${milliseconds}ms`;
 
-    if (hours) result += `${hours}h `;
-    if (minutes) result += `${minutes}m `;
-    if (seconds) result += `${Math.round(parseFloat(seconds))}s`;
-
-    return result.trim() || '0s';
+    return result.trim();
   };
 
   const formatTimeToISO = (time: string): string => {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    return `PT${hours}H${minutes}M${seconds}S`;
+    const [hours, minutes, seconds, milliseconds] = time.split(/[:.]/).map(Number);
+    return `PT${hours}H${minutes}M${seconds}.${milliseconds.toString().padStart(3, '0')}S`;
   };
 
   const getStatusBadge = (status: Submission['status']) => {
@@ -246,13 +244,13 @@ function SubmissionList() {
                 </div>
               ) : (
                 <div>
-                  <Label htmlFor="recordTime">Record Time (HH:MM:SS)</Label>
+                  <Label htmlFor="recordTime">Record Time (HH:MM:SS.mmm)</Label>
                   <Input 
                     id="recordTime" 
                     name="recordTime" 
                     type="text" 
-                    pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
-                    placeholder="01:10:32"
+                    pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}"
+                    placeholder="01:10:32.456"
                     value={newSubmission.recordTime} 
                     onChange={handleInputChange} 
                     required 
