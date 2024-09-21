@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from '../jwt-axios';
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate } from 'react-router-dom';
@@ -78,6 +77,8 @@ const StatViewer: React.FC = () => {
     return points.toFixed(2);
   };
 
+  const pointsLayoutClass = "flex flex-col space-y-2 [&>*]:flex-1 max-[1300px]:flex-col max-[1300px]:space-y-2 min-[1301px]:flex-row min-[1301px]:space-x-2 min-[1301px]:space-y-0";
+
   if (isLoading && regions.length === 0) {
     return <StatViewerSkeleton />;
   }
@@ -93,18 +94,15 @@ const StatViewer: React.FC = () => {
           <ScrollArea className="h-[calc(100vh-250px)]">
             <ul className="space-y-2 pr-4 pl-1 sm:pl-4">
               {regions.map((region) => (
-                <li key={region.id}>
-                  <Button
-                    variant={selectedRegion?.id === region.id ? "secondary" : "ghost"}
-                    className="w-full justify-between flex-col sm:flex-row items-start sm:items-center p-2 h-auto"
+                <li key={region.id}
+                    className="flex flex-col p-2 bg-secondary/20 rounded-lg cursor-pointer hover:bg-secondary/30 transition-colors"
                     onClick={() => handleRegionClick(region)}
-                  >
-                    <span className="mb-2 sm:mb-0">{region.name}</span>
-                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                      <Badge variant="secondary">Classic: {formatPoints(region.classicPoints)}</Badge>
-                      <Badge variant="secondary">Platformer: {formatPoints(region.platformerPoints)}</Badge>
-                    </div>
-                  </Button>
+                >
+                  <span className="mb-2">{region.name}</span>
+                  <div className={pointsLayoutClass}>
+                    <Badge variant="secondary">Classic: {formatPoints(region.classicPoints)}</Badge>
+                    <Badge variant="secondary">Platformer: {formatPoints(region.platformerPoints)}</Badge>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -123,11 +121,11 @@ const StatViewer: React.FC = () => {
                 {players.map((player) => (
                   <li 
                     key={player.id} 
-                    className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 bg-secondary/20 rounded-lg cursor-pointer hover:bg-secondary/30 transition-colors"
+                    className="flex flex-col p-2 bg-secondary/20 rounded-lg cursor-pointer hover:bg-secondary/30 transition-colors"
                     onClick={() => handlePlayerClick(player.username)}
                   >
-                    <span className="mb-2 sm:mb-0">{player.username}</span>
-                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <span className="mb-2">{player.username}</span>
+                    <div className={pointsLayoutClass}>
                       <Badge variant="secondary">Classic: {formatPoints(player.classicPoints)}</Badge>
                       <Badge variant="secondary">Platformer: {formatPoints(player.platformerPoints)}</Badge>
                     </div>
