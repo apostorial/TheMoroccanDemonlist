@@ -111,6 +111,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
             throw new EntityNotFoundException("Classic record with ID " + playerId + " not found");
         }
         return records.stream()
+                .filter(record -> record.getRecordPercentage() == 100)
                 .map(ClassicRecord::getLevel)
                 .min(Comparator.comparingInt(ClassicLevel::getRanking))
                 .map(playerLevelMapper::toDto);
@@ -121,6 +122,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
 
         List<ClassicLevel> levels = records.stream()
+                .filter(record -> record.getRecordPercentage() == 100)
                 .map(ClassicRecord::getLevel)
                 .filter(Objects::nonNull)
                 .toList();
@@ -141,6 +143,7 @@ public class ClassicLevelServiceImpl implements ClassicLevelService {
     public List<PlayerLevelRequest> findAllByPlayerId(String playerId) {
         List<ClassicRecord> records = classicRecordRepository.findAllByPlayerId(playerId);
         return records.stream()
+                .filter(record -> record.getRecordPercentage() == 100)
                 .map(ClassicRecord::getLevel)
                 .map(playerLevelMapper::toDto)
                 .toList();
