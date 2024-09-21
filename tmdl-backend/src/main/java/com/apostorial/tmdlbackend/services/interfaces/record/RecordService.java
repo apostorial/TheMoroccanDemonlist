@@ -10,6 +10,6 @@ public interface RecordService<T> {
     T findById(String recordId) throws EntityNotFoundException;
     Page<T> findAll(Pageable pageable);
     List<T> findAllByPlayerId(String playerId);
-    List<T> findAllByLevelId(String levelId);
+    List<T> findAllByLevelId(String levelId) throws EntityNotFoundException;
     void deleteById(String levelId) throws EntityNotFoundException;
 }

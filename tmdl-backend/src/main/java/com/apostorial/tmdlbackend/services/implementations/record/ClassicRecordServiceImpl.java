@@ -18,7 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service @AllArgsConstructor
 public class ClassicRecordServiceImpl implements ClassicRecordService {
@@ -65,8 +68,29 @@ public class ClassicRecordServiceImpl implements ClassicRecordService {
     }
 
     @Override
-    public List<ClassicRecord> findAllByLevelId(String levelId) {
-        return classicRecordRepository.findAllByLevelId(levelId);
+    public List<ClassicRecord> findAllByLevelId(String levelId) throws EntityNotFoundException {
+        List<ClassicRecord> records = classicRecordRepository.findAllByLevelId(levelId);
+
+        ClassicRecord firstVictor = getFirstVictorRecord(levelId);
+
+        return Stream.concat(
+                        Stream.of(firstVictor),
+                        records.stream()
+                                .filter(record -> !record.equals(firstVictor))
+                                .sorted(Comparator.comparing(ClassicRecord::getRecordPercentage, Comparator.reverseOrder()))
+                )
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ClassicRecord getFirstVictorRecord(String levelId) throws EntityNotFoundException {
+        ClassicLevel level = classicLevelRepository.findById(levelId)
+                .orElseThrow(() -> new EntityNotFoundException("Level not found with ID: " + levelId));
+
+        Player firstVictor = level.getFirstVictor();
+
+        return classicRecordRepository.findByLevelIdAndPlayerId(levelId, firstVictor.getId())
+                .orElseThrow(() -> new EntityNotFoundException("First victor record not found for level ID: " + levelId + " and player ID: " + firstVictor.getId()));
     }
 
     @Override

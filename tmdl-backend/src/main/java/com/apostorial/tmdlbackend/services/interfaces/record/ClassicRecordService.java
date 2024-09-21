@@ -9,4 +9,5 @@ import com.apostorial.tmdlbackend.exceptions.EntityNotFoundException;
 public interface ClassicRecordService extends RecordService<ClassicRecord> {
     ClassicRecord create(CreateClassicRecordRequest request) throws EntityNotFoundException, DuplicateRecordException ;
     ClassicRecord update(String recordId, UpdateClassicRecordRequest request) throws EntityNotFoundException;
+    ClassicRecord getFirstVictorRecord(String levelId) throws EntityNotFoundException;
 }
