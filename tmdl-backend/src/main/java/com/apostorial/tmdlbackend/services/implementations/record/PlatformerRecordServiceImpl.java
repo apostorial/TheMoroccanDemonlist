@@ -18,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service @AllArgsConstructor
 public class PlatformerRecordServiceImpl implements PlatformerRecordService {
@@ -67,7 +69,11 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
 
     @Override
     public List<PlatformerRecord> findAllByLevelId(String levelId) {
-        return platformerRecordRepository.findAllByLevelId(levelId);
+        List<PlatformerRecord> records = platformerRecordRepository.findAllByLevelId(levelId);
+
+        return records.stream()
+                .sorted(Comparator.comparing(PlatformerRecord::getRecordTime))
+                .collect(Collectors.toList());
     }
 
     @Override
