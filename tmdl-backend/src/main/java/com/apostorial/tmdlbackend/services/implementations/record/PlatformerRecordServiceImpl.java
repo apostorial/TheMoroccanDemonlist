@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +73,7 @@ public class PlatformerRecordServiceImpl implements PlatformerRecordService {
         List<PlatformerRecord> records = platformerRecordRepository.findAllByLevelId(levelId);
 
         return records.stream()
-                .sorted(Comparator.comparing(PlatformerRecord::getRecordTime))
+                .sorted(Comparator.comparing(PlatformerRecord::getRecordTime, Duration::compareTo))
                 .collect(Collectors.toList());
     }
 
